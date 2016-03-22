@@ -1,0 +1,526 @@
+<?php
+
+/**
+ * Data model for answered question
+ */
+class ilExteStatSourceData
+{
+	const PASS_ALL = 'all';
+	const PASS_BEST = 'best';
+	const PASS_LAST = 'last';
+	const PASS_SCORED = 'scored';
+
+	/**
+	 * @var ilExtendedTestStatisticsPlugin
+	 */
+	protected $plugin;
+
+	/**
+	 * @var ilObjTest $object
+	 */
+	protected $object;
+
+	/**
+	 * @var ilTestEvaluationData
+	 */
+	protected $eval;
+
+	/**
+	 * @var string selection of passe to evaluate
+	 */
+	protected $pass_selection = self::PASS_SCORED;
+
+	/**
+	 * @var array	question_id => ilExteStatSourceQuestion
+	 */
+	protected $questions = array();
+
+	/**
+	 * @var array	active_id => ilExteStatSourceParticipant
+	 */
+	protected $participants = array();
+
+	/**
+	 * @var array	list of ilExteStatSourceAnswer
+	 */
+	protected $answers = array();
+
+	/**
+	 * @var array	question_id => active_id => pass => ilExteStatSourceAnswer
+	 */
+	protected $answers_by_question_id = array();
+
+	/**
+	 * @var array	active_id => pass => question_id => ilExteStatSourceAnswer
+	 */
+	protected $answers_by_active_id = array();
+
+	/**
+	 * @var array	value_id => ilExteStatValue
+	 */
+	protected $basic_test_values = array();
+
+	/**
+	 * @var array	question_id => value_id => ilExteStatValue
+	 */
+	protected $basic_question_values = array();
+
+
+	/**
+	 * ilExteStatSourceData constructor.
+	 * @param ilObjTest	$a_test_obj
+	 * @param ilExtendedTestStatisticsPlugin $a_plugin
+	 */
+	public function __construct($a_test_obj, $a_plugin)
+	{
+		$this->object = $a_test_obj;
+		$this->plugin = $a_plugin;
+
+		$this->plugin->includeClass('models/class.ilExteStatSourceParticipant.php');
+		$this->plugin->includeClass('models/class.ilExteStatSourceQuestion.php');
+		$this->plugin->includeClass('models/class.ilExteStatSourceAnswer.php');
+		$this->plugin->includeClass('models/class.ilExteStatValue.php');
+	}
+
+
+	/**
+	 * Load the source data from the test
+	 *
+	 * @param	string	pass selection, e.g. self::PASS_SCORED
+	 *
+	 * @see ilTestEvaluationGUI::eval_a()
+	 */
+	public function load($a_pass_selection = self::PASS_SCORED)
+	{
+		$this->pass_selection = $a_pass_selection;
+		$this->eval = $this->object->getUnfilteredEvaluationData();
+
+		$question_titles = $this->eval->getQuestionTitles();
+
+		/** @var ilTestEvaluationUserData[] $participants */
+		$participants =& $this->eval->getParticipants();
+		foreach($participants as $active_id => $userdata)
+		{
+			$participant = $this->getParticipant($active_id, true);
+			$participant->best_pass = $userdata->getBestPass();
+			$participant->last_pass = $userdata->getLastPass();
+			$participant->scored_pass = $userdata->getScoredPass();
+
+			switch($this->pass_selection)
+			{
+				case self::PASS_SCORED:
+					$passes = array($userdata->getScoredPassObject());
+					break;
+				case self::PASS_BEST:
+					$passes = array($userdata->getBestPassObject());
+					break;
+				case self::PASS_LAST:
+					$passes = array($userdata->getLastPassObject());
+					break;
+				case self::PASS_ALL:
+					$passes = $userdata->getPasses();
+					break;
+				default:
+					$passes = array();
+			}
+
+			foreach ($passes as $pass)
+			{
+				if ($pass instanceof ilTestEvaluationPassData)
+				{
+					// all quetions for a participant in the test pass
+					$pass_questions = $userdata->getQuestions($pass->getPass());
+					$question_titles = $userdata->getQuestionTitles();
+
+					if (is_array($pass_questions))
+					{
+						foreach ($pass_questions as $pass_question)
+						{
+							$question = $this->getQuestion($pass_question['id'], true);
+							$question->original_id = $pass_question['o_id'];
+							$question->maximum_points = $pass_question['points'];
+							$question->title = $question_titles[$pass_question['o_id']];
+
+							$answer = $this->getAnswer($pass_question['id'], $active_id, $pass->getPass(), true);
+							$answer->sequence = $pass_question['sequence'];
+						}
+					}
+
+					// questions answered by a participant in the test pass
+					$pass_answers = $pass->getAnsweredQuestions();
+					{
+						if (is_array($pass_answers))
+						{
+							foreach ($pass_answers as $pass_answer)
+							{
+								$answer = $this->getAnswer($pass_answer['id'], $active_id, $pass->getPass(), true);
+								$answer->reached_points = $pass_answer['reached'];
+								$answer->answered = (bool) $pass_answer['is_answered'];
+								$answer->manual_scored = (bool) $pass_answer['manual'];
+							}
+						}
+					}
+				}
+			}
+		}
+		$this->calculateBasicTestValues();
+		$this->calculateBasicQuestionValues();
+	}
+
+	/**
+	 * Calculate the basic values for a test (as in original ILIAS)
+	 * @see ilTestEvaluationGUI::eval_a()
+	 */
+	protected function calculateBasicTestValues()
+	{
+		global $lng;
+
+		// Total number of people who started the test
+		$value = new ilExteStatValue();
+		$value->type = ilExteStatValue::TYPE_NUMBER;
+		$value->precision = 0;
+		$value->value = count($this->participants);
+		$this->basic_test_values['tst_eval_total_persons'] = $value;
+
+		// Total finished tests (Users that used up all possible passes.)
+		$value = new ilExteStatValue();
+		$value->type = ilExteStatValue::TYPE_NUMBER;
+		$value->precision = 0;
+		$value->value = $this->object->evalTotalFinished();
+		$this->basic_test_values['tst_eval_total_finished'] = $value;
+
+		// Average test processing time
+		$average_time = $this->object->evalTotalStartedAverageTime();
+		$diff_seconds = $average_time;
+		$diff_hours    = floor($diff_seconds/3600);
+		$diff_seconds -= $diff_hours   * 3600;
+		$diff_minutes  = floor($diff_seconds/60);
+		$diff_seconds -= $diff_minutes * 60;
+
+		$value = new ilExteStatValue();
+		$value->type = ilExteStatValue::TYPE_TEXT;
+		$value->value = printf("%02d:%02d:%02d", $diff_hours, $diff_minutes, $diff_seconds);
+		$this->basic_test_values['tst_eval_total_finished_average_time'] = $value;
+
+		// (intermediate calculations)
+		$total_passed = 0;
+		$total_passed_reached = 0;
+		$total_passed_max = 0;
+		$total_passed_time = 0;
+		$foundParticipants =& $this->eval->getParticipants();
+		foreach ($foundParticipants as $userdata)
+		{
+			if ($userdata->getPassed())
+			{
+				$total_passed++;
+				$total_passed_reached += $userdata->getReached();
+				$total_passed_max += $userdata->getMaxpoints();
+				$total_passed_time += $userdata->getTimeOfWork();
+			}
+		}
+		$average_passed_reached = $total_passed ? $total_passed_reached / $total_passed : 0;
+		$average_passed_max = $total_passed ? $total_passed_max / $total_passed : 0;
+		$average_passed_time = $total_passed ? $total_passed_time / $total_passed : 0;
+
+		// Total passed tests
+		$value = new ilExteStatValue();
+		$value->type = ilExteStatValue::TYPE_NUMBER;
+		$value->precision = 0;
+		$value->value = $total_passed;
+		$this->basic_test_values['tst_eval_total_passed'] = $value;
+
+		// Average points of passed tests
+		$value = new ilExteStatValue();
+		$value->type = ilExteStatValue::TYPE_TEXT;
+		$value->value = sprintf("%2.2f", $average_passed_reached) . " " . strtolower($lng->txt("of")) . " " . sprintf("%2.2f", $average_passed_max);
+		$this->basic_test_values['tst_eval_total_passed_average_points'] = $value;
+
+
+		// Average processing time of all passed tests
+		$average_time = $average_passed_time;
+		$diff_seconds = $average_time;
+		$diff_hours    = floor($diff_seconds/3600);
+		$diff_seconds -= $diff_hours   * 3600;
+		$diff_minutes  = floor($diff_seconds/60);
+		$diff_seconds -= $diff_minutes * 60;
+
+		$value = new ilExteStatValue();
+		$value->type = ilExteStatValue::TYPE_TEXT;
+		$value->value = sprintf("%02d:%02d:%02d", $diff_hours, $diff_minutes, $diff_seconds);
+		$this->basic_test_values['tst_eval_total_passed_average_time'] = $value;
+	}
+
+
+	/**
+	 * Calculate the basic values for test questions (as in original ILIAS)
+	 * @see ilTestEvaluationGUI::eval_a()
+	 */
+	protected function calculateBasicQuestionValues()
+	{
+		// @todo: calculate this based on the loaded data (respect the paass selection filter)
+
+		$foundParticipants =& $this->eval->getParticipants();
+		foreach ($this->eval->getQuestionTitles() as $question_id => $question_title)
+		{
+			$answered = 0;
+			$reached = 0;
+			$max = 0;
+			foreach ($foundParticipants as $userdata)
+			{
+				for ($i = 0; $i <= $userdata->getLastPass(); $i++)
+				{
+					if (is_object($userdata->getPass($i)))
+					{
+						$question =& $userdata->getPass($i)->getAnsweredQuestionByQuestionId($question_id);
+						if (is_array($question))
+						{
+							$answered++;
+							$reached += $question["reached"];
+							$max += $question["points"];
+						}
+					}
+				}
+			}
+			$percent = $max ? $reached / $max * 100.0 : 0;
+			$counter++;
+			$points_reached = ($answered ? $reached / $answered : 0);
+			$points_max = ($answered ? $max / $answered : 0);
+
+
+			$values = array();
+
+			$value = new ilExteStatValue;
+			$value->type = ilExteStatValue::TYPE_NUMBER;
+			$value->precision = 0;
+			$value->value = $question_id;
+			$values['qid'] = $value;
+
+			$value = new ilExteStatValue;
+			$value->type = ilExteStatValue::TYPE_TEXT;
+			$value->precision = 0;
+			$value->value = $question_title;
+			$values['title'] = $value;
+
+			$value = new ilExteStatValue;
+			$value->type = ilExteStatValue::TYPE_NUMBER;
+			$value->precision = 2;
+			$value->value = $points_reached;
+			$values['points_reached'] = $value;
+
+			$value = new ilExteStatValue;
+			$value->type = ilExteStatValue::TYPE_NUMBER;
+			$value->precision = 2;
+			$value->value = $points_max;
+			$values['points_max'] = $value;
+
+			$value = new ilExteStatValue;
+			$value->type = ilExteStatValue::TYPE_NUMBER;
+			$value->precision = 2;
+			$value->value = (float) $percent;
+			$values['percentage'] = $value;
+
+			$value = new ilExteStatValue;
+			$value->type = ilExteStatValue::TYPE_NUMBER;
+			$value->precision = 0;
+			$value->value = (float) $percent;
+			$values['answers'] = $answered;
+
+			$this->basic_question_values[$question_id] = $values;
+		}
+	}
+
+	/**
+	 * Get the basic test values
+	 * @return array	value_id => ilExteStatValue
+	 */
+	public function getBasicTestValues()
+	{
+		return $this->basic_test_values;
+	}
+
+
+	/**
+	 * Get the basic question values
+	 * @return 		question_id => value_id => ilExteStatValue[]
+	 */
+	public function getBasicQuestionValues()
+	{
+		return $this->basic_question_values;
+	}
+
+
+	/**
+	 * @param integer 	$a_active_id	the participant id
+	 * @param bool 		$a_create		create if not exists
+	 * @return ilExteStatSourceParticipant|null
+	 */
+	public function getParticipant($a_active_id, $a_create = false)
+	{
+		if (isset($this->participants[$a_active_id]))
+		{
+			return $this->participants[$a_active_id];
+		}
+		elseif ($a_create)
+		{
+			$participant = new ilExteStatSourceParticipant;
+			$participant->active_id = $a_active_id;
+			$this->participants[$a_active_id] = $participant;
+			return $participant;
+		}
+		else
+		{
+			return null;
+		}
+	}
+
+
+	/**
+	 * Get the source question object for a question id
+	 *
+	 * @param integer 	$a_question_id		the question id
+	 * @param bool 		$a_create			create if necessary
+	 * @return ilExteStatSourceQuestion|null
+	 */
+	public function getQuestion($a_question_id, $a_create = false)
+	{
+		if (isset($this->questions[$a_question_id]))
+		{
+			return $this->questions[$a_question_id];
+		}
+		elseif ($a_create)
+		{
+			$question = new ilExteStatSourceQuestion;
+			$question->question_id = $a_question_id;
+			$this->questions[$a_question_id] = $question;
+			return $question;
+		}
+		else
+		{
+			return null;
+		}
+	}
+
+
+	/**
+	 * Get the source answer status of a question
+	 *
+	 * @param integer	$a_question_id	the question id
+	 * @param integer	$a_active_id	the active id of the user
+	 * @param integer 	$a_pass			the pass of the answer
+	 * @param boolean 	$a_create		create if not exists
+	 * @return ilExteStatSourceAnswer|null
+	 */
+	public function getAnswer($a_question_id, $a_active_id, $a_pass, $a_create = false)
+	{
+		if (!empty($this->answers_by_question_id[$a_question_id][$a_active_id][$a_pass]))
+		{
+			return $this->answers_by_question_id[$a_question_id][$a_active_id][$a_pass];
+		}
+		elseif ($a_create)
+		{
+			$answer = new ilExteStatSourceAnswer;
+			$answer->question_id = $a_question_id;
+			$answer->active_id = $a_active_id;
+			$answer->pass = $a_pass;
+
+			$this->answers[] = $answer;
+			$this->answers_by_question_id[$a_question_id][$a_active_id][$a_pass] = $answer;
+			$this->answers_by_active_id[$a_active_id][$a_pass][$a_question_id] = $answer;
+
+			return $answer;
+		}
+		else
+		{
+			return null;
+		}
+	}
+
+
+	/**
+	 * Get all answers in the test
+	 * Note:	the answers don't have to be sent by a participant
+	 * 			check the 'answered' property of the answer object
+	 *
+	 * @return ilExteStatSourceAnswer[]
+	 */
+	public function getAllAnswers()
+	{
+		return $this->answers;
+	}
+
+
+
+	/**
+	 * Get all answers for a question
+	 *
+	 * @param integer	$a_question_id		the question id
+	 * @param boolean	$a_answered			get only the really answered
+	 * @return ilExteStatSourceAnswer[]
+	 */
+	public function getAnswersForQuestion($a_question_id,  $a_answered = false)
+	{
+		$answers = array();
+		if (is_array($this->$answers_by_question_id[$a_question_id]))
+		{
+			foreach ($this->$answers_by_question_id[$a_question_id] as $active_id => $pass_answers)
+			{
+				if (is_array($pass_answers))
+				{
+					foreach ($pass_answers as $pass => $answer)
+					{
+						if (!$answered or ($answered and $answer->answered))
+						{
+							$answers[] = $answer;
+						}
+					}
+				}
+			}
+		}
+		return $answers;
+	}
+
+
+	/**
+	 * Get all answers for a participant
+	 *
+	 * @param integer	$a_active_id	the participant id
+	 * @param boolean	$a_answered 	get only the really answered
+	 * @return ilExteStatSourceAnswer[]
+	 */
+	public function getAnswersForParticipant($a_active_id, $a_answered = false)
+	{
+		$answers = array();
+		if (is_array($this->$answers_by_active_id[$a_active_id]))
+		{
+			foreach ($this->$answers_by_active_id[$a_active_id] as $pass => $pass_answers)
+			{
+				if (is_array($pass_answers))
+				{
+					foreach ($pass_answers as $question_id => $answer)
+					{
+						if (!$answered or ($answered and $answer->answered))
+						{
+							$answers[] = $answer;
+						}
+					}
+				}
+			}
+		}
+		return $answers;
+	}
+
+
+	/**
+	 * Get the original test evaluation data
+	 *
+	 * IMPORTANT NOTE: 	This acesses an internal object of ILIAS
+	 * 					Its API is not wrapped by the plugin
+	 * 					Use it in exceptional cases only!
+	 *
+	 * @return ilTestEvaluationData
+	 */
+	public function getOriginalTestEvaluationData()
+	{
+		return $this->eval;
+	}
+}

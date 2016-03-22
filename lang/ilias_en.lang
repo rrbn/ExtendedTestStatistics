@@ -1,0 +1,13 @@
+//
+// Copyright (c) 2016 Institut fuer Lern-Innovation, Friedrich-Alexander-Universitaet Erlangen-Nuernberg
+// GPLv2, see LICENSE
+//
+// English Language File for the Extended Test Statistiks Plugin
+//
+
+<!-- language file start -->
+test_results#:#Aggregated Test Results
+questions_results#:#Aggregated Questions Results
+ilexteevaltestexample_title_long#:#Example Evaluation
+ilexteevaltestexample_title_short#:#Example
+ilexteevaltestexample_description#:#Example Evaluation Description

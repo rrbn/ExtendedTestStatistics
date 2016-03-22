@@ -83,6 +83,15 @@ class ilExtendedTestStatistics
 		$this->plugin->includeClass('abstract/class.ilExteEvalBase.php');
 		$this->plugin->includeClass('abstract/class.ilExteEvalQuestion.php');
 		$this->plugin->includeClass('abstract/class.ilExteEvalTest.php');
+
+		$eval_dir = $this->plugin->getDirectory().'/classes/evaluations';
+
+		//@todo: scan this directory, check with static methods if evaliation
+		//@todo	instanciate a fitting evaluation and add it to the list of evaluations
+
+		// example
+		$this->plugin->includeClass('evaluations/class.ilExteEvalTestExample.php');
+		$this->evaluations[] = new ilExteEvalTestExample($this->data, $this->plugin);
 	}
 
 
@@ -97,7 +106,7 @@ class ilExtendedTestStatistics
 		{
 			array_push($rows,
 				array(
-					'title' => $lng->txt[$value_id],
+					'title' => $lng->txt($value_id),
 					'value' => $value
 			));
 		}
