@@ -40,12 +40,12 @@ class ilExteStatSourceQuestion
 	public $maximum_points;
 
 	/**
-	 * @var	float	average of points that are reached by the participants answering the question
+	 * @var	float	average of points reached by the participants that got this question assigned
 	 */
 	public $average_points;
 
 	/**
-	 * @var	float 	average percentage of ???
+	 * @var	float 	average percentage reached by the participants that got this question assigned
 	 */
 	public $average_percentage;
 
@@ -53,4 +53,9 @@ class ilExteStatSourceQuestion
 	 * @var integer	number of users who answered the question
 	 */
 	public $answers_count;
+
+    /**
+     * @var integer	number of users who got this question assigned
+     */
+    public $assigned_count;
 }

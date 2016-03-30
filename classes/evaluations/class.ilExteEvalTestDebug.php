@@ -78,10 +78,11 @@ class ilExteEvalTestDebug extends ilExteEvalTest
             ilExteStatColumn::_create('question_title','',ilExteStatColumn::SORT_TEXT),
             ilExteStatColumn::_create('question_type','',ilExteStatColumn::SORT_TEXT),
             ilExteStatColumn::_create('question_type_label','',ilExteStatColumn::SORT_TEXT),
+            ilExteStatColumn::_create('assigned_count','',ilExteStatColumn::SORT_NUMBER),
+            ilExteStatColumn::_create('answers_count','',ilExteStatColumn::SORT_NUMBER),
             ilExteStatColumn::_create('maximum_points','',ilExteStatColumn::SORT_NUMBER),
             ilExteStatColumn::_create('average_points','',ilExteStatColumn::SORT_NUMBER),
-            ilExteStatColumn::_create('average_percentage','',ilExteStatColumn::SORT_NUMBER),
-            ilExteStatColumn::_create('answers_count','',ilExteStatColumn::SORT_NUMBER)
+            ilExteStatColumn::_create('average_percentage','',ilExteStatColumn::SORT_NUMBER)
         );
         foreach ($this->data->getAllQuestions() as $question)
         {
@@ -91,9 +92,10 @@ class ilExteEvalTestDebug extends ilExteEvalTest
                 'question_type' => ilExteStatValue::_create($question->question_type, ilExteStatValue::TYPE_TEXT),
                 'question_type_label' => ilExteStatValue::_create($question->question_type_label, ilExteStatValue::TYPE_TEXT),
                 'maximum_points' => ilExteStatValue::_create($question->maximum_points, ilExteStatValue::TYPE_NUMBER, 2),
+                'assigned_count' => ilExteStatValue::_create($question->assigned_count, ilExteStatValue::TYPE_NUMBER, 0),
+                'answers_count' => ilExteStatValue::_create($question->answers_count, ilExteStatValue::TYPE_NUMBER, 0),
                 'average_points' => ilExteStatValue::_create($question->average_points, ilExteStatValue::TYPE_NUMBER, 2),
                 'average_percentage' => ilExteStatValue::_create($question->average_percentage, ilExteStatValue::TYPE_NUMBER, 2),
-                'answers_count' => ilExteStatValue::_create($question->answers_count, ilExteStatValue::TYPE_NUMBER, 0),
             );
         }
         $return[] = $details;

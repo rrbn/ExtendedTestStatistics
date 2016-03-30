@@ -34,8 +34,7 @@ class ilExtendedTestStatisticsUIHookGUI extends ilUIHookPluginGUI
 				if ($ilCtrl->getCmdClass() == 'iltestevaluationgui'
 					and in_array($ilCtrl->getCmd(), array('outEvaluation','eval_a','singleResults')))
 				{
-                    // @todo: when plugin development is finished
-					// $tabsGUI->removeSubTab('tst_results_aggregated');
+                    $ilTabs->removeSubTab('tst_results_aggregated');
 					$ilCtrl->saveParameterByClass('ilExtendedTestStatisticsPageGUI','ref_id');
 
 					// we need to use the deprecated method because evaluation sub tabs work with automatic activation

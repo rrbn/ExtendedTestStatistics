@@ -13,6 +13,15 @@ alert_bad#:#Bad
 test_results#:#Aggregated Test Results
 questions_results#:#Aggregated Questions Results
 show_details#:#Show Details
+question_type#:#Question Type
+assigned_count#:#Assigned
+assigned_count_description#:#Number of users who got this question assigned
+answers_count#:#Answered
+answers_count_description#:#Number of users who answered this question
+average_points#:#Points
+average_points_description#:#Average points reached by the user who git this question assigned
+average_percentage#:#Percent
+average_percentage_description#:#Average percentage of points reached by the user who git this question assigned
 ilexteevaltestdebug_title_long#:#Filtered source data
 ilexteevaltestdebug_title_short#:#Source Data
 ilexteevaltestdebug_description#:#Debug output of the filtered source data

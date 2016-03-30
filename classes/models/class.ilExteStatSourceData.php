@@ -130,7 +130,6 @@ class ilExteStatSourceData
 				{
 					// all quetions for a participant in the test pass
 					$pass_questions = $userdata->getQuestions($pass->getPass());
-					$question_titles = $userdata->getQuestionTitles();
 
 					if (is_array($pass_questions))
 					{
@@ -155,7 +154,7 @@ class ilExteStatSourceData
 							{
 								$answer = $this->getAnswer($pass_answer['id'], $active_id, $pass->getPass(), true);
 								$answer->reached_points = $pass_answer['reached'];
-								$answer->answered = (bool) $pass_answer['is_answered'];
+								$answer->answered = (bool) $pass_answer['isAnswered'];
 								$answer->manual_scored = (bool) $pass_answer['manual'];
 							}
 						}
@@ -283,48 +282,37 @@ class ilExteStatSourceData
 	 */
 	protected function calculateBasicQuestionValues()
 	{
-		// @todo: calculate this based on the loaded data (respect the pass selection filter)
+        foreach ($this->getAllQuestions() as $question_id => $question)
+        {
+            $assigned = 0;
+            $answered = 0;
+            $reached = 0;
 
-		$foundParticipants =& $this->eval->getParticipants();
-		foreach ($this->eval->getQuestionTitles() as $question_id => $question_title)
-		{
-			$answered = 0;
-			$reached = 0;
-			$max = 0;
-			foreach ($foundParticipants as $userdata)
-			{
-				for ($i = 0; $i <= $userdata->getLastPass(); $i++)
-				{
-					if (is_object($userdata->getPass($i)))
-					{
-						$question =& $userdata->getPass($i)->getAnsweredQuestionByQuestionId($question_id);
-						if (is_array($question))
-						{
-							$answered++;
-							$reached += $question["reached"];
-							$max += $question["points"];
-						}
-					}
-				}
-			}
-			$percent = $max ? $reached / $max * 100.0 : 0;
-			$counter++;
-			$points_reached = ($answered ? $reached / $answered : 0);
-			$points_max = ($answered ? $max / $answered : 0);
+            foreach ($this->getAnswersForQuestion($question_id) as $answer)
+            {
+                $assigned++;
+                $answered += $answer->answered ? 1 : 0;
+                $reached += $answer->reached_points;
+            }
 
+            $question->assigned_count = $assigned;
+            $question->answers_count = $answered;
+            $question->average_points = ($assigned ? $reached / $assigned : 0);
+            $question->average_percentage = ($question->maximum_points ? 100 * $question->average_points / $question->maximum_points : 0);
 
-			$values = array();
-			$values['qid'] = ilExteStatValue::_create($question_id, ilExteStatValue::TYPE_NUMBER, 0);
-			$values['title'] = ilExteStatValue::_create($question_title, ilExteStatValue::TYPE_TEXT);
-            $values['type'] = ilExteStatValue::_create( $this->getQuestion($question_id)->question_type, ilExteStatValue::TYPE_TEXT);
-            $values['type_label'] = ilExteStatValue::_create( $this->getQuestion($question_id)->question_type_label, ilExteStatValue::TYPE_TEXT);
-            $values['points_reached'] = ilExteStatValue::_create($points_reached, ilExteStatValue::TYPE_NUMBER, 2);
-			$values['points_max'] = ilExteStatValue::_create($points_max, ilExteStatValue::TYPE_NUMBER, 2);
-			$values['percentage'] = ilExteStatValue::_create($percent, ilExteStatValue::TYPE_PERCENTAGE, 2);
-			$values['answers'] = ilExteStatValue::_create($answered, ilExteStatValue::TYPE_NUMBER, 2);
+            $values = array();
+            $values['question_id'] = ilExteStatValue::_create($question->question_id, ilExteStatValue::TYPE_NUMBER, 0);
+            $values['question_title'] = ilExteStatValue::_create($question->question_title, ilExteStatValue::TYPE_TEXT);
+            $values['question_type'] = ilExteStatValue::_create($question->question_type, ilExteStatValue::TYPE_TEXT);
+            $values['question_type_label'] = ilExteStatValue::_create($question->question_type_label, ilExteStatValue::TYPE_TEXT);
+            $values['assigned_count'] = ilExteStatValue::_create($question->assigned_count, ilExteStatValue::TYPE_NUMBER, 0);
+            $values['answers_count'] = ilExteStatValue::_create($question->answers_count, ilExteStatValue::TYPE_NUMBER, 0);
+            $values['maximum_points'] = ilExteStatValue::_create($question->maximum_points, ilExteStatValue::TYPE_NUMBER, 2);
+            $values['average_points'] = ilExteStatValue::_create($question->average_points, ilExteStatValue::TYPE_NUMBER, 2);
+            $values['average_percentage'] = ilExteStatValue::_create($question->average_percentage, ilExteStatValue::TYPE_PERCENTAGE, 2);
 
-			$this->basic_question_values[$question_id] = $values;
-		}
+            $this->basic_question_values[$question->question_id] = $values;
+        }
 	}
 
 	/**

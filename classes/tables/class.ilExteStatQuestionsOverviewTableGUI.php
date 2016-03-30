@@ -49,13 +49,20 @@ class ilExteStatQuestionsOverviewTableGUI extends ilTable2GUI
 		$this->setTitle($this->plugin->txt('questions_results'));
 		$this->setStyle('table', 'fullwidth');
 
-		$this->addColumn($this->lng->txt("question_id"), 'qid');
-		$this->addColumn($this->lng->txt("question_title"), 'title');
+		$this->addColumn($this->lng->txt("question_id"), 'question_id');
+		$this->addColumn($this->lng->txt("question_title"), 'question_title');
         foreach ($this->getSelectableColumns() as $colid => $settings)
         {
             if ($this->isColumnSelected($colid))
             {
-                $this->addColumn($settings['txt'], in_array($colid, array('type_label','answers','points','percentage')) ? $colid : '');
+                $this->addColumn(
+                    $settings['txt'],
+                    in_array($colid, array_keys($this->getBasicSelectableColumns()))? $colid : '',
+                    '',
+                    false,
+                    '',
+                    $settings['tooltip']
+                );
             }
         }
         $this->addColumn('');
@@ -71,21 +78,56 @@ class ilExteStatQuestionsOverviewTableGUI extends ilTable2GUI
 	}
 
     /**
+     * Get the selectable columns with basic question data
+     * @return array
+     */
+    public function getBasicSelectableColumns()
+    {
+        return array(
+            'question_type_label' => array(
+                'txt' => $this->plugin->txt('question_type'),
+                'tooltip' => '',
+                'default' => false
+            ),
+            'assigned_count' => array(
+                'txt' => $this->plugin->txt('assigned_count'),
+                'tooltip' => $this->plugin->txt('assigned_count_description'),
+                'default' => false
+            ),
+            'answers_count' => array(
+                'txt' => $this->plugin->txt('answers_count'),
+                'tooltip' => $this->plugin->txt('answers_count_description'),
+                'default' => true
+            ),
+            'average_points' => array(
+                'txt' => $this->plugin->txt('average_points'),
+                'tooltip' => $this->plugin->txt('average_points_description'),
+                'default' => true
+            ),
+            'average_percentage' => array(
+                'txt' => $this->plugin->txt('average_percentage'),
+                'tooltip' => $this->plugin->txt('average_percentage_description'),
+                'default' => false
+            ),
+        );
+    }
+
+
+    /**
      * Get selectable columns
      */
     public function getSelectableColumns()
     {
         // basic question values
-       $columns = array(
-           'type_label' => array('txt' => $this->lng->txt("question_type"), 'default' => false),
-           'answers' => array('txt' => $this->lng->txt("answers"), 'default' => true),
-           'points' => array('txt' => $this->lng->txt("points"), 'default' => false),
-           'percentage' => array('txt' => $this->lng->txt("percentage"), 'default' => false),
-       );
+       $columns = $this->getBasicSelectableColumns();
 
        foreach ($this->statObj->getEvaluations(ilExtendedTestStatistics::PROVIDES_VALUE) as $id => $evaluation)
        {
-           $columns[$id] = array('txt' => $evaluation->getShortTitle(), 'default'=> false);
+           $columns[$id] = array(
+               'txt' => $evaluation->getShortTitle(),
+               'tooltip' => $evaluation->getDescription(),
+               'default' => false
+           );
        }
        return $columns;
     }
@@ -121,9 +163,11 @@ class ilExteStatQuestionsOverviewTableGUI extends ilTable2GUI
 	{
 		switch($a_field)
 		{
-			case 'points':
-			case 'qid':
-			case 'percentage':
+            case 'question_id':
+            case 'assigned_count':
+            case 'answers_count':
+			case 'average_points':
+			case 'average_percentage':
 				return true;
 
 			default:
@@ -140,11 +184,11 @@ class ilExteStatQuestionsOverviewTableGUI extends ilTable2GUI
 	public function fillRow($data)
 	{
         $this->tpl->setCurrentBlock('column');
-        $this->tpl->setVariable('CONTENT', $data['qid']);
+        $this->tpl->setVariable('CONTENT', $data['question_id']);
         $this->tpl->parseCurrentBlock();
 
         $this->tpl->setCurrentBlock('column');
-        $this->tpl->setVariable('CONTENT', $data['title']);
+        $this->tpl->setVariable('CONTENT', $data['question_title']);
         $this->tpl->parseCurrentBlock();
 
         foreach ($this->getSelectedColumns() as $colid)
@@ -153,23 +197,24 @@ class ilExteStatQuestionsOverviewTableGUI extends ilTable2GUI
             switch ($colid)
             {
                 // basic question values
-                case 'type_label':
-                case 'answers':
+                case 'question_type_label':
+                case 'assigned_count':
+                case 'answers_count':
                     $content = ilUtil::prepareFormOutput($data[$colid]);
                     break;
-                case 'points':
-                    $content = sprintf('%.2f', $data['points_reached']) . ' ' . strtolower($this->lng->txt('of')) . ' ' . sprintf('%.2f', $data['points_max']);
+                case 'average_points':
+                    $content = round($data['average_points'],2) . ' ' . strtolower($this->lng->txt('of')) . ' ' . round($data['maximum_points'],2);
                     break;
-                case 'percentage':
-                    $content = sprintf('%.2f', $data['percentage']) . '%';
+                case 'average_percentage':
+                    $content = round($data['average_percentage'],2) . '%';
                     break;
 
                 // values from evaluations
                 default:
                     $evaluation = $this->statObj->getEvaluation($colid);
-                    if (isset($evaluation) && $evaluation::_isQuestionTypeAllowed($data['type']) && $evaluation::_providesValue())
+                    if (isset($evaluation) && $evaluation::_isQuestionTypeAllowed($data['question_type']) && $evaluation::_providesValue())
                     {
-                        $value = $evaluation->calculateValue($data['qid']);
+                        $value = $evaluation->calculateValue($data['question_id']);
                         $content = $this->valueGUI->getHTML($value);
                     }
                     break;
@@ -180,7 +225,7 @@ class ilExteStatQuestionsOverviewTableGUI extends ilTable2GUI
         }
 
         // evaluations with details
-        $details = $this->statObj->getEvaluations(ilExteEvalBase::_providesDetails(), $data['type']);
+        $details = $this->statObj->getEvaluations(ilExteEvalBase::_providesDetails(), $data['question_type']);
 
         if (!empty($details))
         {
@@ -189,12 +234,12 @@ class ilExteStatQuestionsOverviewTableGUI extends ilTable2GUI
             $list = new ilAdvancedSelectionListGUI();
             $list->setSelectionHeaderClass('small');
             $list->setItemLinkClass('small');
-            $list->setId('actl_'.$data['qid'].'_'.$this->getId());
+            $list->setId('actl_'.$data['question_id'].'_'.$this->getId());
             $list->setListTitle($this->plugin->txt('show_details'));
 
             foreach($details as $evaluation)
             {
-                $this->ctrl->setParameter($this->parent_obj, 'qid', $data['qid']);
+                $this->ctrl->setParameter($this->parent_obj, 'qid', $data['question_id']);
                 $this->ctrl->setParameter($this->parent_obj, 'details', $evaluation::_getId());
 
                 $list->addItem($evaluation->getTitle(), '', $this->ctrl->getLinkTarget($this->parent_obj,'showQuestionDetails'));
