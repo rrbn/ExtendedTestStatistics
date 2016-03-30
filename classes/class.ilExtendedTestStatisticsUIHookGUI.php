@@ -31,8 +31,10 @@ class ilExtendedTestStatisticsUIHookGUI extends ilUIHookPluginGUI
 			// case 'tabs':
 			case 'sub_tabs':
 
-				if ($_GET['cmdClass'] == 'iltestevaluationgui')
+				if ($ilCtrl->getCmdClass() == 'iltestevaluationgui'
+					and in_array($ilCtrl->getCmd(), array('outEvaluation','eval_a','singleResults')))
 				{
+                    // @todo: when plugin development is finished
 					// $tabsGUI->removeSubTab('tst_results_aggregated');
 					$ilCtrl->saveParameterByClass('ilExtendedTestStatisticsPageGUI','ref_id');
 
@@ -41,7 +43,7 @@ class ilExtendedTestStatisticsUIHookGUI extends ilUIHookPluginGUI
 					$ilTabs->addSubTabTarget(
 						$this->plugin_object->txt('test_results'), // text is also the aubtab id
 						$ilCtrl->getLinkTargetByClass(array('ilUIPluginRouterGUI','ilExtendedTestStatisticsPageGUI'), 'showTestOverview'),
-						array('showTestOverview'), 			// commands to be recognized for activation
+						array('showTestOverview','showTestDetails'), // commands to be recognized for activation
 						'ilExtendedTestStatisticsPageGUI', 	// cmdClass to be recognized activation
 						'', 								// frame
 						false, 								// manual activation
@@ -51,7 +53,7 @@ class ilExtendedTestStatisticsUIHookGUI extends ilUIHookPluginGUI
 					$ilTabs->addSubTabTarget(
 						$this->plugin_object->txt('questions_results'), // text is also the aubtab id
 						$ilCtrl->getLinkTargetByClass(array('ilUIPluginRouterGUI','ilExtendedTestStatisticsPageGUI'), 'showQuestionsOverview'),
-						array('showQuestionsOverview'), 	// commands to be recognized for activation
+						array('showQuestionsOverview', 'showQuestionDetails'), 	// commands to be recognized for activation
 						'ilExtendedTestStatisticsPageGUI', 	// cmdClass to be recognized activation
 						'', 								// frame
 						false, 								// manual activation
@@ -65,7 +67,7 @@ class ilExtendedTestStatisticsUIHookGUI extends ilUIHookPluginGUI
 					$_SESSION['ExtendedTestStatistics']['TabSubTarget'] = $ilTabs->sub_target;
 				}
 
-				if ($_GET['cmdClass'] == 'ilextendedteststatisticspagegui')
+				if ($ilCtrl->getCmdClass()  == 'ilextendedteststatisticspagegui')
 				{
 					// reuse the tabs that were saved from the test gui
 					if (isset($_SESSION['ExtendedTestStatistics']['TabTarget']))

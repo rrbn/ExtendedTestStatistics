@@ -8,6 +8,7 @@ abstract class ilExteEvalTest extends ilExteEvalBase
 
 	/**
 	 * This evaluation is for tests
+     *
 	 * @return bool
 	 */
 	final public static function _isTestEvaluation()
@@ -17,15 +18,21 @@ abstract class ilExteEvalTest extends ilExteEvalBase
 
 	/**
 	 * Calculate and get the single value for a test (to be overwritten)
+     *
 	 * @return ilExteStatValue
 	 */
-	public function calculateValue() {}
+	public function calculateValue()
+    {
+        return new ilExteStatValue;
+    }
 
 	/**
 	 * Calculate the details for a test (to be overwritten)
-	 * @return ilExteStatDetails
+     *
+	 * @return ilExteStatDetails[]
 	 */
-	public function calculateDetails() {}
-
-
+	public function calculateDetails()
+    {
+        return array();
+    }
 }

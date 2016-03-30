@@ -91,22 +91,32 @@ abstract class ilExteEvalBase
 
 	final public static function _allowedTestTypes()
 	{
-		return self::$allowed_test_types;
+		return static::$allowed_test_types;
 	}
 
 	final public static function _allowedQuestionTypes()
 	{
-		return self::$allowed_question_types;
+		return static::$allowed_question_types;
 	}
+
+    final public static function _isTestTypeAllowed($a_type)
+    {
+        return empty(static::$allowed_test_types) || in_array($a_type, static::$allowed_test_types);
+    }
+
+    final public static function _isQuestionTypeAllowed($a_type)
+    {
+        return empty(static::$allowed_question_types) || in_array($a_type, static::$allowed_question_types);
+    }
 
 	final public static function _providesValue()
 	{
-		return self::$provides_value;
+		return static::$provides_value;
 	}
 
 	final public static function _providesDetails()
 	{
-		return self::$provides_details;
+		return static::$provides_details;
 	}
 	# endregion
 
@@ -117,8 +127,8 @@ abstract class ilExteEvalBase
 
 	/**
 	 * ilExtendedTestStatisticsEvalBase constructor.
-	 * @param $a_data	ilExteStatSourceData
-	 * @param ilExtendedTestStatisticsPlugin $a_plugin
+	 * @param ilExteStatSourceData              $a_data
+     * @param ilExtendedTestStatisticsPlugin    $a_plugin
 	 */
 	final public function __construct($a_data, $a_plugin)
 	{
@@ -126,6 +136,7 @@ abstract class ilExteEvalBase
 		$this->plugin = $a_plugin;
 
 		$this->plugin->includeClass('models/class.ilExteStatValue.php');
+        $this->plugin->includeClass('models/class.ilExteStatColumn.php');
 		$this->plugin->includeClass('models/class.ilExteStatDetails.php');
 	}
 

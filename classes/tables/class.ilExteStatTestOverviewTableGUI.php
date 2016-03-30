@@ -9,7 +9,18 @@ include_once('./Services/Table/classes/class.ilTable2GUI.php');
  */
 class ilExteStatTestOverviewTableGUI extends ilTable2GUI
 {
-	/**
+    /**
+     * @var ilExtendedTestStatistics|null
+     */
+    protected $statObj;
+
+    /**
+     * @var ilExteStatValueGUI
+     */
+    protected $valueGUI;
+
+
+    /**
 	 * Constructor
 	 *
 	 * @access public
@@ -18,29 +29,71 @@ class ilExteStatTestOverviewTableGUI extends ilTable2GUI
 	 */
 	public function __construct($a_parent_obj, $a_parent_cmd)
 	{
-		parent::__construct($a_parent_obj, $a_parent_cmd);
+        global $lng, $ilCtrl;
 
-		global $lng, $ilCtrl;
+        $this->lng = $lng;
+        $this->ctrl = $ilCtrl;
+        $this->plugin = $a_parent_obj->getPlugin();
+        $this->statObj = $a_parent_obj->getStatisticsObject();
 
-		$this->lng = $lng;
-		$this->ctrl = $ilCtrl;
-		$this->plugin = $a_plugin;
-	
+        $this->plugin->includeClass('views/class.ilExteStatValueGUI.php');
+        $this->valueGUI = new ilExteStatValueGUI($this->plugin);
+
+        $this->setId('ilExteStatTestOverview');
+        $this->setPrefix('ilExteStatTestOverview');
+
+        parent::__construct($a_parent_obj, $a_parent_cmd);
+
 		$this->setFormName('test_overview');
 		$this->setTitle($this->lng->txt('tst_results_aggregated'));
 		$this->setStyle('table', 'fullwidth');
 		$this->addColumn($this->lng->txt("title"));
 		$this->addColumn($this->lng->txt("value"));
 		$this->addColumn($this->lng->txt("comment"));
-		$this->addColumn($this->lng->txt("actions"));
+		$this->addColumn('');
 
-		$this->setRowTemplate("tpl.il_exte_stat_test_overview_row.html", $a_parent_obj->getPlugin()->getDirectory());
+		$this->setRowTemplate("tpl.il_exte_stat_test_overview_row.html", $this->plugin->getDirectory());
 		$this->setFormAction($this->ctrl->getFormAction($a_parent_obj, $a_parent_cmd));
 		
 		$this->disable('sort');
 		$this->enable('header');
 		$this->disable('select_all');
 	}
+
+    /**
+     * Prepare the data to be shown
+     */
+    public function prepareData()
+    {
+        global $lng;
+
+        $data = array();
+
+        /** @var ilExteStatValue  $value */
+        foreach ($this->statObj->getSourceData()->getBasicTestValues() as $value_id => $value)
+        {
+            array_push($data,
+                array(
+                    'title' => $lng->txt($value_id),
+                    'description' => '',
+                    'value' => $value,
+                    'details' => null
+                ));
+        }
+        foreach ($this->statObj->getEvaluations() as $evaluation)
+        {
+            array_push($data,
+                array(
+                    'title' => $evaluation->getTitle(),
+                    'description' => $evaluation->getDescription(),
+                    'value' => $evaluation::_providesValue() ? $evaluation->calculateValue() : null,
+                    'details' => $evaluation::_providesDetails() ? $evaluation::_getId() : null
+                ));
+        }
+
+        $this->setData($data);
+    }
+
 
 	/**
 	 * fill row 
@@ -49,13 +102,24 @@ class ilExteStatTestOverviewTableGUI extends ilTable2GUI
 	 * @param
 	 * @return
 	 */
-	public function fillRow($data)
+	protected function fillRow($data)
 	{
-		/** @var ilExteStatValue $value */
-		$value = $data['value'];
+        $title = ilExteStatValue::_create($data['title'],ilExteStatValue::TYPE_TEXT,0,$data['description']);
+		$value = isset($data['value']) ? $data['value'] : new ilExteStatValue();
 
-		$this->tpl->setVariable('TITLE', $data['title']);
-		$this->tpl->setVariable('VALUE', $value->value);
-		$this->tpl->setVariable('COMMNENT', $value->comment);
+        $this->valueGUI->setShowComment(true);
+		$this->tpl->setVariable('TITLE',$this->valueGUI->getHTML($title));
+        $this->valueGUI->setShowComment(false);
+		$this->tpl->setVariable('VALUE', $this->valueGUI->getHTML($value));
+		$this->tpl->setVariable('COMMENT', $value->comment);
+
+		if (!empty($data['details']))
+		{
+			$this->ctrl->setParameter($this->parent_obj, 'details', $data['details']);
+			$this->tpl->setCurrentBlock('link');
+			$this->tpl->setVariable('LINK_NAME', $this->ctrl->getLinkTarget($this->parent_obj, 'showTestDetails'));
+			$this->tpl->setVariable('LINK_TXT', $this->plugin->txt('show_details'));
+			$this->tpl->parseCurrentBlock();
+		}
 	}
 }

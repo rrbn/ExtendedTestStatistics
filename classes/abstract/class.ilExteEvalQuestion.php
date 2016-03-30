@@ -7,6 +7,7 @@ abstract class ilExteEvalQuestion extends ilExteEvalBase
 {
 	/**
 	 * This evaluation is for questions
+     *
 	 * @return bool
 	 */
 	final public static function _isQuestionEvaluation()
@@ -25,12 +26,19 @@ abstract class ilExteEvalQuestion extends ilExteEvalBase
 	 * @param integer $a_question_id
 	 * @return ilExteStatValue
 	 */
-	public function calculateValue($a_question_id) {}
+	public function calculateValue($a_question_id)
+    {
+        return new ilExteStatValue;
+    }
 
 	/**
 	 * Calculate the details question (to be overwritten)
+     *
 	 * @param integer $a_question_id
-	 * @return ilExteStatDetails
+	 * @return ilExteStatDetails[]
 	 */
-	public function calculateDetails($a_question_id) {}
+	public function calculateDetails($a_question_id)
+    {
+        return array();
+    }
 }

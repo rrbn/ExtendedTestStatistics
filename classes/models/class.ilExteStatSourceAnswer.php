@@ -34,13 +34,13 @@ class ilExteStatSourceAnswer
 
 
 	/**
-	 * @var float	actual points reached for the question
+	 * @var float	    actual points reached for the question
 	 */
 	public $reached_points;
 
 
 	/**
-	 * @var	bool	score is set manually
+	 * @var	bool	    score is set manually
 	 */
 	public $manual_scored;
 }

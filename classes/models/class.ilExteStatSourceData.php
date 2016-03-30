@@ -101,7 +101,7 @@ class ilExteStatSourceData
 		$participants =& $this->eval->getParticipants();
 		foreach($participants as $active_id => $userdata)
 		{
-			$participant = $this->getParticipant($active_id, true);
+            $participant = $this->getParticipant($active_id, true);
 			$participant->best_pass = $userdata->getBestPass();
 			$participant->last_pass = $userdata->getLastPass();
 			$participant->scored_pass = $userdata->getScoredPass();
@@ -139,9 +139,9 @@ class ilExteStatSourceData
 							$question = $this->getQuestion($pass_question['id'], true);
 							$question->original_id = $pass_question['o_id'];
 							$question->maximum_points = $pass_question['points'];
-							$question->title = $question_titles[$pass_question['o_id']];
+							$question->question_title = $question_titles[$pass_question['id']];
 
-							$answer = $this->getAnswer($pass_question['id'], $active_id, $pass->getPass(), true);
+                            $answer = $this->getAnswer($pass_question['id'], $active_id, $pass->getPass(), true);
 							$answer->sequence = $pass_question['sequence'];
 						}
 					}
@@ -163,9 +163,35 @@ class ilExteStatSourceData
 				}
 			}
 		}
+        $this->loadQuestionTypes();
 		$this->calculateBasicTestValues();
 		$this->calculateBasicQuestionValues();
 	}
+
+    /**
+     * Load the types of the relevant questions
+     */
+    public function loadQuestionTypes()
+    {
+        global $ilDB;
+
+        $type_translations =& $this->object->getQuestionTypeTranslations();
+
+        if (!empty($this->questions))
+        {
+            $query = "
+                SELECT q.question_id, t.type_tag FROM qpl_questions q
+                INNER JOIN qpl_qst_type t ON t.question_type_id = q.question_type_fi
+                WHERE " . $ilDB->in('q.question_id',array_keys($this->questions), false, 'integer');
+        }
+        $result = $ilDB->query($query);
+
+       while ($row = $ilDB->fetchAssoc($result))
+       {
+           $this->questions[$row['question_id']]->question_type = $row['type_tag'];
+           $this->questions[$row['question_id']]->question_type_label = $type_translations[$row['type_tag']];
+       }
+    }
 
 	/**
 	 * Calculate the basic values for a test (as in original ILIAS)
@@ -199,7 +225,7 @@ class ilExteStatSourceData
 
 		$value = new ilExteStatValue();
 		$value->type = ilExteStatValue::TYPE_TEXT;
-		$value->value = printf("%02d:%02d:%02d", $diff_hours, $diff_minutes, $diff_seconds);
+		$value->value = sprintf("%02d:%02d:%02d", $diff_hours, $diff_minutes, $diff_seconds);
 		$this->basic_test_values['tst_eval_total_finished_average_time'] = $value;
 
 		// (intermediate calculations)
@@ -257,7 +283,7 @@ class ilExteStatSourceData
 	 */
 	protected function calculateBasicQuestionValues()
 	{
-		// @todo: calculate this based on the loaded data (respect the paass selection filter)
+		// @todo: calculate this based on the loaded data (respect the pass selection filter)
 
 		$foundParticipants =& $this->eval->getParticipants();
 		foreach ($this->eval->getQuestionTitles() as $question_id => $question_title)
@@ -288,42 +314,14 @@ class ilExteStatSourceData
 
 
 			$values = array();
-
-			$value = new ilExteStatValue;
-			$value->type = ilExteStatValue::TYPE_NUMBER;
-			$value->precision = 0;
-			$value->value = $question_id;
-			$values['qid'] = $value;
-
-			$value = new ilExteStatValue;
-			$value->type = ilExteStatValue::TYPE_TEXT;
-			$value->precision = 0;
-			$value->value = $question_title;
-			$values['title'] = $value;
-
-			$value = new ilExteStatValue;
-			$value->type = ilExteStatValue::TYPE_NUMBER;
-			$value->precision = 2;
-			$value->value = $points_reached;
-			$values['points_reached'] = $value;
-
-			$value = new ilExteStatValue;
-			$value->type = ilExteStatValue::TYPE_NUMBER;
-			$value->precision = 2;
-			$value->value = $points_max;
-			$values['points_max'] = $value;
-
-			$value = new ilExteStatValue;
-			$value->type = ilExteStatValue::TYPE_NUMBER;
-			$value->precision = 2;
-			$value->value = (float) $percent;
-			$values['percentage'] = $value;
-
-			$value = new ilExteStatValue;
-			$value->type = ilExteStatValue::TYPE_NUMBER;
-			$value->precision = 0;
-			$value->value = (float) $percent;
-			$values['answers'] = $answered;
+			$values['qid'] = ilExteStatValue::_create($question_id, ilExteStatValue::TYPE_NUMBER, 0);
+			$values['title'] = ilExteStatValue::_create($question_title, ilExteStatValue::TYPE_TEXT);
+            $values['type'] = ilExteStatValue::_create( $this->getQuestion($question_id)->question_type, ilExteStatValue::TYPE_TEXT);
+            $values['type_label'] = ilExteStatValue::_create( $this->getQuestion($question_id)->question_type_label, ilExteStatValue::TYPE_TEXT);
+            $values['points_reached'] = ilExteStatValue::_create($points_reached, ilExteStatValue::TYPE_NUMBER, 2);
+			$values['points_max'] = ilExteStatValue::_create($points_max, ilExteStatValue::TYPE_NUMBER, 2);
+			$values['percentage'] = ilExteStatValue::_create($percent, ilExteStatValue::TYPE_PERCENTAGE, 2);
+			$values['answers'] = ilExteStatValue::_create($answered, ilExteStatValue::TYPE_NUMBER, 2);
 
 			$this->basic_question_values[$question_id] = $values;
 		}
@@ -436,7 +434,29 @@ class ilExteStatSourceData
 	}
 
 
-	/**
+    /**
+     * Get all participants in the test
+     *
+     * @return ilExteStatSourceParticipant[]
+     */
+    public function getAllParticipants()
+    {
+        return $this->participants;
+    }
+
+
+    /**
+     * Get all questions in the test
+     *
+     * @return ilExteStatSourceQuestion[]
+     */
+    public function getAllQuestions()
+    {
+        return $this->questions;
+    }
+
+
+    /**
 	 * Get all answers in the test
 	 * Note:	the answers don't have to be sent by a participant
 	 * 			check the 'answered' property of the answer object
@@ -449,20 +469,19 @@ class ilExteStatSourceData
 	}
 
 
-
 	/**
 	 * Get all answers for a question
 	 *
 	 * @param integer	$a_question_id		the question id
-	 * @param boolean	$a_answered			get only the really answered
+	 * @param boolean	$a_only_answered    get only the really answered
 	 * @return ilExteStatSourceAnswer[]
 	 */
-	public function getAnswersForQuestion($a_question_id,  $a_answered = false)
+	public function getAnswersForQuestion($a_question_id,  $a_only_answered = false)
 	{
 		$answers = array();
-		if (is_array($this->$answers_by_question_id[$a_question_id]))
+		if (is_array($this->answers_by_question_id[$a_question_id]))
 		{
-			foreach ($this->$answers_by_question_id[$a_question_id] as $active_id => $pass_answers)
+			foreach ($this->answers_by_question_id[$a_question_id] as $active_id => $pass_answers)
 			{
 				if (is_array($pass_answers))
 				{
@@ -490,9 +509,9 @@ class ilExteStatSourceData
 	public function getAnswersForParticipant($a_active_id, $a_answered = false)
 	{
 		$answers = array();
-		if (is_array($this->$answers_by_active_id[$a_active_id]))
+		if (is_array($this->answers_by_active_id[$a_active_id]))
 		{
-			foreach ($this->$answers_by_active_id[$a_active_id] as $pass => $pass_answers)
+			foreach ($this->answers_by_active_id[$a_active_id] as $pass => $pass_answers)
 			{
 				if (is_array($pass_answers))
 				{

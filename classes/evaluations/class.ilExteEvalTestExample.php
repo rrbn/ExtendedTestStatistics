@@ -61,15 +61,11 @@ class ilExteEvalTestExample extends ilExteEvalTest
 	/**
 	 * Calculate the details for a test
 	 *
-	 * @return ilExteStatDetails
+	 * @return ilExteStatDetails[]
 	 */
 	public function calculateDetails()
 	{
-		$details = new ilExteStatDetails;
-
-		// @todo: details format is not yet defined
-
-		return $details;
+        return array();
 	}
 
 }

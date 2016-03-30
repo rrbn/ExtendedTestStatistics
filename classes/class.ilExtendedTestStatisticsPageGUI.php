@@ -53,11 +53,12 @@ class ilExtendedTestStatisticsPageGUI
 	{
 		/** @var ilAccessHandler $ilAccess */
 		/** @var ilErrorHandling $ilErr */
-		global $ilAccess, $ilErr;
+		global $ilAccess, $ilErr, $lng;
 
 		if (!$ilAccess->checkAccess('write','',$this->testObj->getRefId()))
 		{
-			$ilErr->raiseError($this->lng->txt('permission_denied'));
+            ilUtil::sendFailure($lng->txt("permission_denied"), true);
+            ilUtil::redirect("goto.php?target=tst_".$this->testObj->getRefId());
 		}
 
 		$this->ctrl->saveParameter($this, 'ref_id');
@@ -66,23 +67,37 @@ class ilExtendedTestStatisticsPageGUI
 		switch ($cmd)
 		{
 			case "showTestOverview":
+            case "showTestDetails":
 			case "showQuestionsOverview":
+            case "showQuestionDetails":
+                $this->prepareOutput();
+                $this->$cmd();
+                break;
 			default:
-				$this->prepareOutput();
-				$this->$cmd();
+                ilUtil::sendFailure($lng->txt("permission_denied"), true);
+                ilUtil::redirect("goto.php?target=tst_".$this->testObj->getRefId());
 				break;
 		}
 	}
 
 	/**
 	 * Get the plugin object
-	 *
 	 * @return ilExtendedTestStatisticsPlugin|null
 	 */
 	public function getPlugin()
 	{
 		return $this->plugin;
 	}
+
+    /**
+     * Get the statistics object
+     * @return     ilExtendedTestStatistics|null
+     */
+    public function getStatisticsObject()
+    {
+        return $this->statObj;
+    }
+
 	/**
 	 * Prepare the test header, tabs etc.
 	 */
@@ -109,21 +124,80 @@ class ilExtendedTestStatisticsPageGUI
 	protected function showTestOverview()
 	{
 		$this->statObj->loadSourceData();
-		$this->statObj->loadEvaluations(ilExtendedTestStatistics::PURPOSE_TEST_VALUES);
+		$this->statObj->loadEvaluations(ilExtendedTestStatistics::LEVEL_TEST);
 
 		$this->plugin->includeClass('tables/class.ilExteStatTestOverviewTableGUI.php');
 		$tableGUI = new ilExteStatTestOverviewTableGUI($this, 'showTestOverview');
-		$tableGUI->setData($this->statObj->getTestOverviewTableData());
+		$tableGUI->prepareData();
 
 		$this->tpl->setContent($tableGUI->getHTML());
 		$this->tpl->show();
-
 	}
 
+    /**
+     * Show the detailed evaluation for a test
+     */
+    protected function showTestDetails()
+    {
+        $this->ctrl->saveParameter($this, 'details');
+
+        $this->statObj->loadSourceData();
+        $this->statObj->loadEvaluations(ilExtendedTestStatistics::LEVEL_TEST, $_GET['details']);
+
+        $content = '';
+        $evaluation = $this->statObj->getEvaluation($_GET['details']);
+        foreach ($evaluation->calculateDetails() as $detailsObj)
+        {
+            $this->plugin->includeClass('tables/class.ilExteStatDetailsTableGUI.php');
+            $tableGUI = new ilExteStatDetailsTableGUI($this, 'showTestDetails');
+            $tableGUI->prepareData($detailsObj);
+            $content .= $tableGUI->getHTML();
+        }
+
+        $this->tpl->setContent($content);
+        $this->tpl->show();
+    }
+
+    /**
+     * Show the questions overview
+     */
 	protected function showQuestionsOverview()
 	{
-		$this->tpl->setContent('showQuestionsOverview');
-		$this->tpl->show();
+        $this->statObj->loadSourceData();
+        $this->statObj->loadEvaluations(ilExtendedTestStatistics::LEVEL_QUESTION);
+
+        $this->plugin->includeClass('tables/class.ilExteStatQuestionsOverviewTableGUI.php');
+        $tableGUI = new ilExteStatQuestionsOverviewTableGUI($this, 'showQuestionsOverview');
+        $tableGUI->prepareData();
+
+        $this->tpl->setContent($tableGUI->getHTML());
+        $this->tpl->show();
 	}
+
+
+    /**
+     * Show the detailed evaluation for a question
+     */
+    protected function showQuestionDetails()
+    {
+        $this->ctrl->saveParameter($this, 'details');
+        $this->ctrl->saveParameter($this, 'qid');
+
+        $this->statObj->loadSourceData();
+        $this->statObj->loadEvaluations(ilExtendedTestStatistics::LEVEL_QUESTION, $_GET['details']);
+
+        $content = '';
+        $evaluation = $this->statObj->getEvaluation($_GET['details']);
+        foreach ($evaluation->calculateDetails($_GET['qid']) as $detailsObj)
+        {
+            $this->plugin->includeClass('tables/class.ilExteStatDetailsTableGUI.php');
+            $tableGUI = new ilExteStatDetailsTableGUI($this, 'showTestDetails');
+            $tableGUI->prepareData($detailsObj);
+            $content .= $tableGUI->getHTML();
+        }
+
+        $this->tpl->setContent($content);
+        $this->tpl->show();
+    }
 }
 ?>

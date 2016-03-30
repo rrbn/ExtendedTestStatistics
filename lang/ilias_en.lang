@@ -6,8 +6,29 @@
 //
 
 <!-- language file start -->
+alert_unknown#:#Unknown
+alert_good#:#Good
+alert_medium#:#Medum
+alert_bad#:#Bad
 test_results#:#Aggregated Test Results
 questions_results#:#Aggregated Questions Results
-ilexteevaltestexample_title_long#:#Example Evaluation
+show_details#:#Show Details
+ilexteevaltestdebug_title_long#:#Filtered source data
+ilexteevaltestdebug_title_short#:#Source Data
+ilexteevaltestdebug_description#:#Debug output of the filtered source data
+ilexteevaltestdebug_participants_title#:#Participants
+ilexteevaltestdebug_participants_description#:#List of all filtered participant data
+ilexteevaltestdebug_questions_title#:#Questions
+ilexteevaltestdebug_questions_description#:#List of all filtered question data
+ilexteevaltestdebug_answers_title#:#Answers
+ilexteevaltestdebug_answers_description#:#List of all filtered answer data
+ilexteevaltestexample_title_long#:#Example Test Evaluation
 ilexteevaltestexample_title_short#:#Example
-ilexteevaltestexample_description#:#Example Evaluation Description
+ilexteevaltestexample_description#:#Example Test Evaluation Description
+ilexteevaltestexample_no_answer_available#:#No answer available
+ilexteevalquestionexample_title_long#:#Example Answer Count
+ilexteevalquestionexample_title_short#:#Answers
+ilexteevalquestionexample_description#:#This counts the real answers for the question
+ilexteevalquestionexample_no_answer_available#:#No answer available
+ilexteevalquestionexample_answers_title#:#Answers
+ilexteevalquestionexample_answers_description#:#List of all filtered answer data

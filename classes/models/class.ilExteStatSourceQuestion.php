@@ -24,10 +24,15 @@ class ilExteStatSourceQuestion
 	 */
 	public $question_type;
 
-	/**
+    /**
+     * @var  string     label of the question type, e.g. 'Single Choice Question'
+     */
+    public $question_type_label;
+
+    /**
 	 * @var integer 	question title
 	 */
-	public $title;
+	public $question_title;
 
 	/**
 	 * @var float	maximum points that can be reached in the question

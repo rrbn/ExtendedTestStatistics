@@ -11,7 +11,7 @@ class ilExteStatValue
 	const TYPE_ALERT = 'alert';
 	const TYPE_TEXT = 'text';
 	const TYPE_NUMBER = 'number';
-	const TYPE_PERCENTAGE = 'number';
+	const TYPE_PERCENTAGE = 'percentage';
 	const TYPE_DATETIME = 'datetime';
 	const TYPE_DURATION = 'duration';
 	const TYPE_BOOLEAN = 'bool';
@@ -74,4 +74,25 @@ class ilExteStatValue
 	 * @var string	alert sign constant
 	 */
 	public $alert = self::ALERT_NONE;
+
+
+    /**
+     * Create a value by parameters
+     *
+     * @param mixed $a_value
+     * @param string $a_type
+     * @param int $a_precision
+     * @return ilExteStatValue
+     */
+    public static function _create($a_value, $a_type = self::TYPE_TEXT, $a_precision = 2, $a_comment = '', $a_alert = self::ALERT_NONE)
+    {
+        $value = new self;
+        $value->value = $a_value;
+        $value->type = $a_type;
+        $value->precision = $a_precision;
+        $value->comment = $a_comment;
+        $value->alert = $a_alert;
+
+        return $value;
+    }
 }
