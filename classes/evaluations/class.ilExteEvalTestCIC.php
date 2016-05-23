@@ -42,6 +42,8 @@ class ilExteEvalTestCIC extends ilExteEvalTest
 		$data = array();
 		$number_of_questions = count($this->data->getAllQuestions());
 		$number_of_users = count($this->data->getAllParticipants());
+
+		//PART1
 		$sumofmarkvariance = 0;
 		foreach ($this->data->getAllQuestions() as $question_id => $question) {
 			$full_answers = $this->data->getAnswersForQuestion($question_id);
@@ -62,8 +64,6 @@ class ilExteEvalTestCIC extends ilExteEvalTest
 			$data["markvariancesum"][$question_id] = $data["calc_markvariancesum"] / ($number_of_users - 1);
 			$sumofmarkvariance += $data["markvariancesum"][$question_id];
 			$data["calc_markvariancesum"] = 0;
-
-
 		}
 
 		//PART2
@@ -80,17 +80,12 @@ class ilExteEvalTestCIC extends ilExteEvalTest
 
 		$k2 = $number_of_users * $m2 / ($number_of_users - 1);
 
+		//GET VALUE
 		$cic->type = ilExteStatValue::TYPE_PERCENTAGE;
 		$cic->value = (100 * $number_of_questions / ($number_of_questions - 1)) * (1 - ($sumofmarkvariance / $k2));;
 		$cic->precision = 4;
 
 		return $cic;
-	}
-
-
-	public function firstStep()
-	{
-		//Foreach question get difference between score and mean
 	}
 
 	/**
