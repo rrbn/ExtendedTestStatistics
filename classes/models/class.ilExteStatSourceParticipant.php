@@ -24,4 +24,9 @@ class ilExteStatSourceParticipant
 	 * @var integer		index of the scored pass
 	 */
 	public $scored_pass;
+
+	/**
+	 * @var float		points currently reached by the participant.
+	 */
+	public $current_reached_points;
 }

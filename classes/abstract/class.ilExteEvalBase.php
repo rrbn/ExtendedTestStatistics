@@ -33,12 +33,12 @@ abstract class ilExteEvalBase
 	#########################
 
 	/**
-	 * @var bool	evaluation provides a single value for the overview level
+	 * @var bool    evaluation provides a single value for the overview level
 	 */
 	protected static $provides_value = false;
 
 	/**
-	 * @var bool	evaluation provides data for a details screen
+	 * @var bool    evaluation provides data for a details screen
 	 */
 	protected static $provides_details = false;
 
@@ -48,7 +48,7 @@ abstract class ilExteEvalBase
 	protected static $allowed_test_types = array();
 
 	/**
-	 * @var array	list of question types, e.g. array('assSingleChoice', 'assMultipleChoice', ...)
+	 * @var array    list of question types, e.g. array('assSingleChoice', 'assMultipleChoice', ...)
 	 */
 	protected static $allowed_question_types = array();
 
@@ -59,12 +59,12 @@ abstract class ilExteEvalBase
 	########################
 
 	/**
-	 * @var ilExtendedTestStatisticsPlugin	plugin object for txt() method
+	 * @var ilExtendedTestStatisticsPlugin    plugin object for txt() method
 	 */
 	private $plugin;
 
 	/**
-	 * @var ilExteStatSourceData		source data for the calculations
+	 * @var ilExteStatSourceData        source data for the calculations
 	 */
 	protected $data;
 
@@ -99,15 +99,15 @@ abstract class ilExteEvalBase
 		return static::$allowed_question_types;
 	}
 
-    final public static function _isTestTypeAllowed($a_type)
-    {
-        return empty(static::$allowed_test_types) || in_array($a_type, static::$allowed_test_types);
-    }
+	final public static function _isTestTypeAllowed($a_type)
+	{
+		return empty(static::$allowed_test_types) || in_array($a_type, static::$allowed_test_types);
+	}
 
-    final public static function _isQuestionTypeAllowed($a_type)
-    {
-        return empty(static::$allowed_question_types) || in_array($a_type, static::$allowed_question_types);
-    }
+	final public static function _isQuestionTypeAllowed($a_type)
+	{
+		return empty(static::$allowed_question_types) || in_array($a_type, static::$allowed_question_types);
+	}
 
 	final public static function _providesValue()
 	{
@@ -127,8 +127,8 @@ abstract class ilExteEvalBase
 
 	/**
 	 * ilExtendedTestStatisticsEvalBase constructor.
-	 * @param ilExteStatSourceData              $a_data
-     * @param ilExtendedTestStatisticsPlugin    $a_plugin
+	 * @param ilExteStatSourceData $a_data
+	 * @param ilExtendedTestStatisticsPlugin $a_plugin
 	 */
 	final public function __construct($a_data, $a_plugin)
 	{
@@ -136,7 +136,7 @@ abstract class ilExteEvalBase
 		$this->plugin = $a_plugin;
 
 		$this->plugin->includeClass('models/class.ilExteStatValue.php');
-        $this->plugin->includeClass('models/class.ilExteStatColumn.php');
+		$this->plugin->includeClass('models/class.ilExteStatColumn.php');
 		$this->plugin->includeClass('models/class.ilExteStatDetails.php');
 	}
 
@@ -148,6 +148,7 @@ abstract class ilExteEvalBase
 	{
 		return $this->txt('title_long');
 	}
+
 	/**
 	 * Get a short title of the evaluation (to be used as a column header)
 	 * @return string
@@ -176,12 +177,30 @@ abstract class ilExteEvalBase
 	 * Get a localized text
 	 * The language variable will be prefixed with lowercase class name, e.g. 'ilmyevaluation_'
 	 *
-	 * @param string	$a_langvar	language variable
+	 * @param string $a_langvar language variable
 	 * @return string
 	 */
 	protected function txt($a_langvar)
 	{
-		return $this->plugin->txt(self::_getId().'_'.$a_langvar);
+		return $this->plugin->txt(self::_getId() . '_' . $a_langvar);
+	}
+
+	/**
+	 * @param $data The array we have to use
+	 * @param $mean
+	 * @param $power
+	 * @return float|int
+	 */
+	public function sumOfPowersOfDifferenceToMean($data, $mean, $power)
+	{
+		$sum_power_diff = 0.0;
+
+		//Fetch the sum of squared differences between total score and it's mean
+		foreach ($data as $id => $item) {
+			$sum_power_diff += ((float)$item - $mean) ^ $power;
+		}
+
+		return $sum_power_diff;
 	}
 
 	# endregion

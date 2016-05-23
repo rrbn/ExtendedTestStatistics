@@ -55,8 +55,9 @@ class ilExteEvalTestDebug extends ilExteEvalTest
             ilExteStatColumn::_create('active_id','',ilExteStatColumn::SORT_NUMBER),
             ilExteStatColumn::_create('last_pass','',ilExteStatColumn::SORT_NUMBER),
             ilExteStatColumn::_create('best_pass','',ilExteStatColumn::SORT_NUMBER),
-            ilExteStatColumn::_create('scored_pass','',ilExteStatColumn::SORT_NUMBER)
-        );
+            ilExteStatColumn::_create('scored_pass','',ilExteStatColumn::SORT_NUMBER),
+			ilExteStatColumn::_create('reached_points','',ilExteStatColumn::SORT_NUMBER)
+		);
         foreach ($this->data->getAllParticipants() as $participant)
         {
             $details->rows[] = array(
@@ -64,7 +65,8 @@ class ilExteEvalTestDebug extends ilExteEvalTest
                 'last_pass' => ilExteStatValue::_create($participant->last_pass, ilExteStatValue::TYPE_NUMBER, 0),
                 'best_pass' => ilExteStatValue::_create($participant->best_pass, ilExteStatValue::TYPE_NUMBER, 0),
                 'scored_pass' => ilExteStatValue::_create($participant->scored_pass, ilExteStatValue::TYPE_NUMBER, 0),
-            );
+				'reached_points' => ilExteStatValue::_create($participant->current_reached_points, ilExteStatValue::TYPE_TEXT, 0)
+			);
         }
         $return[] = $details;
 

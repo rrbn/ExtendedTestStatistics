@@ -41,3 +41,16 @@ ilexteevalquestionexample_description#:#This counts the real answers for the que
 ilexteevalquestionexample_no_answer_available#:#No answer available
 ilexteevalquestionexample_answers_title#:#Answers
 ilexteevalquestionexample_answers_description#:#List of all filtered answer data
+ilexteevaltestmedian_title_long#:#Median Score
+ilexteevaltestmedian_title_short#:#Median
+ilexteevaltestmedian_description#:#Sort the list of reached points on this test and take the middle value if the total attemps are odd or the average between the two middle ones if the total attemps are even.
+ilexteevaltestmean_title_long#:#Mean Score
+ilexteevaltestmean_title_short#:#Mean
+ilexteevaltestmean_description#:#Gets the mean score for all current scored attemp of this test
+ilexteevalteststandarddeviation_title_long#:#Standard deviation
+ilexteevalteststandarddeviation_title_short#:#Standard deviation
+ilexteevalteststandarddeviation_description#:#The standard deviation will quantify the amount of variation or dispersion of a all the users scores. A low standard deviation indicates that the test results tend to be close to the mean (also called the expected value) of the set, while a high standard deviation indicates that the test results are spread out over a wider range of values.
+ilexteevalteststandarddeviation_only_one_participant#:#Standard deviation is trivial when the test is taken only by one participant
+ilexteevaltestcic_title_long#:#Coefficient of Internal Consistency (Cronbach's alpha)
+ilexteevaltestcic_title_short#:#CIC
+ilexteevaltestcic_description#:#Internal consistency is usually measured with Cronbach's alpha, a statistic calculated from the pairwise correlations between items. Internal consistency ranges between negative infinity and one. Coefficient alpha will be negative whenever there is greater within-subject variability than between-subject variability. If > 0.8 If a good value.
