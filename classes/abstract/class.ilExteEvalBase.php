@@ -191,7 +191,7 @@ abstract class ilExteEvalBase
 	 * @param $power
 	 * @return float|int
 	 */
-	public function sumOfPowersOfDifferenceToMean($data, $mean, $power)
+	public function sumOfPowersOfDifferenceToMean($data, $mean, $power = 2)
 	{
 		$sum_power_diff = 0.0;
 
