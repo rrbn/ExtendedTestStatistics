@@ -36,23 +36,11 @@ class ilExteEvalTestExample extends ilExteEvalTest
 	{
 		$value = new ilExteStatValue;
 
-		$count = 0;
-		foreach ($this->data->getAllAnswers() as $answerObj)
-		{
-			if ($answerObj->answered)
-			{
-				$count++;
-			}
-		}
-
 		$value->type = ilExteStatValue::TYPE_NUMBER;
-		$value->value = $count;
-		$value->precision = 0;
-		if ($count == 0)
-		{
-			$value->alert = ilExteStatValue::ALERT_MEDIUM;
-			$value->comment = $this->txt('no_answer_available');
-		}
+		$value->value = 10.12345;
+		$value->precision = 3;
+		$value->alert = ilExteStatValue::ALERT_MEDIUM;
+		$value->comment = "(Example)";
 
 		return $value;
 	}

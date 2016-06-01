@@ -145,7 +145,7 @@ class ilExtendedTestStatistics
         {
             $fits = true;
 
-            switch ($this->a_provides)
+            switch ($a_provides)
             {
                 case self::PROVIDES_VALUE:
                     $fits = $fits && $evaluation::_providesValue();

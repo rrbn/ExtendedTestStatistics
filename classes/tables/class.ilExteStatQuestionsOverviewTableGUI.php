@@ -225,7 +225,7 @@ class ilExteStatQuestionsOverviewTableGUI extends ilTable2GUI
         }
 
         // evaluations with details
-        $details = $this->statObj->getEvaluations(ilExteEvalBase::_providesDetails(), $data['question_type']);
+        $details = $this->statObj->getEvaluations(ilExtendedTestStatistics::PROVIDES_DETAILS, $data['question_type']);
 
         if (!empty($details))
         {

@@ -23,7 +23,7 @@ class ilExteEvalQuestionDiscriminationIndex extends ilExteEvalQuestion
 	/**
 	 * @var array    list of question types, e.g. array('assSingleChoice', 'assMultipleChoice', ...)
 	 */
-	protected static $allowed_question_types = array('assSingleChoice');
+	protected static $allowed_question_types = array();
 
 
 	/**
