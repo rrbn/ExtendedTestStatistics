@@ -33,136 +33,129 @@ class ilExteEvalQuestionDiscriminationIndex extends ilExteEvalQuestion
 	 */
 	public function calculateValue($a_question_id)
 	{
-		$value = new ilExteStatValue;
-		$value->type = ilExteStatValue::TYPE_TEXT;
-		$value->value = "Under construction";
-		$value->precision = 4;
+		//Get needed data
+		$current_question_data = $this->data->getQuestion($a_question_id);
+		$current_question_average_points = $current_question_data->average_points;
 
-		return $value;
+		//Global
+		$array_of_sum_of_points_by_questions = array();
+		$array_of_sum_of_points_participant = array();
 
-		//Get Data
-		$question_data = $this->data->getQuestion($a_question_id);
-		$question_average_points = $question_data->average_points;
-		$number_of_questions = count($this->data->getAllQuestions());
-		$number_of_participants = count($this->data->getAllParticipants());
-
-		//Prepare variables
-		$value = new ilExteStatValue;
-		$current_question_sum_of_points = 0.0;
-		$current_question_sum_power_diff = 0.0;
-
-		//First loop over participants
-		$list_of_sum_of_points = array();
-		$list_of_points = array();
-
-		//Get list of sum of points
-		foreach ($this->data->getAllParticipants() as $participant_id => $participant) {
-			foreach ($this->data->getAnswersForParticipant($participant->active_id) as $participant_answer) {
-				if (!isset($list_of_sum_of_points[$participant->active_id])) {
-					$list_of_sum_of_points[$participant->active_id] = 0.0;
-				}
-				$list_of_sum_of_points[$participant->active_id] += $participant_answer->reached_points;
-			}
-		}
-
-		var_dump($list_of_sum_of_points);Exit;
-
-		$other_questions_sum_array = array();
-		$other_questions_average_array = array();
-		$answer_count = 0;
-		//First loop over questions
-		foreach ($this->data->getAllQuestions() as $question) {
-
-			//Current question
-			$answer_count_2 = 0;
-			foreach ($this->data->getAnswersForQuestion($question->question_id) as $answerObj) {
-				$answer_count_2++;
-			}
-
-			foreach ($this->data->getAllQuestions() as $other_question) {
-				$answer_count = 0;
-				foreach ($this->data->getAnswersForQuestion($other_question->question_id) as $other_question_answerObj) {
-					if ($question->question_id != $other_question->question_id) {
-						if (!isset($other_questions_sum_array[$question->question_id])) {
-							$other_questions_sum_array[$question->question_id] = 0.0;
-						}
-						$other_questions_sum_array[$question->question_id] += $other_question_answerObj->reached_points;
-						$answer_count++;
-					}
-				}
-			}
-
-			if ($answer_count > 0) {
-				$other_questions_average_array[$question->question_id] = $other_questions_sum_array[$question->question_id] / $answer_count;
-			}else{
-				$other_questions_average_array[$question->question_id] = $list_of_sum_of_points[$question->question_id] / $answer_count_2;
-			}
-		}
-
-
-		//Second loop over questions
-		foreach ($this->data->getAllQuestions() as $question) {
-			if ($question->question_id == $a_question_id) {
-				//Current question
-				foreach ($this->data->getAnswersForQuestion($question->question_id) as $answerObj) {
-					$current_question_sum_power_diff += pow((float)$answerObj->reached_points - $current_question_average, 2);
-				}
-			}
-		}
-
-		//Second loop over participants
-		$other_questions_sum_power_diff = 0.0;
-		var_dump($other_questions_average_array);exit;
-		foreach ($this->data->getAllParticipants() as $participant) {
-			foreach ($this->data->getAnswersForParticipant($participant->active_id) as $answerObj) {
-				$other_questions_sum_power_diff += pow($list_of_sum_of_points[$answerObj->active_id] - (float)$answerObj->reached_points - $other_questions_average_array[$answerObj->question_id], 2);
-			}
-		}
-
-
-		//Variances
-		$current_question_variance = (1 / ($number_of_participants - 1)) * $current_question_sum_power_diff;
-		$other_questions_variance = (1 / ($number_of_participants - 1)) * $other_questions_sum_power_diff;
-
-		var_dump($other_questions_sum_power_diff);
-		exit;
-
+		//Current question Variance calculation
+		$current_lowest_score = $current_question_data->maximum_points;
+		$current_highest_score = 0.0;
+		$current_sum_power_diff = 0.0;
+		$number_of_participants_of_current_question = 0;
 
 		//Go throw answers to this questions to take results needed for calculations
 		foreach ($this->data->getAnswersForQuestion($a_question_id) as $answerObj) {
-			//Get Participant id.
-			$participant_active_id = $answerObj->active_id;
-			$other_questions_sum_power_diff = 0.0;
-			$participant_data = $this->data->getParticipant($participant_active_id);
-
-			foreach ($this->data->getAnswersForParticipant($participant_active_id, TRUE) as $participants_answer) {
-				$other_questions_sum_power_diff += pow((float)$participants_answer->reached_points - $other_questions_average, 2);
-			}
 			if ($answerObj->answered) {
+				//Get Lowest and highest score for this question
+				if ((float)$answerObj->reached_points < (float)$current_lowest_score) {
+					$current_lowest_score = (float)$answerObj->reached_points;
+				}
+				if ((float)$answerObj->reached_points > (float)$current_highest_score) {
+					$current_highest_score = (float)$answerObj->reached_points;
+				}
+
 				//Fetch the sum of squared differences between total score and it mean
-				$sum_power_diff += pow((float)$answerObj->reached_points - $question_average_points, 2);
-				$count++;
+				$current_sum_power_diff += pow((float)$answerObj->reached_points - $current_question_average_points, 2);
+				$number_of_participants_of_current_question++;
 			}
 		}
 
-		//Calculate Variance
-		$variance = (1 / ($count - 1)) * $sum_power_diff;
-		$other_questions_variance = (1 / ($count - 1)) * $other_questions_sum_power_diff;
+		//Calculate current variance
+		$current_question_variance_final = (1 / ($number_of_participants_of_current_question - 1)) * $current_sum_power_diff;
 
-		if ($variance * $other_questions_variance) {
-			var_dump($other_questions_sum_power_diff);
-			Exit;
+		//Other
+		$all_questions_array = $this->data->getAllQuestions();
+		//unset($all_questions_array[$a_question_id]);
+		$other_questions_array = $all_questions_array;
+
+		//Other question Variance calculation
+		$other_lowest_score_array = array(); //array of questions
+		$other_highest_score_array = array(); //array of questions
+		$points_of_participants_in_test = array();
+
+		//Calculate points of participants in test
+		foreach ($this->data->getAllParticipants() as $participant) {
+			$points_of_participants_in_test[$participant->active_id] = $participant->current_reached_points;
 		}
 
+
+		//Calaculate Other average
+		$other_questions_reached_points_sum = array();
+		$other_questions_reached_points_average = array();
+		foreach ($other_questions_array as $other_question_id => $question_object) {
+			foreach ($other_questions_array as $other_question_id_2 => $question_object_2) {
+				if ($other_question_id != $other_question_id_2) {
+					foreach ($this->data->getAnswersForQuestion($other_question_id_2) as $other_answer_obj) {
+						$other_questions_reached_points_sum[$other_question_id] += $other_answer_obj->reached_points;
+					}
+				}
+			}
+			$other_questions_reached_points_average[$other_question_id] = $other_questions_reached_points_sum[$other_question_id] / $number_of_participants_of_current_question;
+		}
+
+		//Go throw answers to this questions to take results needed for calculations
+		foreach ($other_questions_array as $other_question_id => $question_object) {
+			$other_lowest_score_array[$other_question_id] = $question_object->maximum_points;
+			$other_highest_score_array[$other_question_id] = 0.0;
+
+			foreach ($this->data->getAnswersForQuestion($other_question_id) as $answer_object) {
+				if ($answer_object->answered) {
+					//Get Lowest and highest score for this question
+					if ((float)$answer_object->reached_points < (float)$other_lowest_score_array[$other_question_id]) {
+						$other_lowest_score_array[$other_question_id] = (float)$answer_object->reached_points;
+					}
+					if ((float)$answer_object->reached_points > (float)$other_highest_score_array[$other_question_id]) {
+						$other_highest_score_array[$other_question_id] = (float)$answer_object->reached_points;
+					}
+				}
+			}
+		}
+
+		$other_sum_power_diff = array();
+		$current_sum_power_diff = array();
+		$covariance_sum = array();
+
+
+		foreach ($this->data->getAllParticipants() as $other_participant) {
+			foreach ($this->data->getAnswersForParticipant($other_participant->active_id) as $other_answer) {
+				$other_points_difference = (float)$points_of_participants_in_test[$other_answer->active_id] - $other_answer->reached_points - $other_questions_reached_points_average[$other_answer->question_id];
+				$current_sum_power_diff[$other_answer->question_id] += pow((float)$other_answer->reached_points - $current_question_average_points, 2);
+				$other_sum_power_diff[$other_answer->question_id] += pow($other_points_difference, 2);
+				$covariance_sum[$other_answer->question_id] += ((float)$other_answer->reached_points - $current_question_average_points) * $other_points_difference;
+
+			}
+		}
+
+		//Calculate other variance
+		$other_questions_variance_final = (1 / ($number_of_participants_of_current_question - 1)) * $other_sum_power_diff[$a_question_id];
+
+		//Final calculations
+		$covariance_final = (1 / ($number_of_participants_of_current_question - 1)) * $covariance_sum[$a_question_id];
+
+
+
+		if ($current_question_variance_final * $other_questions_variance_final) {
+			$discrimination_index = 100 * $covariance_final / sqrt($current_question_variance_final * $other_questions_variance_final);
+		} else {
+			$discrimination_index = NULL;
+		}
+
+		//Return discrimination index
+		$value = new ilExteStatValue;
 		$value->type = ilExteStatValue::TYPE_PERCENTAGE;
-		$value->value = $standard_deviation;
+		$value->value = $discrimination_index;
 		$value->precision = 4;
-		if ($count == 0) {
+		if ($number_of_participants_of_current_question == 0) {
 			$value->alert = ilExteStatValue::ALERT_MEDIUM;
 			$value->comment = $this->txt('no_answer_available');
 		}
 
 		return $value;
+
 	}
 
 }
