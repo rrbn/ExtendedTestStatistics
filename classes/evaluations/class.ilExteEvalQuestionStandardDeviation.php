@@ -65,7 +65,11 @@ class ilExteEvalQuestionStandardDeviation extends ilExteEvalQuestion
 		$variance = (1 / ($count - 1)) * $sum_power_diff;
 
 		//Calculate Standard deviation
-		$standard_deviation = 100 * (sqrt($variance) / ($highest_score - $lowest_score));
+		if ($highest_score - $lowest_score) {
+			$standard_deviation = 100 * (sqrt($variance) / ($highest_score - $lowest_score));
+		} else {
+			$standard_deviation = 0;
+		}
 
 		$value->type = ilExteStatValue::TYPE_PERCENTAGE;
 		$value->value = $standard_deviation;

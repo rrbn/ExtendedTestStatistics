@@ -64,9 +64,15 @@ abstract class ilExteEvalTest extends ilExteEvalBase
 			}
 
 			//Returns the mean
-			$mean->type = ilExteStatValue::TYPE_NUMBER;
-			$mean->value = $scoring_sum / $total_attempts;
-			$mean->precision = 4;
+			if($total_attempts){
+				$mean->value = $scoring_sum / $total_attempts;
+				$mean->type = ilExteStatValue::TYPE_NUMBER;
+				$mean->precision = 4;
+			}else{
+				$mean->value = "NAN";
+				$mean->type = ilExteStatValue::TYPE_TEXT;
+				$mean->alert = ilExteStatValue::ALERT_MEDIUM;
+			}
 
 			$this->data->setCachedData("ilExteEvalTest::getMeanOfReachedPoints", $mean);
 		}
@@ -81,24 +87,25 @@ abstract class ilExteEvalTest extends ilExteEvalBase
 	protected function getStandardDeviationOfTestResults()
 	{
 		$standard_deviation = $this->data->getCachedData("ilExteEvalTest::getStandardDeviationOfTestResults");
+
 		if (!isset($standard_deviation)) {
 
 			$standard_deviation = new ilExteStatValue;
 
 			//Needed values
-			$data = $this->data->getAllParticipants();
+			$participants_data = $this->data->getAllParticipants();
 			$mean = $this->getMeanOfReachedPoints();
-			$sum_sq_diff = 0;
-
-            $value_data = array();
+			$value_data = array();
+			foreach($participants_data as $participant){
+				$value_data[$participant->active_id] = $participant->current_reached_points;
+			}
 
 			//If more than one participant, then calculate.
-			if (count($data) > 1) {
+			if (count($value_data) > 1) {
 				//Fetch the sum of squared differences between total score and it's mean
 				$sum_sq_diff = $this->sumOfPowersOfDifferenceToMean($value_data, $mean->value, 2);
-
 				//Calculate Standard deviation
-				$std_deviation = sqrt($sum_sq_diff / (count($data) - 1));
+				$std_deviation = sqrt($sum_sq_diff / (count($value_data) - 1));
 
 				$standard_deviation->type = ilExteStatValue::TYPE_NUMBER;
 				$standard_deviation->value = $std_deviation;
@@ -114,23 +121,8 @@ abstract class ilExteEvalTest extends ilExteEvalBase
 
 			$this->data->setCachedData("ilExteEvalTest::getStandardDeviationOfTestResults", $standard_deviation);
 		}
+
 		return $standard_deviation;
-	}
-
-
-    /**
-     * Calculate the standard deviation of values
-     * @param   array   $data   list of values
-     * @param   float   $mean   mean value
-     * @return  float           standard deviation
-     */
-	protected function getStandardDeviation($data, $mean)
-	{
-		//Fetch the sum of squared differences between total score and it's mean
-		$sum_sq_diff = $this->sumOfPowersOfDifferenceToMean($data, $mean, 2);
-
-		//Calculate Standard deviation
-		$std_deviation = sqrt($sum_sq_diff / (count($data) - 1));
 	}
 
     # endregion

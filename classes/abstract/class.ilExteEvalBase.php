@@ -200,7 +200,7 @@ abstract class ilExteEvalBase
 
 		//Fetch the sum of squared differences between total score and it's mean
 		foreach ($data as $id => $item) {
-			$sum_power_diff += ((float)$item - $mean) ^ $power;
+			$sum_power_diff += pow((float)$item - $mean, $power);
 		}
 
 		return $sum_power_diff;
