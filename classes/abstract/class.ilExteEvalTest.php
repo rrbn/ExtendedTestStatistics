@@ -36,7 +36,15 @@ abstract class ilExteEvalTest extends ilExteEvalBase
 		return array();
 	}
 
-	public function getMeanOfReachedPoints()
+    ##################################
+    # region methods for child classes
+    ##################################
+
+    /**
+     * Get the mean of reached points
+     * @return ilExteStatValue|null
+     */
+    protected function getMeanOfReachedPoints()
 	{
 		$mean = $this->data->getCachedData("ilExteEvalTest::getMeanOfReachedPoints");
 
@@ -66,7 +74,11 @@ abstract class ilExteEvalTest extends ilExteEvalBase
 		return $mean;
 	}
 
-	public function getStandardDeviationOfTestResults()
+    /**
+     * Get the standard deviation of test results
+     * @return ilExteStatValue|null
+     */
+	protected function getStandardDeviationOfTestResults()
 	{
 		$standard_deviation = $this->data->getCachedData("ilExteEvalTest::getStandardDeviationOfTestResults");
 		if (!isset($standard_deviation)) {
@@ -78,10 +90,12 @@ abstract class ilExteEvalTest extends ilExteEvalBase
 			$mean = $this->getMeanOfReachedPoints();
 			$sum_sq_diff = 0;
 
+            $value_data = array();
+
 			//If more than one participant, then calculate.
 			if (count($data) > 1) {
 				//Fetch the sum of squared differences between total score and it's mean
-				$sum_sq_diff = $this->sumOfPowersOfDifferenceToMean($mean, 2);
+				$sum_sq_diff = $this->sumOfPowersOfDifferenceToMean($value_data, $mean->value, 2);
 
 				//Calculate Standard deviation
 				$std_deviation = sqrt($sum_sq_diff / (count($data) - 1));
@@ -103,13 +117,22 @@ abstract class ilExteEvalTest extends ilExteEvalBase
 		return $standard_deviation;
 	}
 
-	public function getStandardDeviation($data, $mean)
+
+    /**
+     * Calculate the standard deviation of values
+     * @param   array   $data   list of values
+     * @param   float   $mean   mean value
+     * @return  float           standard deviation
+     */
+	protected function getStandardDeviation($data, $mean)
 	{
 		//Fetch the sum of squared differences between total score and it's mean
-		$sum_sq_diff = $this->sumOfPowersOfDifferenceToMean($mean, 2);
+		$sum_sq_diff = $this->sumOfPowersOfDifferenceToMean($data, $mean, 2);
 
 		//Calculate Standard deviation
 		$std_deviation = sqrt($sum_sq_diff / (count($data) - 1));
 	}
+
+    # endregion
 
 }

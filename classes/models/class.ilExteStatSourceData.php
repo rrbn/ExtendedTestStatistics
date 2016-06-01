@@ -170,7 +170,7 @@ class ilExteStatSourceData
 	/**
 	 * Load the types of the relevant questions
 	 */
-	public function loadQuestionTypes()
+	protected function loadQuestionTypes()
 	{
 		global $ilDB;
 
@@ -499,6 +499,14 @@ class ilExteStatSourceData
 		return $this->eval;
 	}
 
+    /**
+     * Get a cached data value
+     * This gets stored intermediate values that are needed by different evaluations
+     * @see self::setCachedData()
+     *
+     * @param string    name of the cached value
+     * @return mixed
+     */
 	public function getCachedData($a_name)
 	{
 		if (isset($this->cached_data[$a_name])) {
@@ -508,6 +516,14 @@ class ilExteStatSourceData
 		}
 	}
 
+    /**
+     * Cache data for this request
+     * This allows to store intermediate values that are needed by different evaluations
+     * Please use a unique value name, e.g. YourClass::yourMethod to avoid
+     *
+     * @param string $a_name    name of the cached value
+     * @param mixed $a_data     data of the cached value
+     */
 	public function setCachedData($a_name, $a_data)
 	{
 		$this->cached_data[$a_name] = $a_data;

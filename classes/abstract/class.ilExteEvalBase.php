@@ -186,12 +186,15 @@ abstract class ilExteEvalBase
 	}
 
 	/**
-	 * @param $data The array we have to use
-	 * @param $mean
-	 * @param $power
-	 * @return float|int
+     * Calculate the sum of powers of the difference from values to their mean
+     * (intermediate calculation for the standard deviation)
+     *
+	 * @param array         $data   list of values
+	 * @param float         $mean   mean of values
+	 * @param integer       $power  power to use
+	 * @return float|int            calculated sum
 	 */
-	public function sumOfPowersOfDifferenceToMean($data, $mean, $power = 2)
+	protected function sumOfPowersOfDifferenceToMean($data, $mean, $power = 2)
 	{
 		$sum_power_diff = 0.0;
 
