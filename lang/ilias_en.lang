@@ -63,3 +63,10 @@ ilexteevalquestionstandarddeviation_title_description#:#How much variation there
 ilexteevalquestiondiscriminationindex_title_long#:#Discrimination index
 ilexteevalquestiondiscriminationindex_title_short#:#Discrimination index
 ilexteevalquestiondiscriminationindex_title_description#:#this is the correlation between the score for this question and the score for the whole quiz. That is, for a good question, you hope that the students who score highly on this question are the same students who score highly on the whole test. Higher numbers are better
+show_test_evaluations#:#Show test evaluations
+show_question_evaluations#:#Show question evaluations
+evaluation_available_for_admins#:#Admins
+evaluation_available_for_users#:#Users
+evaluation_available_for_noone#:#Not available
+test_evaluation_settings#:#Test evaluations settings
+question_evaluation_settings#:#Question evaluations settings
