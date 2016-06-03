@@ -70,3 +70,5 @@ evaluation_available_for_users#:#Users
 evaluation_available_for_noone#:#Not available
 test_evaluation_settings#:#Test evaluations settings
 question_evaluation_settings#:#Question evaluations settings
+test_settings_saved#:#Test settings saved
+question_settings_saved#:#Question settings saved
