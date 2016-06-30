@@ -14,33 +14,53 @@ class ilExtendedTestStatisticsConfigGUI extends ilPluginConfigGUI
 
 	protected $plugin;
 
+	/*
+	 * @var ilExtendedTestStatisticsConfig
+	 */
+	protected $config;
+
 	/**
 	 * Handles all commmands, default is "configure"
 	 */
 	function performCommand($cmd)
 	{
 		$this->plugin = $this->getPluginObject();
-		switch ($cmd) {
+
+		//Set config object
+		$this->plugin->includeClass("config/class.ilExtendedTestStatisticsConfig.php");
+		$config_obg = new ilExtendedTestStatisticsConfig($this->plugin);
+		$this->config = $config_obg;
+
+		switch ($cmd)
+		{
 			case "configure":
 			case "showTestEvaluations":
+				$this->initTabs();
+				$this->configure("test");
+				break;
 			case "showQuestionEvaluations":
+				$this->initTabs();
+				$this->configure("question");
+				break;
 			case "saveTestSettings":
+				$this->initTabs();
+				$this->saveSettings("test");
+				break;
 			case "saveQuestionSettings":
 				$this->initTabs();
-				$this->$cmd();
+				$this->saveSettings("question");
 				break;
-
 		}
 	}
 
 	/**
 	 * Configure screen
 	 */
-	function configure()
+	function configure($a_mode)
 	{
 		global $tpl;
 
-		$form = $this->initConfigurationForm();
+		$form = $this->initConfigurationForm($a_mode);
 		$tpl->setContent($form->getHTML());
 	}
 
@@ -54,165 +74,75 @@ class ilExtendedTestStatisticsConfigGUI extends ilPluginConfigGUI
 	 *
 	 * @return object form object
 	 */
-	public function initConfigurationForm()
+	public function initConfigurationForm($a_mode)
 	{
 		global $ilTabs;
 
 		$this->plugin = $this->getPluginObject();
 
-		$ilTabs->setTabActive('show_test_evaluations');
+		if ($a_mode == "test")
+		{
+			$ilTabs->setTabActive('show_test_evaluations');
 
-		$form = $this->getTestEvaluationsForm();
+			$form = $this->getTestEvaluationsForm();
 
-		return $form;
-	}
+			return $form;
 
-	/**
-	 * Save form input (currently does not save anything to db)
-	 *
-	 */
-	public function saveTestSettings()
-	{
-		global $tpl, $ilDB, $ilCtrl;
+		} elseif ($a_mode == "question")
+		{
+			$ilTabs->setTabActive('show_question_evaluations');
 
-		$this->plugin = $this->getPluginObject();
-		$test_form = $this->getTestEvaluationsForm();
-		$evaluation_classes = self::_getEvaluationClasses("", "classes");
-		$evaluation_db = self::_getEvaluationClasses("", "db");
+			$form = $this->getQuestionEvaluationsForm();
 
-		if ($test_form->checkInput()) {
-			//Check for test changes
-			foreach ($evaluation_classes["Tests"] as $evaluation_name => $value) {
-				$new_value = $test_form->getInput($evaluation_name);
-				//Check for inclusion into the DB
-				if (isset($evaluation_db["Tests"][$evaluation_name])) {
-					//If value is different, update it to DB
-					if ($value != $new_value) {
-						$update_query = $ilDB->query("UPDATE etstat_settings SET value = '" . $new_value . "' WHERE evaluation_name = '" . $evaluation_name . "'");
-						if (!$update_query->result) {
-							ilUtil::sendFailure($this->plugin->txt("error_saving_configuration"), true);
-						}
-					}
-				} else {
-					$ilDB->insert("etstat_settings", array(
-						"evaluation_name" => array("text", $evaluation_name),
-						"value" => array("text", "admin")));
-				}
-			}
-		} else {
-			$test_form->setValuesByPost();
-			$tpl->setContent($test_form->getHtml());
+			return $form;
+
 		}
-
-		//Save to DB
-		ilUtil::sendSuccess($this->plugin->txt("test_settings_saved"), true);
-		$ilCtrl->redirect($this, "showTestEvaluations");
-
-	}
-
-	public function saveQuestionSettings()
-	{
-		global $tpl, $ilDB, $ilCtrl;
-
-		$this->plugin = $this->getPluginObject();
-		$question_form = $this->getQuestionEvaluationsForm();
-		$evaluation_classes = self::_getEvaluationClasses("", "classes");
-		$evaluation_db = self::_getEvaluationClasses("", "db");
-
-		if ($question_form->checkInput()) {
-			//Check for question changes
-			foreach ($evaluation_classes["Questions"] as $evaluation_name => $value) {
-				$new_value = $question_form->getInput($evaluation_name);
-				//Check for inclusion into the DB
-				if (isset($evaluation_db["Questions"][$evaluation_name])) {
-					//If value is different, update it to DB
-					if ($value != $new_value) {
-						$update_query = $ilDB->query("UPDATE etstat_settings SET value = '" . $new_value . "' WHERE evaluation_name = '" . $evaluation_name . "'");
-						if (!$update_query->result) {
-							ilUtil::sendFailure($this->plugin->txt("error_saving_configuration"), true);
-						}
-					}
-				} else {
-					$ilDB->insert("etstat_settings", array(
-						"evaluation_name" => array("text", $evaluation_name),
-						"value" => array("text", "admin")));
-				}
-			}
-		} else {
-			$question_form->setValuesByPost();
-			$tpl->setContent($question_form->getHtml());
-		}
-
-		//Save to DB
-		ilUtil::sendSuccess($this->plugin->txt("question_settings_saved"), true);
-		$ilCtrl->redirect($this, "showQuestionEvaluations");
-
 	}
 
 	/**
 	 * @param $a_type
-	 * @param null $a_mode
-	 * Includes the available evaluation classes and return their names
-	 * @return array    list of included class names
 	 */
-	public static function _getEvaluationClasses($a_type, $a_mode = NULL)
+	public function saveSettings($a_type)
 	{
-		global $ilDB;
+		global $tpl, $ilCtrl;
 
-		include_once("./Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/ExtendedTestStatistics/classes/abstract/class.ilExteEvalBase.php");
-		include_once("./Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/ExtendedTestStatistics/classes/abstract/class.ilExteEvalQuestion.php");
-		include_once("./Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/ExtendedTestStatistics/classes/abstract/class.ilExteEvalTest.php");
+		$this->plugin = $this->getPluginObject();
+		$test_form = $this->getTestEvaluationsForm();
+		$evaluation_classes = $this->config->getEvaluationClasses($a_type);
 
-		if ($a_mode != "classes") {
-			//Step 1: Read from the database
-			$db_classnames = array();
-			$database_select = $ilDB->query("SELECT * FROM etstat_settings");
-			while ($evaluations_db_row = $ilDB->fetchAssoc($database_select)) {
-				if (strpos($evaluations_db_row["evaluation_name"], "ilExteEvalQuestion") === 0) {
-					$db_classnames["Questions"][$evaluations_db_row["evaluation_name"]] = $evaluations_db_row["value"];
-				} elseif (strpos($evaluations_db_row["evaluation_name"], "ilExteEvalTest") === 0) {
-					$db_classnames["Tests"][$evaluations_db_row["evaluation_name"]] = $evaluations_db_row["value"];
-				}
-			}
-
-			//Return db classes if mode is set to "db"
-			if ($a_mode == "db") {
-				if ($a_type == "test") {
-					return $db_classnames["Tests"];
-				} elseif ($a_type == "question") {
-					return $db_classnames["Questions"];
-				} else {
-					return $db_classnames;
-				}
-			}
-		}
-
-		//Step 2: Read from class files
-		$classnames = array();
-		$classfiles = glob('./Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/ExtendedTestStatistics/classes/evaluations/class.*.php');
-		if (!empty($classfiles)) {
-			foreach ($classfiles as $file) {
-				require_once($file);
-				$parts = explode('.', basename($file));
-				if (strpos($parts[1], "ilExteEvalQuestion") === 0) {
-					if (isset($db_classnames["Questions"][$parts[1]]) OR $a_mode == "classes") {
-						$classnames["Questions"][$parts[1]] = $db_classnames["Questions"][$parts[1]];
-					}
-				} elseif (strpos($parts[1], "ilExteEvalTest") === 0) {
-					if (isset($db_classnames["Tests"][$parts[1]]) OR $a_mode == "classes") {
-						$classnames["Tests"][$parts[1]] = $db_classnames["Tests"][$parts[1]];
+		if ($test_form->checkInput())
+		{
+			//Check for test changes
+			foreach ($evaluation_classes as $evaluation_name => $evaluation_name_2)
+			{
+				$new_value = $test_form->getInput($evaluation_name);
+				if ($new_value)
+				{
+					//Delete entry
+					if ($this->config->deleteConfig($evaluation_name))
+					{
+						//Insert entry
+						$this->config->insertConfig($evaluation_name, $new_value);
 					}
 				}
 			}
+		} else
+		{
+			$test_form->setValuesByPost();
+			$tpl->setContent($test_form->getHtml());
 		}
 
-		if ($a_type == "test") {
-			return $classnames["Tests"];
-		} elseif ($a_type == "question") {
-			return $classnames["Questions"];
-		} else {
-			return $classnames;
+		if ($a_type == "question")
+		{
+			ilUtil::sendSuccess($this->plugin->txt("question_settings_saved"), true);
+			$ilCtrl->redirect($this, "showQuestionEvaluations");
 		}
+		if ($a_type == "test")
+		{
+			ilUtil::sendSuccess($this->plugin->txt("test_settings_saved"), true);
+			$ilCtrl->redirect($this, "showTestEvaluations");
+		}
+
 	}
 
 	/**
@@ -254,13 +184,10 @@ class ilExtendedTestStatisticsConfigGUI extends ilPluginConfigGUI
 		//Run throw all the test evaluations to check if there must be available for admins
 		// or users or not available in test of current platform
 
-		foreach (self::_getEvaluationClasses("test") as $evaluation_class => $value) {
+		foreach ($this->config->getEvaluationClasses("test") as $evaluation_class => $value)
+		{
 			$select_input = new ilSelectInputGUI($this->plugin->txt(strtolower($evaluation_class) . "_title_short"), $evaluation_class);
-			$select_input->setOptions(array(
-				"admin" => $this->plugin->txt("evaluation_available_for_admins"),
-				"users" => $this->plugin->txt("evaluation_available_for_users"),
-				"none" => $this->plugin->txt("evaluation_available_for_noone")
-			));
+			$select_input->setOptions(array("admin" => $this->plugin->txt("evaluation_available_for_admins"), "users" => $this->plugin->txt("evaluation_available_for_users"), "none" => $this->plugin->txt("evaluation_available_for_noone")));
 			$select_input->setValue($value);
 			$form->addItem($select_input);
 		}
@@ -280,13 +207,10 @@ class ilExtendedTestStatisticsConfigGUI extends ilPluginConfigGUI
 
 		//Run throw all the test evaluations to check if there must be available for admins
 		// or users or not available in test of current platform
-		foreach (self::_getEvaluationClasses("question") as $evaluation_class => $value) {
+		foreach ($this->config->getEvaluationClasses("question") as $evaluation_class => $value)
+		{
 			$select_input = new ilSelectInputGUI($this->plugin->txt(strtolower($evaluation_class) . "_title_short"), $evaluation_class);
-			$select_input->setOptions(array(
-				"admin" => $this->plugin->txt("evaluation_available_for_admins"),
-				"users" => $this->plugin->txt("evaluation_available_for_users"),
-				"none" => $this->plugin->txt("evaluation_available_for_noone")
-			));
+			$select_input->setOptions(array("admin" => $this->plugin->txt("evaluation_available_for_admins"), "users" => $this->plugin->txt("evaluation_available_for_users"), "none" => $this->plugin->txt("evaluation_available_for_noone")));
 			$select_input->setValue($value);
 			$form->addItem($select_input);
 		}

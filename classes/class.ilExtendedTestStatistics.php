@@ -35,6 +35,8 @@ class ilExtendedTestStatistics
 	 */
 	protected $evaluations = array();
 
+	protected $config;
+
 	/**
 	 * ilExtendedTestStatistics constructor.
 	 *
@@ -63,9 +65,11 @@ class ilExtendedTestStatistics
 	 */
 	public function getSourceData()
 	{
-		if (!isset($this->data)) {
+		if (!isset($this->data))
+		{
 			$this->loadSourceData();
 		}
+
 		return $this->data;
 	}
 
@@ -77,20 +81,43 @@ class ilExtendedTestStatistics
 	 */
 	public function loadEvaluations($a_level = '', $a_id = '')
 	{
-		global $ilAccess;
+		global $rbacsystem, $ilUser, $tree;
 
 		$this->evaluations = array();
 
-		$this->plugin->includeClass("class.ilExtendedTestStatisticsConfigGUI.php");
-		$classnames = ilExtendedTestStatisticsConfigGUI::_getEvaluationClasses(NULL);
+		//Set config object
+		$this->plugin->includeClass("config/class.ilExtendedTestStatisticsConfig.php");
+		$this->config = new ilExtendedTestStatisticsConfig($this->plugin);
+		$classnames = $this->config->getEvaluationClasses();
 
-		$admin = $ilAccess->checkAccess('edit_permission', "", $this->object->getRefId());
+		$this->plugin->includeClass("config/class.ilExtendedTestStatisticsConfig.php");
+
+		//Check visibility of admin panel in order to check if it is admin of the system
+		$test_and_assessments_ref_id = 0;
+		$objects = $tree->getChilds(SYSTEM_FOLDER_ID);
+		foreach ($objects as $object)
+		{
+			if ($object["type"] == "assf")
+			{
+				$test_and_assessments_ref_id = $object["ref_id"];
+			}
+		}
+
+		if ($test_and_assessments_ref_id)
+		{
+			$admin = $rbacsystem->checkAccess("visible", $test_and_assessments_ref_id);
+		} else
+		{
+			$admin = FALSE;
+		}
 
 		/** @var ilExteEvalBase $class (not the class, but just its name) */
-		foreach ($classnames["Questions"] as $class => $value) {
+		foreach ($classnames as $class => $value)
+		{
 			$fits = true;
 
-			switch ($a_level) {
+			switch ($a_level)
+			{
 				case self::LEVEL_TEST:
 					$fits = $fits && $class::_isTestEvaluation();
 					break;
@@ -99,63 +126,35 @@ class ilExtendedTestStatistics
 					break;
 			}
 
-			if ($this->object->isFixedTest()) {
+			if ($this->object->isFixedTest())
+			{
 				$fits = $fits && $class::_isTestTypeAllowed(ilExteEvalBase::TEST_TYPE_FIXED);
-			} elseif ($this->object->isRandomTest()) {
+			} elseif ($this->object->isRandomTest())
+			{
 				$fits = $fits && $class::_isTestTypeAllowed(ilExteEvalBase::TEST_TYPE_RANDOM);
-			} elseif ($this->object->isDynamicTest()) {
+			} elseif ($this->object->isDynamicTest())
+			{
 				$fits = $fits && $class::_isTestTypeAllowed(ilExteEvalBase::TEST_TYPE_DYNAMIC);
 			}
 
-			if (!empty($a_id)) {
+			if (!empty($a_id))
+			{
 				$fits = $fits && ($class::_getId() == $a_id);
 			}
 
-			if ($fits) {
+			if ($fits)
+			{
 				//Add if roles is correct
-				if ($value == "admin" && $admin) {
+				if ($value == "admin" && $admin)
+				{
 					$this->evaluations[$class::_getId()] = new $class($this->data, $this->plugin);
-				} elseif ($value == "users") {
+				} elseif ($value == "users")
+				{
 					$this->evaluations[$class::_getId()] = new $class($this->data, $this->plugin);
 				}
 			}
 		}
 
-		/** @var ilExteEvalBase $class (not the class, but just its name) */
-		foreach ($classnames["Tests"] as $class => $value) {
-
-			$fits = true;
-
-			switch ($a_level) {
-				case self::LEVEL_TEST:
-					$fits = $fits && $class::_isTestEvaluation();
-					break;
-				case self::LEVEL_QUESTION:
-					$fits = $fits && $class::_isQuestionEvaluation();
-					break;
-			}
-
-			if ($this->object->isFixedTest()) {
-				$fits = $fits && $class::_isTestTypeAllowed(ilExteEvalBase::TEST_TYPE_FIXED);
-			} elseif ($this->object->isRandomTest()) {
-				$fits = $fits && $class::_isTestTypeAllowed(ilExteEvalBase::TEST_TYPE_RANDOM);
-			} elseif ($this->object->isDynamicTest()) {
-				$fits = $fits && $class::_isTestTypeAllowed(ilExteEvalBase::TEST_TYPE_DYNAMIC);
-			}
-
-			if (!empty($a_id)) {
-				$fits = $fits && ($class::_getId() == $a_id);
-			}
-
-			if ($fits) {
-				//Add if roles is correct
-				if ($value == "admin" && $admin) {
-					$this->evaluations[$class::_getId()] = new $class($this->data, $this->plugin);
-				} elseif ($value == "users") {
-					$this->evaluations[$class::_getId()] = new $class($this->data, $this->plugin);
-				}
-			}
-		}
 	}
 
 	/**
@@ -178,10 +177,12 @@ class ilExtendedTestStatistics
 	{
 		$selected = array();
 
-		foreach ($this->evaluations as $evaluation) {
+		foreach ($this->evaluations as $evaluation)
+		{
 			$fits = true;
 
-			switch ($a_provides) {
+			switch ($a_provides)
+			{
 				case self::PROVIDES_VALUE:
 					$fits = $fits && $evaluation::_providesValue();
 					break;
@@ -190,11 +191,13 @@ class ilExtendedTestStatistics
 					break;
 			}
 
-			if (!empty($a_question_type)) {
+			if (!empty($a_question_type))
+			{
 				$fits = $fits && $evaluation::_isQuestionTypeAllowed($a_question_type);
 			}
 
-			if ($fits) {
+			if ($fits)
+			{
 				$selected[$evaluation::_getId()] = $evaluation;
 			}
 		}
@@ -218,17 +221,21 @@ class ilExtendedTestStatistics
 	function _checkAccess($a_permission, $a_ref_id, $a_user_id = "")
 	{
 		global $ilUser, $rbacsystem, $ilAccess;
-		if ($a_user_id == "") {
+		if ($a_user_id == "")
+		{
 			$a_user_id = $ilUser->getId();
 		}
-		switch ($a_permission) {
+		switch ($a_permission)
+		{
 			case "visible":
 			case "read":
-				if (!$rbacsystem->checkAccessOfUser($a_user_id, 'write', "", $a_ref_id)) {
+				if (!$rbacsystem->checkAccessOfUser($a_user_id, 'write', "", $a_ref_id))
+				{
 					return false;
 				}
 				break;
 		}
+
 		return true;
 	}
 }

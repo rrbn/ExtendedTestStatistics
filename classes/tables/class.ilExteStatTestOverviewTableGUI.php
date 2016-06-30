@@ -104,7 +104,7 @@ class ilExteStatTestOverviewTableGUI extends ilTable2GUI
 	 */
 	protected function fillRow($data)
 	{
-        $title = ilExteStatValue::_create($data['title'],ilExteStatValue::TYPE_TEXT,0,$data['description']);
+		$title = ilExteStatValue::_create($data['title'],ilExteStatValue::TYPE_TEXT,0,$data['description']);
 		$value = isset($data['value']) ? $data['value'] : new ilExteStatValue();
 
         $this->valueGUI->setShowComment(true);

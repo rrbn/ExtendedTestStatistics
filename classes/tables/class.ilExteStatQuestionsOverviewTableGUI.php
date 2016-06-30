@@ -215,8 +215,8 @@ class ilExteStatQuestionsOverviewTableGUI extends ilTable2GUI
                     if (isset($evaluation) && $evaluation::_isQuestionTypeAllowed($data['question_type']) && $evaluation::_providesValue())
                     {
                         $value = $evaluation->calculateValue($data['question_id']);
-                        $content = $this->valueGUI->getHTML($value);
-                    }
+						$content = $this->valueGUI->getHTML($value);
+					}
                     break;
             }
             $this->tpl->setCurrentBlock('column');

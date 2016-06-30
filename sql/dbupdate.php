@@ -39,31 +39,6 @@ if (!$ilDB->tableExists('etstat_settings'))
 <#2>
 <?php
 /*
- * Creation of values with current evaluations in the plugin
+ * EMPTY
  */
-if ($ilDB->tableExists('etstat_settings'))
-{
-	include_once("./Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/ExtendedTestStatistics/classes/abstract/class.ilExteEvalBase.php");
-	include_once("./Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/ExtendedTestStatistics/classes/abstract/class.ilExteEvalQuestion.php");
-	include_once("./Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/ExtendedTestStatistics/classes/abstract/class.ilExteEvalTest.php");
-
-	$classnames = array();
-	$classfiles = glob('./Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/ExtendedTestStatistics/classes/evaluations/class.*.php');
-	if (!empty($classfiles)) {
-		foreach ($classfiles as $file) {
-			require_once($file);
-			$parts = explode('.', basename($file));
-				$classnames[] = $parts[1];
-		}
-	}
-
-	foreach($classnames as $evaluation_name){
-		$check = $ilDB->queryF("SELECT * FROM etstat_settings WHERE evaluation_name = %s", array('text'), array($evaluation_name));
-		if($check->numRows()==0){
-			$ilDB->insert("etstat_settings", array(
-				"evaluation_name" => array("text", $evaluation_name),
-				"value" => array("text", "admin")));
-		}
-	}
-}
 ?>
