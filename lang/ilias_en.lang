@@ -72,3 +72,24 @@ test_evaluation_settings#:#Test evaluations settings
 question_evaluation_settings#:#Question evaluations settings
 test_settings_saved#:#Test settings saved
 question_settings_saved#:#Question settings saved
+statisticsexport_format#:#Teststatistics (Excel)
+title_of_test#:#Title
+date_of_export#:#Export date
+number_of_qst_and_part#:#Questions (per participant/total)
+number#:#No
+max_points#:#Max. Points
+points#:#Reached Points
+mean#:#Mean
+variance#:#Variance
+std_deviation#:#Std. deviation
+tasks#:#Items
+aborted#:#Test canceled
+column_sum#:#Column sum
+sumproduct#:#Sumproduct
+reachable_points#:#Reachable Points
+correct#:#Correct Answers
+wrong#:#Wrong Answers
+not_answered#:#Unanswered
+difficultyindex#:#Item difficulty
+item_total_correlation#:#Item-total correlation
+name_user_name#:#Name (Login)

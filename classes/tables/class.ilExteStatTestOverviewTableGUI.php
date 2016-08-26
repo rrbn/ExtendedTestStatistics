@@ -42,6 +42,10 @@ class ilExteStatTestOverviewTableGUI extends ilTable2GUI
         $this->setId('ilExteStatTestOverview');
         $this->setPrefix('ilExteStatTestOverview');
 
+		$template = new ilTemplate("tpl.il_as_tst_pass_details_overview_participants.html", TRUE, TRUE, "Modules/Test");
+		require_once 'Modules/Test/classes/toolbars/class.ilTestResultsToolbarGUI.php';
+		$toolbar = new ilTestResultsToolbarGUI($this->ctrl, $template, $this->lng);
+
         parent::__construct($a_parent_obj, $a_parent_cmd);
 
 		$this->setFormName('test_overview');
