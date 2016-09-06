@@ -1,0 +1,95 @@
+//
+// Copyright (c) 2016 Institut fuer Lern-Innovation, Friedrich-Alexander-Universitaet Erlangen-Nuernberg
+// GPLv2, see LICENSE
+//
+// English Language File for the Extended Test Statistiks Plugin
+//
+
+<!-- language file start -->
+alert_unknown#:#Unbekannt
+alert_good#:#Gut
+alert_medium#:#Mittel
+alert_bad#:#Schlecht
+test_results#:#Aggregierte Testergebnisse
+questions_results#:#Aggregierte Fragenergebnisse
+show_details#:#Details anzeigen
+question_type#:#Fragentyp
+assigned_count#:#Zugeteilt
+assigned_count_description#:#Anzahl Nutzer, die diese Frage zugeteilt bekamen
+answers_count#:#Beantwortet
+answers_count_description#:#Anzahl Nutzer, die diese Frage beantwortet haben
+average_points#:#Punkte
+average_points_description#:#Mittlere erreichte Punktzahl aller Nutzer, die diese Frage zugeteilt bekamen
+average_percentage#:#Prozent
+average_percentage_description#:#Mittlere Prozent der maximalen Punkte, die von Nutzern erreicht wurden, welche diese Frage präsentiert bekamen.
+ilexteevaltestdebug_title_long#:#Gefilterte Quelldaten
+ilexteevaltestdebug_title_short#:#Quelldaten
+ilexteevaltestdebug_description#:#Testausgabe der gefilterten Quelldaten für alle Auswertungen
+ilexteevaltestdebug_participants_title#:#Teilnehmer
+ilexteevaltestdebug_participants_description#:#Liste aller gefilterten Teilnehmerdaten
+ilexteevaltestdebug_questions_title#:#Fragen
+ilexteevaltestdebug_questions_description#:#Liste aller gefilterten Fragendaten
+ilexteevaltestdebug_answers_title#:#Antworten
+ilexteevaltestdebug_answers_description#:#Liste aller gefilterten Antwortdaten
+ilexteevaltestexample_title_long#:#Beispielauswertung zum Test
+ilexteevaltestexample_title_short#:#Beispiel
+ilexteevaltestexample_description#:#Diese Beispiel-Auswerung zeigt nur einen statischen Wert
+ilexteevaltestexample_no_answer_available#:#Keine Antwort verfügbar
+ilexteevalquestionexample_title_long#:#Antwortliste
+ilexteevalquestionexample_title_short#:#Antworten
+ilexteevalquestionexample_description#:#Anzahl der wirklich abgegebenen Antworten für diese Frage
+ilexteevalquestionexample_no_answer_available#:#Keine Antwort verfügbar
+ilexteevalquestionexample_answers_title#:#Antworten
+ilexteevalquestionexample_answers_description#:#Liste der gefilterten Antwortdaten
+ilexteevaltestmedian_title_long#:#Median der erreichten Punkte
+ilexteevaltestmedian_title_short#:#Median
+ilexteevaltestmedian_description#:#Der Median wird für Daten genutzt, die eine „natürliche“ Reihenfolge bilden und mit Zahlenwerten versehen werden können. Die Mitte dieser geordneten Datenreihe ist der Median. Anders als der Mittelwert ist der Media unempfindlich gegenüber Extremwerten.
+ilexteevaltestmean_title_long#:#Mittelwert der erreichten Punkte
+ilexteevaltestmean_title_short#:#Mittelwert
+ilexteevaltestmean_description#:#Der Mittelwert errechnet sich durch die Summe der Werte x 1 , x 2 , …, x n, dividiert duch die Anzahl n. Er ist empfindlich gegenüber Extremwerten.
+ilexteevalteststandarddeviation_title_long#:#Standardabweichung der erreichten Punkte im Test
+ilexteevalteststandarddeviation_title_short#:#Standardabweichung
+ilexteevalteststandarddeviation_description#:#Die Standardabweichung (s) ist die durchschnittliche Entfernung aller gemessenen Einzelwerte eines Merkmals vom Durchschnitt.
+ilexteevalteststandarddeviation_only_one_participant#:#Die Standardabweichung ist trivial, wenn der Test nur einmal durchgeführt wurde.
+ilexteevaltestcic_title_long#:#Koeffizient interner Konsistenz (Cronbach's alpha)
+ilexteevaltestcic_title_short#:#Chronbach’s Alpha
+ilexteevaltestcic_description#:#Chronbach’s alpha bezeichnet das Ausmaß, in dem alle Aufgaben das Gleiche messen. Der Koeffizient steigt mit zunehmendem Zusammenhang zwischen den Items. Der maximale Wert ist 1. Als Daumenregel wird ein Alpha von 0.7 und mehr gefordert.
+ilexteevalquestionfacilityindex_title_long#:#Schwierigkeitsindex (Beantwortbarkeit) der Frage
+ilexteevalquestionfacilityindex_title_short#:#Schwierigkeitsindex
+ilexteevalquestionfacilityindex_description#:#Beim Schwierigkeitsindex p werden die Punkte, die bei dieser Frage von allen Testpersonen tatsächlich erreicht wurden, zusammengezählt und durch die maximal erreichbare Punktsumme aller Testpersonen bei diesem Item dividiert. Dieser Quotient wird mit 100 multipliziert. Eine Schwierigkeit von p=0 bedeutet, dass die Aufgabe von niemandem gelöst wurde und damit zu schwer war. Ganz einfach war sie, wenn p=100 ist. p sollte im Bereich 0,4 – 0,85 streuen.
+ilexteevalquestionstandarddeviation_title_long#:#Standardabweichung der erreichten Punkte für diese Frage
+ilexteevalquestionstandarddeviation_title_short#:#Standardabweichung
+ilexteevalquestionstandarddeviation_description#:#Die Standardabweichung (s) ist die durchschnittliche Entfernung aller gemessenen Einzelwerte eines Merkmals vom Durchschnitt.
+ilexteevalquestiondiscriminationindex_title_long#:#Trennschärfe der Frage im Test
+ilexteevalquestiondiscriminationindex_title_short#:#Trennschärfe
+ilexteevalquestiondiscriminationindex_description#:#Über die Trennschärfe lässt sich ermitteln, wie gut eine Frage zwischen Personen mit niedriger und hoher Merkmalsausprägung trennt. Das Maß erfasst den Zusammenhang der einzelnen Testwerte mit dem endgültigen Testwert. Angestrebt werden Trennschärfen von  0,4 bis 0,7. Bei einer Trennschärfe < 0 wird die Frage von „schlechten“ Testpersonen gelöst und von „guten“ Testpersonen nicht.
+show_test_evaluations#:#Testauswertungen
+show_question_evaluations#:#Fragenauswertungen
+evaluation_available_for_admins#:#Administratoren
+evaluation_available_for_users#:#Nutzer
+evaluation_available_for_noone#:#Nicht verfügbar
+test_evaluation_settings#:#Verfügbarkeit der Testauswertungen
+question_evaluation_settings#:#Verfügbarkeit der Fragenauswertungen
+test_settings_saved#:#Die Verfügbarkeit der Testauswertungen wurde gespeichert.
+question_settings_saved#:#Die Verfügbarkeit der Fragenauswertung wurde gespeichert.
+statisticsexport_format#:#Teststatistik (Excel)
+title_of_test#:#Titel
+date_of_export#:#Export-Datum
+number_of_qst_and_part#:#Fragen (pro Teilnehmer/gesamt)
+number#:#Nr.
+max_points#:#Maximale Punkte
+points#:#Erreichte Punkte
+mean#:#Mittelwert
+variance#:#Varianz
+std_deviation#:#Stdandardabweichung
+tasks#:#Items
+aborted#:#Test abgebrochen
+column_sum#:#Spaltensumme
+sumproduct#:#Summenprodukt
+reachable_points#:#Erreichbare Punkte
+correct#:#Korrekte Antworten
+wrong#:#Fehlerhafte Antworten
+not_answered#:#Nicht beantwortet
+difficultyindex#:#Itemschwierigkeit
+item_total_correlation#:#Gesamtkorrelation der Items
+name_user_name#:#Benutzername (Login)

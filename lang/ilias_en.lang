@@ -56,13 +56,13 @@ ilexteevaltestcic_title_short#:#CIC
 ilexteevaltestcic_description#:#Internal consistency is usually measured with Cronbach's alpha, a statistic calculated from the pairwise correlations between items. Internal consistency ranges between negative infinity and one. Coefficient alpha will be negative whenever there is greater within-subject variability than between-subject variability. If > 0.8 If a good value.
 ilexteevalquestionfacilityindex_title_long#:#Facility Index
 ilexteevalquestionfacilityindex_title_short#:#Facility Index
-ilexteevalquestionfacilityindex_title_description#:#The percentage of students that answered the question correctly
+ilexteevalquestionfacilityindex_description#:#The percentage of students that answered the question correctly
 ilexteevalquestionstandarddeviation_title_long#:#Standard deviation
 ilexteevalquestionstandarddeviation_title_short#:#Standard deviation
-ilexteevalquestionstandarddeviation_title_description#:#How much variation there was in the scores for this question
+ilexteevalquestionstandarddeviation_description#:#How much variation there was in the scores for this question
 ilexteevalquestiondiscriminationindex_title_long#:#Discrimination index
 ilexteevalquestiondiscriminationindex_title_short#:#Discrimination index
-ilexteevalquestiondiscriminationindex_title_description#:#this is the correlation between the score for this question and the score for the whole quiz. That is, for a good question, you hope that the students who score highly on this question are the same students who score highly on the whole test. Higher numbers are better
+ilexteevalquestiondiscriminationindex_description#:#this is the correlation between the score for this question and the score for the whole quiz. That is, for a good question, you hope that the students who score highly on this question are the same students who score highly on the whole test. Higher numbers are better
 show_test_evaluations#:#Show test evaluations
 show_question_evaluations#:#Show question evaluations
 evaluation_available_for_admins#:#Admins
