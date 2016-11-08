@@ -54,6 +54,7 @@ ilexteevalteststandarddeviation_only_one_participant#:#Standard deviation is tri
 ilexteevaltestcic_title_long#:#Coefficient of Internal Consistency (Cronbach's alpha)
 ilexteevaltestcic_title_short#:#CIC
 ilexteevaltestcic_description#:#Internal consistency is usually measured with Cronbach's alpha, a statistic calculated from the pairwise correlations between items. Internal consistency ranges between negative infinity and one. Coefficient alpha will be negative whenever there is greater within-subject variability than between-subject variability. If > 0.8 If a good value.
+ilexteevaltestcic_not_enough_users#:#Not enough test results available
 ilexteevalquestionfacilityindex_title_long#:#Facility Index
 ilexteevalquestionfacilityindex_title_short#:#Facility Index
 ilexteevalquestionfacilityindex_description#:#The percentage of students that answered the question correctly

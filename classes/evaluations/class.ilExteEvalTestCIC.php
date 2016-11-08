@@ -37,18 +37,30 @@ class ilExteEvalTestCIC extends ilExteEvalTest
 	public function calculateValue()
 	{
 		$cic = new ilExteStatValue;
+        $cic->type = ilExteStatValue::TYPE_PERCENTAGE;
+        $cic->precision = 4;
+        $cic->value = null;
 
 		//Get the data we need.
 		$data = array();
 		$number_of_questions = count($this->data->getAllQuestions());
 		$number_of_users = count($this->data->getAllParticipants());
 
+        if ($number_of_users < 2)
+        {
+            $cic->alert = ilExteStatValue::ALERT_UNKNOWN;
+            $cic->comment = $this->txt('not_enough_users');
+            return $cic;
+        }
+
 		//PART1
 		$sumofmarkvariance = 0;
-		foreach ($this->data->getAllQuestions() as $question_id => $question) {
+		foreach ($this->data->getAllQuestions() as $question_id => $question)
+        {
 			$full_answers = $this->data->getAnswersForQuestion($question_id);
 			$data["sum"][$question_id] = 0.0;
-			foreach ($full_answers as $answer) {
+			foreach ($full_answers as $answer)
+            {
 				$data["data"][$question_id][$answer->active_id] = $answer->reached_points;
 				$data["sum"][$question_id] += $answer->reached_points;
 			}
@@ -56,7 +68,8 @@ class ilExteEvalTestCIC extends ilExteEvalTest
 			$data["mean"][$question_id] = $question_average;
 
 			$full_answers_2 = $this->data->getAnswersForQuestion($question_id);
-			foreach ($full_answers_2 as $answer_2) {
+			foreach ($full_answers_2 as $answer_2)
+            {
 				$mark_difference = $answer_2->reached_points - $question_average;
 				$data["calc_markvariancesum"] += pow($mark_difference, 2);
 			}
@@ -71,7 +84,8 @@ class ilExteEvalTestCIC extends ilExteEvalTest
 		$mean = $this->getMeanOfReachedPoints();
 		$sum_of_mean = 0;
 
-		foreach ($full_participants as $active_id => $participant) {
+		foreach ($full_participants as $active_id => $participant)
+        {
 			//Calculate
 			$sum_of_mean += pow((float)$participant->current_reached_points - (float)$mean->value, 2);
 		}
@@ -81,9 +95,7 @@ class ilExteEvalTestCIC extends ilExteEvalTest
 		$k2 = $number_of_users * $m2 / ($number_of_users - 1);
 
 		//GET VALUE
-		$cic->type = ilExteStatValue::TYPE_PERCENTAGE;
 		$cic->value = (100 * $number_of_questions / ($number_of_questions - 1)) * (1 - ($sumofmarkvariance / $k2));;
-		$cic->precision = 4;
 
 		return $cic;
 	}

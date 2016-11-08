@@ -53,6 +53,7 @@ ilexteevalteststandarddeviation_description#:#Die Standardabweichung (s) ist die
 ilexteevalteststandarddeviation_only_one_participant#:#Die Standardabweichung ist trivial, wenn der Test nur einmal durchgeführt wurde.
 ilexteevaltestcic_title_long#:#Koeffizient interner Konsistenz (Cronbach's alpha)
 ilexteevaltestcic_title_short#:#Chronbach’s Alpha
+ilexteevaltestcic_not_enough_users#:#Nicht genügend Testergebnisse verfügbar
 ilexteevaltestcic_description#:#Chronbach’s alpha bezeichnet das Ausmaß, in dem alle Aufgaben das Gleiche messen. Der Koeffizient steigt mit zunehmendem Zusammenhang zwischen den Items. Der maximale Wert ist 1. Als Daumenregel wird ein Alpha von 0.7 und mehr gefordert.
 ilexteevalquestionfacilityindex_title_long#:#Schwierigkeitsindex (Beantwortbarkeit) der Frage
 ilexteevalquestionfacilityindex_title_short#:#Schwierigkeitsindex

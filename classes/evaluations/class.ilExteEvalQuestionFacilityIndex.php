@@ -69,13 +69,13 @@ class ilExteEvalQuestionFacilityIndex extends ilExteEvalQuestion
 
         if ($count == 0)
         {
-            $value->alert = ilExteStatValue::ALERT_MEDIUM;
+            $value->alert = ilExteStatValue::ALERT_UNKNOWN;
             $value->comment = $this->txt('no_answer_available');
             $value->value = null;
         }
         elseif ($highest_score == $lowest_score)
         {
-            $value->alert = ilExteStatValue::ALERT_MEDIUM;
+            $value->alert = ilExteStatValue::ALERT_UNKNOWN;
             $value->comment = $this->txt('all_scores_identical');
             $value->value = null;
         }
