@@ -70,7 +70,7 @@ class ilExteEvalQuestionFacilityIndex extends ilExteEvalQuestion
         if ($count == 0)
         {
             $value->alert = ilExteStatValue::ALERT_UNKNOWN;
-            $value->comment = $this->txt('no_answer_available');
+            $value->comment = $this->plugin->txt('not_enough_answers');
             $value->value = null;
         }
         elseif ($highest_score == $lowest_score)

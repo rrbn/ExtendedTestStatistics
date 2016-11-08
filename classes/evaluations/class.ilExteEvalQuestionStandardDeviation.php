@@ -39,19 +39,27 @@ class ilExteEvalQuestionStandardDeviation extends ilExteEvalQuestion
 
 		//Prepare variables
 		$value = new ilExteStatValue;
+        $value->type = ilExteStatValue::TYPE_PERCENTAGE;
+        $value->precision = 4;
+        $value->value = null;
+
 		$lowest_score = $question_data->maximum_points;
 		$highest_score = 0.0;
 		$sum_power_diff = 0.0;
 		$count = 0;
 
 		//Go throw answers to this questions to take results needed for calculations
-		foreach ($this->data->getAnswersForQuestion($a_question_id) as $answerObj) {
-			if ($answerObj->answered) {
+		foreach ($this->data->getAnswersForQuestion($a_question_id) as $answerObj)
+        {
+			if ($answerObj->answered)
+            {
 				//Get Lowest and highest score for this question
-				if ((float)$answerObj->reached_points < (float)$lowest_score) {
+				if ((float)$answerObj->reached_points < (float)$lowest_score)
+                {
 					$lowest_score = (float)$answerObj->reached_points;
 				}
-				if ((float)$answerObj->reached_points > (float)$highest_score) {
+				if ((float)$answerObj->reached_points > (float)$highest_score)
+                {
 					$highest_score = (float)$answerObj->reached_points;
 				}
 
@@ -61,24 +69,27 @@ class ilExteEvalQuestionStandardDeviation extends ilExteEvalQuestion
 			}
 		}
 
-		//Calculate Variance
-		$variance = (1 / ($count - 1)) * $sum_power_diff;
+        if ($count < 2)
+        {
+            $value->alert = ilExteStatValue::ALERT_UNKNOWN;
+            $value->comment = $this->plugin->txt('not_enough_answers');
+            return $value;
+        }
+        elseif ($highest_score == $lowest_score)
+        {
+            $standard_deviation = 0;
+        }
+		else
+        {
+            //Calculate Variance
+            $variance = (1 / ($count - 1)) * $sum_power_diff;
 
-		//Calculate Standard deviation
-		if ($highest_score - $lowest_score) {
+            //Calculate Standard deviation
 			$standard_deviation = 100 * (sqrt($variance) / ($highest_score - $lowest_score));
-		} else {
-			$standard_deviation = 0;
 		}
 
-		$value->type = ilExteStatValue::TYPE_PERCENTAGE;
+
 		$value->value = $standard_deviation;
-		$value->precision = 4;
-		if ($count == 0) {
-			$value->alert = ilExteStatValue::ALERT_MEDIUM;
-			$value->comment = $this->txt('no_answer_available');
-		}
-
 		return $value;
 	}
 

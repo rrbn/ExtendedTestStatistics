@@ -54,7 +54,7 @@ ilexteevalteststandarddeviation_only_one_participant#:#Standard deviation is tri
 ilexteevaltestcic_title_long#:#Coefficient of Internal Consistency (Cronbach's alpha)
 ilexteevaltestcic_title_short#:#CIC
 ilexteevaltestcic_description#:#Internal consistency is usually measured with Cronbach's alpha, a statistic calculated from the pairwise correlations between items. Internal consistency ranges between negative infinity and one. Coefficient alpha will be negative whenever there is greater within-subject variability than between-subject variability. If > 0.8 If a good value.
-ilexteevaltestcic_not_enough_users#:#Not enough test results available
+ilexteeveltestcic_sum_of_mean_is_zero#:#The sum of mean is zero
 ilexteevalquestionfacilityindex_title_long#:#Facility Index
 ilexteevalquestionfacilityindex_title_short#:#Facility Index
 ilexteevalquestionfacilityindex_description#:#The percentage of students that answered the question correctly
@@ -65,6 +65,8 @@ ilexteevalquestionstandarddeviation_description#:#How much variation there was i
 ilexteevalquestiondiscriminationindex_title_long#:#Discrimination index
 ilexteevalquestiondiscriminationindex_title_short#:#Discrimination index
 ilexteevalquestiondiscriminationindex_description#:#this is the correlation between the score for this question and the score for the whole quiz. That is, for a good question, you hope that the students who score highly on this question are the same students who score highly on the whole test. Higher numbers are better
+ilexteevalquestiondiscriminationindex_zero_variance_of_question#:#The variance of points is 0 for this question
+ilexteevalquestiondiscriminationindex_zero_variance_of_other_question#:#The variance of points is 0 for the other questions
 show_test_evaluations#:#Show test evaluations
 show_question_evaluations#:#Show question evaluations
 evaluation_available_for_admins#:#Admins
@@ -95,6 +97,8 @@ not_answered#:#Unanswered
 difficultyindex#:#Item difficulty
 item_total_correlation#:#Item-total correlation
 name_user_name#:#Name (Login)
+not_enough_test_results#:#Not enough test results available
+not_enough_answers#:#Not enough answers available
 ilexteevalquestionsinglechoices_title_long#:#List of chosen options
 ilexteevalquestionsinglechoices_title_short#:#Chosen Options
 ilexteevalquestionsinglechoices_description#:#Single Choice: shows a list of available answer options and the counts of their selection.

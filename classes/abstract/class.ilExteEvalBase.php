@@ -61,7 +61,7 @@ abstract class ilExteEvalBase
 	/**
 	 * @var ilExtendedTestStatisticsPlugin    plugin object for txt() method
 	 */
-	private $plugin;
+	protected $plugin;
 
 	/**
 	 * @var ilExteStatSourceData        source data for the calculations

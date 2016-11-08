@@ -49,7 +49,7 @@ class ilExteEvalTestCIC extends ilExteEvalTest
         if ($number_of_users < 2)
         {
             $cic->alert = ilExteStatValue::ALERT_UNKNOWN;
-            $cic->comment = $this->txt('not_enough_users');
+            $cic->comment = $this->plugin->txt('not_enough_test_results');
             return $cic;
         }
 
@@ -90,8 +90,14 @@ class ilExteEvalTestCIC extends ilExteEvalTest
 			$sum_of_mean += pow((float)$participant->current_reached_points - (float)$mean->value, 2);
 		}
 
-		$m2 = $sum_of_mean / $number_of_users;
+        if ($sum_of_mean == 0)
+        {
+            $cic->alert = ilExteStatValue::ALERT_UNKNOWN;
+            $cic->comment = $this->txt('sum_of_mean_is_zero');
+            return $cic;
+        }
 
+		$m2 = $sum_of_mean / $number_of_users;
 		$k2 = $number_of_users * $m2 / ($number_of_users - 1);
 
 		//GET VALUE

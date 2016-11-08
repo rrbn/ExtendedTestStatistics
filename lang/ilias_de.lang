@@ -53,7 +53,7 @@ ilexteevalteststandarddeviation_description#:#Die Standardabweichung (s) ist die
 ilexteevalteststandarddeviation_only_one_participant#:#Die Standardabweichung ist trivial, wenn der Test nur einmal durchgeführt wurde.
 ilexteevaltestcic_title_long#:#Koeffizient interner Konsistenz (Cronbach's alpha)
 ilexteevaltestcic_title_short#:#Chronbach’s Alpha
-ilexteevaltestcic_not_enough_users#:#Nicht genügend Testergebnisse verfügbar
+ilexteeveltestcic_sum_of_mean_is_zero#:#Die Mittelwertsumme ist 0
 ilexteevaltestcic_description#:#Chronbach’s alpha bezeichnet das Ausmaß, in dem alle Aufgaben das Gleiche messen. Der Koeffizient steigt mit zunehmendem Zusammenhang zwischen den Items. Der maximale Wert ist 1. Als Daumenregel wird ein Alpha von 0.7 und mehr gefordert.
 ilexteevalquestionfacilityindex_title_long#:#Schwierigkeitsindex (Beantwortbarkeit) der Frage
 ilexteevalquestionfacilityindex_title_short#:#Schwierigkeitsindex
@@ -65,6 +65,8 @@ ilexteevalquestionstandarddeviation_description#:#Die Standardabweichung (s) ist
 ilexteevalquestiondiscriminationindex_title_long#:#Trennschärfe der Frage im Test
 ilexteevalquestiondiscriminationindex_title_short#:#Trennschärfe
 ilexteevalquestiondiscriminationindex_description#:#Über die Trennschärfe lässt sich ermitteln, wie gut eine Frage zwischen Personen mit niedriger und hoher Merkmalsausprägung trennt. Das Maß erfasst den Zusammenhang der einzelnen Testwerte mit dem endgültigen Testwert. Angestrebt werden Trennschärfen von  0,4 bis 0,7. Bei einer Trennschärfe < 0 wird die Frage von „schlechten“ Testpersonen gelöst und von „guten“ Testpersonen nicht.
+ilexteevalquestiondiscriminationindex_zero_variance_of_question#:#Die Punktevarianz der Frage ist 0
+ilexteevalquestiondiscriminationindex_zero_variance_of_other_question#:#Die Punktevarianz der übrigen Fragen ist 0
 show_test_evaluations#:#Testauswertungen
 show_question_evaluations#:#Fragenauswertungen
 evaluation_available_for_admins#:#Administratoren
@@ -95,6 +97,8 @@ not_answered#:#Nicht beantwortet
 difficultyindex#:#Itemschwierigkeit
 item_total_correlation#:#Gesamtkorrelation der Items
 name_user_name#:#Benutzername (Login)
+not_enough_test_results#:#Nicht genügend Testergebnisse verfügbar
+not_enough_answers#:#Nicht genügend Antworten verfügbar
 ilexteevalquestionsinglechoices_title_long#:#Liste der gewählten Optionen
 ilexteevalquestionsinglechoices_title_short#:#Optionswahlen
 ilexteevalquestionsinglechoices_description#:#Single Choice: zeigt eine Liste der Antwortoptionen mit Anzahl ihrer Auswahlen.
