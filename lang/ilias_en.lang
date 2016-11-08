@@ -93,3 +93,11 @@ not_answered#:#Unanswered
 difficultyindex#:#Item difficulty
 item_total_correlation#:#Item-total correlation
 name_user_name#:#Name (Login)
+ilexteevalquestionsinglechoices_title_long#:#List of chosen options
+ilexteevalquestionsinglechoices_title_short#:#Chosen Options
+ilexteevalquestionsinglechoices_description#:#Single Choice: shows a list of available answer options and the counts of their selection.
+ilexteevalquestionsinglechoices_index#:#Index
+ilexteevalquestionsinglechoices_choice#:#Answer option
+ilexteevalquestionsinglechoices_points#:#Points
+ilexteevalquestionsinglechoices_count#:#Count
+ilexteevalquestionsinglechoices_answer_options#:#Answer Options

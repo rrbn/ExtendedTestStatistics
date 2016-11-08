@@ -21,10 +21,10 @@ answers_count_description#:#Anzahl Nutzer, die diese Frage beantwortet haben
 average_points#:#Punkte
 average_points_description#:#Mittlere erreichte Punktzahl aller Nutzer, die diese Frage zugeteilt bekamen
 average_percentage#:#Prozent
-average_percentage_description#:#Mittlere Prozent der maximalen Punkte, die von Nutzern erreicht wurden, welche diese Frage präsentiert bekamen.
+average_percentage_description#:#Mittlere Prozent der maximalen Punkte, die von Nutzern erreicht wurden, welche diese Frage zugeteilt bekamen
 ilexteevaltestdebug_title_long#:#Gefilterte Quelldaten
 ilexteevaltestdebug_title_short#:#Quelldaten
-ilexteevaltestdebug_description#:#Testausgabe der gefilterten Quelldaten für alle Auswertungen
+ilexteevaltestdebug_description#:#Erzeugt eine Testausgabe der gefilterten Quelldaten für alle Auswertungen.
 ilexteevaltestdebug_participants_title#:#Teilnehmer
 ilexteevaltestdebug_participants_description#:#Liste aller gefilterten Teilnehmerdaten
 ilexteevaltestdebug_questions_title#:#Fragen
@@ -33,11 +33,11 @@ ilexteevaltestdebug_answers_title#:#Antworten
 ilexteevaltestdebug_answers_description#:#Liste aller gefilterten Antwortdaten
 ilexteevaltestexample_title_long#:#Beispielauswertung zum Test
 ilexteevaltestexample_title_short#:#Beispiel
-ilexteevaltestexample_description#:#Diese Beispiel-Auswerung zeigt nur einen statischen Wert
+ilexteevaltestexample_description#:#Diese Beispiel-Auswerung zeigt nur einen statischen Wert.
 ilexteevaltestexample_no_answer_available#:#Keine Antwort verfügbar
-ilexteevalquestionexample_title_long#:#Antwortliste
+ilexteevalquestionexample_title_long#:#Liste der Antwort-Bewertungen (Beispiel)
 ilexteevalquestionexample_title_short#:#Antworten
-ilexteevalquestionexample_description#:#Anzahl der wirklich abgegebenen Antworten für diese Frage
+ilexteevalquestionexample_description#:#Zeigt eine Liste der Bewertung abgegebener Antworten (erreichte Punkte, manuelle Bewertung)
 ilexteevalquestionexample_no_answer_available#:#Keine Antwort verfügbar
 ilexteevalquestionexample_answers_title#:#Antworten
 ilexteevalquestionexample_answers_description#:#Liste der gefilterten Antwortdaten
@@ -93,3 +93,11 @@ not_answered#:#Nicht beantwortet
 difficultyindex#:#Itemschwierigkeit
 item_total_correlation#:#Gesamtkorrelation der Items
 name_user_name#:#Benutzername (Login)
+ilexteevalquestionsinglechoices_title_long#:#Liste der gewählten Optionen
+ilexteevalquestionsinglechoices_title_short#:#Optionswahlen
+ilexteevalquestionsinglechoices_description#:#Single Choice: zeigt eine Liste der Antwortoptionen mit Anzahl ihrer Auswahlen.
+ilexteevalquestionsinglechoices_index#:#Index
+ilexteevalquestionsinglechoices_choice#:#Antwortoption
+ilexteevalquestionsinglechoices_points#:#Punkte
+ilexteevalquestionsinglechoices_count#:#Anzahl
+ilexteevalquestionsinglechoices_answer_options#:#Antwortoptionen
