@@ -100,7 +100,7 @@ class ilExteEvalQuestionSingleChoices extends ilExteEvalQuestion
         {
            $details->rows[] = array(
                 'index' => ilExteStatValue::_create($option->getOrder(), ilExteStatValue::TYPE_NUMBER, 0),
-                'choice' => ilExteStatValue::_create($option->getAnswertext(), ilExteStatValue::TYPE_NUMBER, 0),
+                'choice' => ilExteStatValue::_create($option->getAnswertext(), ilExteStatValue::TYPE_TEXT, 0),
                 'points' => ilExteStatValue::_create($option->getPoints(), ilExteStatValue::TYPE_NUMBER, 2),
                 'count' => ilExteStatValue::_create($option_count[$key], ilExteStatValue::TYPE_NUMBER, 0)
             );

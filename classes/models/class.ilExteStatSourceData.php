@@ -174,19 +174,22 @@ class ilExteStatSourceData
 	{
 		global $ilDB;
 
-		$type_translations =& $this->object->getQuestionTypeTranslations();
+		$type_translations = $this->object->getQuestionTypeTranslations();
 
-		if (!empty($this->questions)) {
+		if (!empty($this->questions))
+        {
 			$query = "
                 SELECT q.question_id, t.type_tag FROM qpl_questions q
                 INNER JOIN qpl_qst_type t ON t.question_type_id = q.question_type_fi
                 WHERE " . $ilDB->in('q.question_id', array_keys($this->questions), false, 'integer');
-		}
-		$result = $ilDB->query($query);
 
-		while ($row = $ilDB->fetchAssoc($result)) {
-			$this->questions[$row['question_id']]->question_type = $row['type_tag'];
-			$this->questions[$row['question_id']]->question_type_label = $type_translations[$row['type_tag']];
+            $result = $ilDB->query($query);
+            while ($row = $ilDB->fetchAssoc($result))
+            {
+                $this->questions[$row['question_id']]->question_type = $row['type_tag'];
+                $this->questions[$row['question_id']]->question_type_label = $type_translations[$row['type_tag']];
+            }
+
 		}
 	}
 
