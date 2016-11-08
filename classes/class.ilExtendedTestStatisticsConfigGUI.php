@@ -186,9 +186,10 @@ class ilExtendedTestStatisticsConfigGUI extends ilPluginConfigGUI
 
 		foreach ($this->config->getEvaluationClasses("test") as $evaluation_class => $value)
 		{
-			$select_input = new ilSelectInputGUI($this->plugin->txt(strtolower($evaluation_class) . "_title_short"), $evaluation_class);
+			$select_input = new ilSelectInputGUI($this->plugin->txt(strtolower($evaluation_class) . "_title_long"), $evaluation_class);
 			$select_input->setOptions(array("admin" => $this->plugin->txt("evaluation_available_for_admins"), "users" => $this->plugin->txt("evaluation_available_for_users"), "none" => $this->plugin->txt("evaluation_available_for_noone")));
 			$select_input->setValue($value);
+            $select_input->setInfo($this->plugin->txt(strtolower($evaluation_class) . "_description"));
 			$form->addItem($select_input);
 		}
 
@@ -209,9 +210,10 @@ class ilExtendedTestStatisticsConfigGUI extends ilPluginConfigGUI
 		// or users or not available in test of current platform
 		foreach ($this->config->getEvaluationClasses("question") as $evaluation_class => $value)
 		{
-			$select_input = new ilSelectInputGUI($this->plugin->txt(strtolower($evaluation_class) . "_title_short"), $evaluation_class);
+			$select_input = new ilSelectInputGUI($this->plugin->txt(strtolower($evaluation_class) . "_title_long"), $evaluation_class);
 			$select_input->setOptions(array("admin" => $this->plugin->txt("evaluation_available_for_admins"), "users" => $this->plugin->txt("evaluation_available_for_users"), "none" => $this->plugin->txt("evaluation_available_for_noone")));
 			$select_input->setValue($value);
+            $select_input->setInfo($this->plugin->txt(strtolower($evaluation_class) . "_description"));
 			$form->addItem($select_input);
 		}
 
