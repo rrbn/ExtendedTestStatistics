@@ -107,3 +107,11 @@ ilexteevalquestionsinglechoices_choice#:#Answer option
 ilexteevalquestionsinglechoices_points#:#Points
 ilexteevalquestionsinglechoices_count#:#Count
 ilexteevalquestionsinglechoices_answer_options#:#Answer Options
+ilexteevalquestionmultiplechoices_title_long#:#List of chosen options
+ilexteevalquestionmultiplechoices_title_short#:#Chosen Options
+ilexteevalquestionmultiplechoices_description#:#Multiple Choice: shows a list of available answer options and the counts of their selection.
+ilexteevalquestionmultiplechoices_index#:#Index
+ilexteevalquestionmultiplechoices_choice#:#Answer option
+ilexteevalquestionmultiplechoices_points#:#Points
+ilexteevalquestionmultiplechoices_count#:#Count
+ilexteevalquestionmultiplechoices_answer_options#:#Answer Options

@@ -107,3 +107,11 @@ ilexteevalquestionsinglechoices_choice#:#Antwortoption
 ilexteevalquestionsinglechoices_points#:#Punkte
 ilexteevalquestionsinglechoices_count#:#Anzahl
 ilexteevalquestionsinglechoices_answer_options#:#Antwortoptionen
+ilexteevalquestionmultiplechoices_title_long#:#Liste der gewählten Optionen
+ilexteevalquestionmultiplechoices_title_short#:#Optionswahlen
+ilexteevalquestionmultiplechoices_description#:#Multiple Choice: zeigt eine Liste der Antwortoptionen mit Anzahl ihrer Auswahlen.
+ilexteevalquestionmultiplechoices_index#:#Index
+ilexteevalquestionmultiplechoices_choice#:#Antwortoption
+ilexteevalquestionmultiplechoices_points#:#Punkte
+ilexteevalquestionmultiplechoices_count#:#Anzahl
+ilexteevalquestionmultiplechoices_answer_options#:#Antwortoptionen
