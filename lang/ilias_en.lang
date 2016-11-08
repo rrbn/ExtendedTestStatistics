@@ -57,6 +57,7 @@ ilexteevaltestcic_description#:#Internal consistency is usually measured with Cr
 ilexteevalquestionfacilityindex_title_long#:#Facility Index
 ilexteevalquestionfacilityindex_title_short#:#Facility Index
 ilexteevalquestionfacilityindex_description#:#The percentage of students that answered the question correctly
+ilexteevalquestionfacilityindex_all_scores_identical#:#All students reached the same score for this question
 ilexteevalquestionstandarddeviation_title_long#:#Standard deviation
 ilexteevalquestionstandarddeviation_title_short#:#Standard deviation
 ilexteevalquestionstandarddeviation_description#:#How much variation there was in the scores for this question

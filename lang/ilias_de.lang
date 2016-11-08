@@ -57,6 +57,7 @@ ilexteevaltestcic_description#:#Chronbach’s alpha bezeichnet das Ausmaß, in d
 ilexteevalquestionfacilityindex_title_long#:#Schwierigkeitsindex (Beantwortbarkeit) der Frage
 ilexteevalquestionfacilityindex_title_short#:#Schwierigkeitsindex
 ilexteevalquestionfacilityindex_description#:#Beim Schwierigkeitsindex p werden die Punkte, die bei dieser Frage von allen Testpersonen tatsächlich erreicht wurden, zusammengezählt und durch die maximal erreichbare Punktsumme aller Testpersonen bei diesem Item dividiert. Dieser Quotient wird mit 100 multipliziert. Eine Schwierigkeit von p=0 bedeutet, dass die Aufgabe von niemandem gelöst wurde und damit zu schwer war. Ganz einfach war sie, wenn p=100 ist. p sollte im Bereich 0,4 – 0,85 streuen.
+ilexteevalquestionfacilityindex_all_scores_identical#:#Bei dieser Frage haben alle Teilnehmer den gleichen Score eerreicht.
 ilexteevalquestionstandarddeviation_title_long#:#Standardabweichung der erreichten Punkte für diese Frage
 ilexteevalquestionstandarddeviation_title_short#:#Standardabweichung
 ilexteevalquestionstandarddeviation_description#:#Die Standardabweichung (s) ist die durchschnittliche Entfernung aller gemessenen Einzelwerte eines Merkmals vom Durchschnitt.

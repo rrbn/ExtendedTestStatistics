@@ -39,37 +39,51 @@ class ilExteEvalQuestionFacilityIndex extends ilExteEvalQuestion
 	 */
 	public function calculateValue($a_question_id)
 	{
-		//Get Data
+        //Get Data
 		$question_data = $this->data->getQuestion($a_question_id);
 		$average_points = $question_data->average_points;
 
-		//Get Lowest and highest score for this question
-		$value = new ilExteStatValue;
+        //Get Lowest and highest score for this question
 		$lowest_score = $question_data->maximum_points;
 		$highest_score = 0.0;
 		$count = 0;
-		foreach ($this->data->getAnswersForQuestion($a_question_id) as $answerObj) {
+		foreach ($this->data->getAnswersForQuestion($a_question_id) as $answerObj)
+        {
 			if ($answerObj->answered) {
-				if ((float)$answerObj->reached_points < (float)$lowest_score) {
+				if ((float)$answerObj->reached_points < (float)$lowest_score)
+                {
 					$lowest_score = (float)$answerObj->reached_points;
 				}
-				if ((float)$answerObj->reached_points > (float)$highest_score) {
+				if ((float)$answerObj->reached_points > (float)$highest_score)
+                {
 					$highest_score = (float)$answerObj->reached_points;
 				}
 			}
 			$count++;
 		}
 
-		//Calculate facility index
-		$facility_index = (($average_points - $lowest_score) / ($highest_score - $lowest_score));
+        //Calculate facility index, if possible
+        $value = new ilExteStatValue;
+        $value->type = ilExteStatValue::TYPE_PERCENTAGE;
+        $value->precision = 4;
 
-		$value->type = ilExteStatValue::TYPE_PERCENTAGE;
-		$value->value = $facility_index;
-		$value->precision = 4;
-		if ($count == 0) {
-			$value->alert = ilExteStatValue::ALERT_MEDIUM;
-			$value->comment = $this->txt('no_answer_available');
-		}
+        if ($count == 0)
+        {
+            $value->alert = ilExteStatValue::ALERT_MEDIUM;
+            $value->comment = $this->txt('no_answer_available');
+            $value->value = null;
+        }
+        elseif ($highest_score == $lowest_score)
+        {
+            $value->alert = ilExteStatValue::ALERT_MEDIUM;
+            $value->comment = $this->txt('all_scores_identical');
+            $value->value = null;
+        }
+        else
+        {
+            $facility_index = (($average_points - $lowest_score) / ($highest_score - $lowest_score));
+            $value->value = $facility_index;
+        }
 
 		return $value;
 	}
