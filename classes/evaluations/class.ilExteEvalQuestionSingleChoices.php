@@ -89,7 +89,7 @@ class ilExteEvalQuestionSingleChoices extends ilExteEvalQuestion
 
             while ($data = $ilDB->fetchAssoc($result))
             {
-                if (!empty($data["value1"] && isset($options[$data["value1"]])))
+                if (!empty($data["value1"]) && isset($options[$data["value1"]]))
                 {
                     $option_count[$data["value1"]]++;
                 }
