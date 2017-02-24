@@ -17,7 +17,7 @@ class ilExteStatValueGUI
 
 	/**
 	 * ilExteStatValueGUI constructor.
-	 * @param ilExtendedTestStatisticsPlugin		the plugin object
+	 * @param ilExtendedTestStatisticsPlugin	$a_plugin
 	 */
 	public function __construct($a_plugin)
 	{

@@ -22,25 +22,6 @@ average_points#:#Punkte
 average_points_description#:#Mittlere erreichte Punktzahl aller Nutzer, die diese Frage zugeteilt bekamen
 average_percentage#:#Prozent
 average_percentage_description#:#Mittlere Prozent der maximalen Punkte, die von Nutzern erreicht wurden, welche diese Frage zugeteilt bekamen
-ilexteevaltestdebug_title_long#:#Gefilterte Quelldaten
-ilexteevaltestdebug_title_short#:#Quelldaten
-ilexteevaltestdebug_description#:#Erzeugt eine Testausgabe der gefilterten Quelldaten für alle Auswertungen.
-ilexteevaltestdebug_participants_title#:#Teilnehmer
-ilexteevaltestdebug_participants_description#:#Liste aller gefilterten Teilnehmerdaten
-ilexteevaltestdebug_questions_title#:#Fragen
-ilexteevaltestdebug_questions_description#:#Liste aller gefilterten Fragendaten
-ilexteevaltestdebug_answers_title#:#Antworten
-ilexteevaltestdebug_answers_description#:#Liste aller gefilterten Antwortdaten
-ilexteevaltestexample_title_long#:#Beispielauswertung zum Test
-ilexteevaltestexample_title_short#:#Beispiel
-ilexteevaltestexample_description#:#Diese Beispiel-Auswerung zeigt nur einen statischen Wert.
-ilexteevaltestexample_no_answer_available#:#Keine Antwort verfügbar
-ilexteevalquestionexample_title_long#:#Liste der Antwort-Bewertungen (Beispiel)
-ilexteevalquestionexample_title_short#:#Antworten
-ilexteevalquestionexample_description#:#Zeigt eine Liste der Bewertung abgegebener Antworten (erreichte Punkte, manuelle Bewertung)
-ilexteevalquestionexample_no_answer_available#:#Keine Antwort verfügbar
-ilexteevalquestionexample_answers_title#:#Antworten
-ilexteevalquestionexample_answers_description#:#Liste der gefilterten Antwortdaten
 ilexteevaltestmedian_title_long#:#Median der erreichten Punkte
 ilexteevaltestmedian_title_short#:#Median
 ilexteevaltestmedian_description#:#Der Median wird für Daten genutzt, die eine „natürliche“ Reihenfolge bilden und mit Zahlenwerten versehen werden können. Die Mitte dieser geordneten Datenreihe ist der Median. Anders als der Mittelwert ist der Media unempfindlich gegenüber Extremwerten.
@@ -71,7 +52,7 @@ show_test_evaluations#:#Testauswertungen
 show_question_evaluations#:#Fragenauswertungen
 evaluation_available_for_admins#:#Administratoren
 evaluation_available_for_users#:#Nutzer
-evaluation_available_for_noone#:#Nicht verfügbar
+evaluation_available_for_none#:#Nicht verfügbar
 test_evaluation_settings#:#Verfügbarkeit der Testauswertungen
 question_evaluation_settings#:#Verfügbarkeit der Fragenauswertungen
 test_settings_saved#:#Die Verfügbarkeit der Testauswertungen wurde gespeichert.

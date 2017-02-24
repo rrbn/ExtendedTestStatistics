@@ -20,6 +20,11 @@ class ilExtendedTestStatistics
 	 */
 	protected $plugin;
 
+	/**
+	 * @var	ilExtendedTestStatisticsConfig;
+	 */
+	protected $config;
+
 	/*
 	 * @var ilObjTest
 	 */
@@ -35,7 +40,6 @@ class ilExtendedTestStatistics
 	 */
 	protected $evaluations = array();
 
-	protected $config;
 
 	/**
 	 * ilExtendedTestStatistics constructor.
@@ -47,6 +51,10 @@ class ilExtendedTestStatistics
 	{
 		$this->plugin = $a_plugin;
 		$this->object = $a_test_obj;
+
+		//Set config object
+		$this->plugin->includeClass("class.ilExtendedTestStatisticsConfig.php");
+		$this->config = new ilExtendedTestStatisticsConfig($this->plugin);
 	}
 
 	/**
@@ -75,47 +83,24 @@ class ilExtendedTestStatistics
 
 	/**
 	 * Load the relevant evaluation objects
-	 * @param   string    level of the statistics, e.g. self::LEVEL_TEST
-	 * @param   string  id of the evaluation to load
-	 * @param   string
+	 * @param   string    $a_level	level of the statistics, e.g. self::LEVEL_TEST
+	 * @param   string  	$a_id	id of the evaluation to load
 	 */
 	public function loadEvaluations($a_level = '', $a_id = '')
 	{
-		global $rbacsystem, $ilUser, $tree;
-
 		$this->evaluations = array();
 
-		//Set config object
-		$this->plugin->includeClass("config/class.ilExtendedTestStatisticsConfig.php");
-		$this->config = new ilExtendedTestStatisticsConfig($this->plugin);
-		$classnames = $this->config->getEvaluationClasses();
-
-		$this->plugin->includeClass("config/class.ilExtendedTestStatisticsConfig.php");
-
-		//Check visibility of admin panel in order to check if it is admin of the system
-		$test_and_assessments_ref_id = 0;
-		$objects = $tree->getChilds(SYSTEM_FOLDER_ID);
-		foreach ($objects as $object)
-		{
-			if ($object["type"] == "assf")
-			{
-				$test_and_assessments_ref_id = $object["ref_id"];
-			}
-		}
-
-		if ($test_and_assessments_ref_id)
-		{
-			$admin = $rbacsystem->checkAccess("visible", $test_and_assessments_ref_id);
-		} else
-		{
-			$admin = FALSE;
-		}
+		$isAdmin = $this->isAdmin();
 
 		/** @var ilExteEvalBase $class (not the class, but just its name) */
-		foreach ($classnames as $class => $value)
+		foreach ($this->config->getEvaluationClasses() as $class => $availability)
 		{
 			$fits = true;
 
+			// check configured availability
+			$fits = $fits && ($isAdmin || $availability == ilExtendedTestStatisticsConfig::FOR_USER);
+
+			// check evaluation type
 			switch ($a_level)
 			{
 				case self::LEVEL_TEST:
@@ -126,35 +111,32 @@ class ilExtendedTestStatistics
 					break;
 			}
 
+			// check test type
 			if ($this->object->isFixedTest())
 			{
 				$fits = $fits && $class::_isTestTypeAllowed(ilExteEvalBase::TEST_TYPE_FIXED);
-			} elseif ($this->object->isRandomTest())
+			}
+			elseif ($this->object->isRandomTest())
 			{
 				$fits = $fits && $class::_isTestTypeAllowed(ilExteEvalBase::TEST_TYPE_RANDOM);
-			} elseif ($this->object->isDynamicTest())
+			}
+			elseif ($this->object->isDynamicTest())
 			{
 				$fits = $fits && $class::_isTestTypeAllowed(ilExteEvalBase::TEST_TYPE_DYNAMIC);
 			}
 
+			// check evaluation id
 			if (!empty($a_id))
 			{
 				$fits = $fits && ($class::_getId() == $a_id);
 			}
 
+			// instantiate the evaluation object
 			if ($fits)
 			{
-				//Add if roles is correct
-				if ($value == "admin" && $admin)
-				{
-					$this->evaluations[$class::_getId()] = new $class($this->data, $this->plugin);
-				} elseif ($value == "users")
-				{
-					$this->evaluations[$class::_getId()] = new $class($this->data, $this->plugin);
-				}
+				$this->evaluations[$class::_getId()] = new $class($this->data, $this->plugin);
 			}
 		}
-
 	}
 
 	/**
@@ -169,9 +151,9 @@ class ilExtendedTestStatistics
 
 	/**
 	 * Get a subset of the loaded evaluations
-	 * @param   string  provided result, e.g. self::PROVIDES_VALUE
-	 * @param   string  question type (for question evaluations)
-	 * @return  ilExteEvalBase[]    indexed by evaluation id
+	 * @param   string  $a_provides			provided result, e.g. self::PROVIDES_VALUE or empty for all
+	 * @param   string  $a_question_type	question type (for question evaluations) or empty for all
+	 * @return  ilExteEvalBase[]    		indexed by evaluation id
 	 */
 	public function getEvaluations($a_provides = '', $a_question_type = '')
 	{
@@ -205,38 +187,22 @@ class ilExtendedTestStatistics
 		return $selected;
 	}
 
-
 	/**
-	 * checks wether a user may invoke a command or not
-	 * (this method is called by ilAccessHandler::checkAccess)
-	 *
-	 * @param    string $a_cmd command (not permission!)
-	 * @param    string $a_permission permission
-	 * @param    int $a_ref_id reference id
-	 * @param    int $a_obj_id object id
-	 * @param    int $a_user_id user id (if not provided, current user is taken)
-	 *
-	 * @return    boolean        true, if everything is ok
+	 * Check if the current user is administrator of the test system
+	 * @return bool
 	 */
-	function _checkAccess($a_permission, $a_ref_id, $a_user_id = "")
+	private function isAdmin()
 	{
-		global $ilUser, $rbacsystem, $ilAccess;
-		if ($a_user_id == "")
-		{
-			$a_user_id = $ilUser->getId();
-		}
-		switch ($a_permission)
-		{
-			case "visible":
-			case "read":
-				if (!$rbacsystem->checkAccessOfUser($a_user_id, 'write', "", $a_ref_id))
-				{
-					return false;
-				}
-				break;
-		}
+		global $tree, $rbacsystem;
 
-		return true;
+		foreach ($tree->getChilds(SYSTEM_FOLDER_ID) as $object)
+		{
+			if ($object["type"] == "assf")
+			{
+				return $rbacsystem->checkAccess("visible", $object["ref_id"]);
+			}
+		}
+		return false;
 	}
 }
 

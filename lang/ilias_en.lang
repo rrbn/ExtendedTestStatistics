@@ -22,25 +22,6 @@ average_points#:#Points
 average_points_description#:#Average points reached by the user who git this question assigned
 average_percentage#:#Percent
 average_percentage_description#:#Average percentage of points reached by the user who git this question assigned
-ilexteevaltestdebug_title_long#:#Filtered source data
-ilexteevaltestdebug_title_short#:#Source Data
-ilexteevaltestdebug_description#:#Debug output of the filtered source data
-ilexteevaltestdebug_participants_title#:#Participants
-ilexteevaltestdebug_participants_description#:#List of all filtered participant data
-ilexteevaltestdebug_questions_title#:#Questions
-ilexteevaltestdebug_questions_description#:#List of all filtered question data
-ilexteevaltestdebug_answers_title#:#Answers
-ilexteevaltestdebug_answers_description#:#List of all filtered answer data
-ilexteevaltestexample_title_long#:#Example Test Evaluation
-ilexteevaltestexample_title_short#:#Example
-ilexteevaltestexample_description#:#Example Test Evaluation Description
-ilexteevaltestexample_no_answer_available#:#No answer available
-ilexteevalquestionexample_title_long#:#Answer List
-ilexteevalquestionexample_title_short#:#Answers
-ilexteevalquestionexample_description#:#This counts the real answers for the question
-ilexteevalquestionexample_no_answer_available#:#No answer available
-ilexteevalquestionexample_answers_title#:#Answers
-ilexteevalquestionexample_answers_description#:#List of all filtered answer data
 ilexteevaltestmedian_title_long#:#Median Score
 ilexteevaltestmedian_title_short#:#Median
 ilexteevaltestmedian_description#:#Sort the list of reached points on this test and take the middle value if the total attemps are odd or the average between the two middle ones if the total attemps are even.
@@ -71,7 +52,7 @@ show_test_evaluations#:#Show test evaluations
 show_question_evaluations#:#Show question evaluations
 evaluation_available_for_admins#:#Admins
 evaluation_available_for_users#:#Users
-evaluation_available_for_noone#:#Not available
+evaluation_available_for_none#:#Not available
 test_evaluation_settings#:#Test evaluations settings
 question_evaluation_settings#:#Question evaluations settings
 test_settings_saved#:#Test settings saved

@@ -74,46 +74,75 @@ abstract class ilExteEvalBase
 	# region API (static)
 	#####################
 
+	/**
+	 * @return string	class id (class name)
+	 */
 	final public static function _getId()
 	{
 		return strtolower(get_called_class());
 	}
 
+	/**
+	 * @return bool
+	 */
 	public static function _isTestEvaluation()
 	{
 		return false;
 	}
 
+	/**
+	 * @return bool
+	 */
 	public static function _isQuestionEvaluation()
 	{
 		return false;
 	}
 
+	/**
+	 * @return array
+	 */
 	final public static function _allowedTestTypes()
 	{
 		return static::$allowed_test_types;
 	}
 
+	/**
+	 * @return array
+	 */
 	final public static function _allowedQuestionTypes()
 	{
 		return static::$allowed_question_types;
 	}
 
+	/**
+	 * @param string	$a_type		test type
+	 * @return bool
+	 */
 	final public static function _isTestTypeAllowed($a_type)
 	{
 		return empty(static::$allowed_test_types) || in_array($a_type, static::$allowed_test_types);
 	}
 
+	/**
+	 * @param string	$a_type		classname of question type
+	 * @return bool
+	 */
 	final public static function _isQuestionTypeAllowed($a_type)
 	{
 		return empty(static::$allowed_question_types) || in_array($a_type, static::$allowed_question_types);
 	}
 
+	/**
+	 * @return bool	evaluation provides a single value
+	 */
 	final public static function _providesValue()
 	{
 		return static::$provides_value;
 	}
 
+	/**
+	 * @return bool	evaluation provides an array of details
+	 */
 	final public static function _providesDetails()
 	{
 		return static::$provides_details;

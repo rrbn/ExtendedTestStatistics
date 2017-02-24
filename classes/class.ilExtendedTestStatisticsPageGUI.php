@@ -47,7 +47,7 @@ class ilExtendedTestStatisticsPageGUI
 	}
 
 	/**
-	* Handles all commmands, default is "show"
+	* Handles all commands, default is "show"
 	*/
 	public function executeCommand()
 	{

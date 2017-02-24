@@ -1,0 +1,156 @@
+<?php
+
+/**
+ * Copyright (c) 2016 Institut fuer Lern-Innovation, Friedrich-Alexander-Universitae Erlangen-Nuernberg
+ * GPLv3, see LICENSE
+ */
+
+/**
+ * Extended Test Statistics plugin config class
+ *
+ * @author Fred Neumann <fred.neumann@ili.fau.de>
+ * @author Jesus Copado <jesus.copado@ili.fau.de>
+ *
+ */
+class ilExtendedTestStatisticsConfig
+{
+	/* Availabilities */
+	const FOR_ADMIN = 'admin';
+	const FOR_USER = 'user';
+	const FOR_NONE = 'none';
+
+	/**
+	 * ilExtendedTestStatisticsConfig constructor.
+	 * @param ilPlugin|string $a_plugin_object
+	 */
+	public function __construct($a_plugin_object = "")
+	{
+		$this->plugin = $a_plugin_object;
+	}
+
+	/**
+	 * Get the availability options that can be chosen
+	 * @return array
+	 */
+	public function getAvailabilityOptions()
+	{
+		return array(
+			self::FOR_ADMIN => $this->plugin->txt("evaluation_available_for_admins"),
+			self::FOR_USER => $this->plugin->txt("evaluation_available_for_users"),
+			self::FOR_NONE => $this->plugin->txt("evaluation_available_for_none"));
+	}
+
+	/**
+	 * Read the availability settings from the database
+	 * @return array	classname => availability
+	 */
+	public function readAvailabilities()
+	{
+		global $ilDB;
+
+		$result = $ilDB->query("SELECT * FROM etstat_settings");
+		$availabilities = array();
+		while ($row = $ilDB->fetchAssoc($result))
+		{
+			$availabilities[$row["evaluation_name"]] = $row["value"];
+		}
+		return $availabilities;
+	}
+
+	/**
+	 * Write the availability of an evaluation to the database
+	 * @param string $evaluation_name	classname of the evaluation
+	 * @param string $value				availability (admin, user, none)
+	 */
+	public function writeAvailability($evaluation_name, $value)
+	{
+		global $ilDB;
+
+		$ilDB->replace('etstat_settings',
+			array('evaluation_name' => array('text', $evaluation_name)),
+			array('value' => array("text", $value))
+		);
+	}
+
+	/**
+	 * Get the available evaluation classes
+	 * @param string $a_type	evaluation type (test or question)
+	 * @return array			classname => availability (admin, user or none)
+	 */
+	public function getEvaluationClasses($a_type = "")
+	{
+		$this->plugin->includeClass("abstract/class.ilExteEvalBase.php");
+		$this->plugin->includeClass("abstract/class.ilExteEvalQuestion.php");
+		$this->plugin->includeClass("abstract/class.ilExteEvalTest.php");
+
+		$return_classes = array(
+			'question' => array(),
+			'test' => array()
+		);
+
+		// scan the existing_classes
+		$availabilities = $this->readAvailabilities();
+		$classes = $this->getIncludedBuiltinEvaluations();
+		foreach ($classes as $class)
+		{
+			if (isset($availabilities[$class]))
+			{
+				$availability = $availabilities[$class];
+			}
+			else
+			{
+				// take admin access as default and write this setting
+				$availability = self::FOR_ADMIN;
+				$this->writeAvailability($class, $availability);
+			}
+
+			if (is_subclass_of($class, 'ilExteEvalQuestion'))
+			{
+				$return_classes['question'][$class] = $availability;
+			}
+			elseif (is_subclass_of($class, 'ilExteEvalTest'))
+			{
+				$return_classes['test'][$class] = $availability;
+			}
+		}
+
+		switch($a_type)
+		{
+			case 'test':
+			case 'question':
+				return $return_classes[$a_type];
+			default:
+				return array_merge($return_classes['test'], $return_classes['question']);
+		}
+	}
+
+	/**
+	 * Include the builtin evaluations and get their names
+	 * @return string[]		class names
+	 */
+	protected function getIncludedBuiltinEvaluations()
+	{
+		$class_names = array();
+		$class_files = glob($this->plugin->getDirectory() .'/classes/evaluations/class.*.php');
+		if (!empty($class_files))
+		{
+			foreach ($class_files as $file)
+			{
+				$parts = explode('.', basename($file));
+				$class_name = $parts[1];
+				$this->plugin->includeClass("evaluations/class." . $class_name . ".php");
+				$class_names[] = $class_name;
+			}
+		}
+		return $class_names;
+	}
+
+
+
+
+	protected function getIncludedPluginEvaluations()
+	{
+
+	}
+
+}
