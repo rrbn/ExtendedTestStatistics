@@ -62,6 +62,11 @@ class ilExtendedTestStatistics
 	 */
 	public function loadSourceData()
 	{
+        // workaround for missing incmude in ilObjtest::getQuestionCount()
+        if ($this->object->isRandomTest())
+        {
+            require_once('Modules/Test/classes/class.ilTestRandomQuestionSetConfig.php');
+        }
 		$this->plugin->includeClass('models/class.ilExteStatSourceData.php');
 		$this->data = new ilExteStatSourceData($this->object, $this->plugin);
 		$this->data->load();
