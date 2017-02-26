@@ -22,32 +22,32 @@ average_points#:#Points
 average_points_description#:#Average points reached by the user who git this question assigned
 average_percentage#:#Percent
 average_percentage_description#:#Average percentage of points reached by the user who git this question assigned
-ilexteevaltestmedian_title_long#:#Median Score
-ilexteevaltestmedian_title_short#:#Median
-ilexteevaltestmedian_description#:#Sort the list of reached points on this test and take the middle value if the total attemps are odd or the average between the two middle ones if the total attemps are even.
-ilexteevaltestmean_title_long#:#Mean Score
-ilexteevaltestmean_title_short#:#Mean
-ilexteevaltestmean_description#:#Gets the mean score for all current scored attemp of this test
-ilexteevalteststandarddeviation_title_long#:#Standard deviation
-ilexteevalteststandarddeviation_title_short#:#Standard deviation
-ilexteevalteststandarddeviation_description#:#The standard deviation will quantify the amount of variation or dispersion of a all the users scores. A low standard deviation indicates that the test results tend to be close to the mean (also called the expected value) of the set, while a high standard deviation indicates that the test results are spread out over a wider range of values.
-ilexteevalteststandarddeviation_only_one_participant#:#Standard deviation is trivial when the test is taken only by one participant
-ilexteevaltestcic_title_long#:#Coefficient of Internal Consistency (Cronbach's alpha)
-ilexteevaltestcic_title_short#:#CIC
-ilexteevaltestcic_description#:#Internal consistency is usually measured with Cronbach's alpha, a statistic calculated from the pairwise correlations between items. Internal consistency ranges between negative infinity and one. Coefficient alpha will be negative whenever there is greater within-subject variability than between-subject variability. If > 0.8 If a good value.
-ilexteeveltestcic_sum_of_mean_is_zero#:#The sum of mean is zero
-ilexteevalquestionfacilityindex_title_long#:#Facility Index
-ilexteevalquestionfacilityindex_title_short#:#Facility Index
-ilexteevalquestionfacilityindex_description#:#The percentage of students that answered the question correctly
-ilexteevalquestionfacilityindex_all_scores_identical#:#All students reached the same score for this question
-ilexteevalquestionstandarddeviation_title_long#:#Standard deviation
-ilexteevalquestionstandarddeviation_title_short#:#Standard deviation
-ilexteevalquestionstandarddeviation_description#:#How much variation there was in the scores for this question
-ilexteevalquestiondiscriminationindex_title_long#:#Discrimination index
-ilexteevalquestiondiscriminationindex_title_short#:#Discrimination index
-ilexteevalquestiondiscriminationindex_description#:#this is the correlation between the score for this question and the score for the whole quiz. That is, for a good question, you hope that the students who score highly on this question are the same students who score highly on the whole test. Higher numbers are better
-ilexteevalquestiondiscriminationindex_zero_variance_of_question#:#The variance of points is 0 for this question
-ilexteevalquestiondiscriminationindex_zero_variance_of_other_question#:#The variance of points is 0 for the other questions
+tst_median_title_long#:#Median Score
+tst_median_title_short#:#Median
+tst_median_description#:#Sort the list of reached points on this test and take the middle value if the total attemps are odd or the average between the two middle ones if the total attemps are even.
+tst_mean_title_long#:#Mean Score
+tst_mean_title_short#:#Mean
+tst_mean_description#:#Gets the mean score for all current scored attemp of this test
+tst_standarddeviation_title_long#:#Standard deviation
+tst_standarddeviation_title_short#:#Standard deviation
+tst_standarddeviation_description#:#The standard deviation will quantify the amount of variation or dispersion of a all the users scores. A low standard deviation indicates that the test results tend to be close to the mean (also called the expected value) of the set, while a high standard deviation indicates that the test results are spread out over a wider range of values.
+tst_standarddeviation_only_one_participant#:#Standard deviation is trivial when the test is taken only by one participant
+tst_cic_title_long#:#Coefficient of Internal Consistency (Cronbach's alpha)
+tst_cic_title_short#:#CIC
+tst_cic_description#:#Internal consistency is usually measured with Cronbach's alpha, a statistic calculated from the pairwise correlations between items. Internal consistency ranges between negative infinity and one. Coefficient alpha will be negative whenever there is greater within-subject variability than between-subject variability. If > 0.8 If a good value.
+tst_cic_sum_of_mean_is_zero#:#The sum of mean is zero
+qst_facility_title_long#:#Facility Index
+qst_facility_title_short#:#Facility Index
+qst_facility_description#:#The percentage of students that answered the question correctly
+qst_facility_all_scores_identical#:#All students reached the same score for this question
+qst_standarddeviation_title_long#:#Standard deviation
+qst_standarddeviation_title_short#:#Standard deviation
+qst_standarddeviation_description#:#How much variation there was in the scores for this question
+qst_discrimination_title_long#:#Discrimination index
+qst_discrimination_title_short#:#Discrimination index
+qst_discrimination_description#:#this is the correlation between the score for this question and the score for the whole quiz. That is, for a good question, you hope that the students who score highly on this question are the same students who score highly on the whole test. Higher numbers are better
+qst_discrimination_zero_variance_of_question#:#The variance of points is 0 for this question
+qst_discrimination_zero_variance_of_other_question#:#The variance of points is 0 for the other questions
 show_test_evaluations#:#Show test evaluations
 show_question_evaluations#:#Show question evaluations
 evaluation_available_for_admins#:#Admins
@@ -80,19 +80,19 @@ item_total_correlation#:#Item-total correlation
 name_user_name#:#Name (Login)
 not_enough_test_results#:#Not enough test results available
 not_enough_answers#:#Not enough answers available
-ilexteevalquestionsinglechoices_title_long#:#List of chosen options
-ilexteevalquestionsinglechoices_title_short#:#Chosen Options
-ilexteevalquestionsinglechoices_description#:#Single Choice: shows a list of available answer options and the counts of their selection.
-ilexteevalquestionsinglechoices_index#:#Index
-ilexteevalquestionsinglechoices_choice#:#Answer option
-ilexteevalquestionsinglechoices_points#:#Points
-ilexteevalquestionsinglechoices_count#:#Count
-ilexteevalquestionsinglechoices_answer_options#:#Answer Options
-ilexteevalquestionmultiplechoices_title_long#:#List of chosen options
-ilexteevalquestionmultiplechoices_title_short#:#Chosen Options
-ilexteevalquestionmultiplechoices_description#:#Multiple Choice: shows a list of available answer options and the counts of their selection.
-ilexteevalquestionmultiplechoices_index#:#Index
-ilexteevalquestionmultiplechoices_choice#:#Answer option
-ilexteevalquestionmultiplechoices_points#:#Points
-ilexteevalquestionmultiplechoices_count#:#Count
-ilexteevalquestionmultiplechoices_answer_options#:#Answer Options
+qst_sc_choices_title_long#:#List of chosen options
+qst_sc_choices_title_short#:#Chosen Options
+qst_sc_choices_description#:#Single Choice: shows a list of available answer options and the counts of their selection.
+qst_sc_choices_index#:#Index
+qst_sc_choices_choice#:#Answer option
+qst_sc_choices_points#:#Points
+qst_sc_choices_count#:#Count
+qst_sc_choices_answer_options#:#Answer Options
+qst_mc_choices_title_long#:#List of chosen options
+qst_mc_choices_title_short#:#Chosen Options
+qst_mc_choices_description#:#Multiple Choice: shows a list of available answer options and the counts of their selection.
+qst_mc_choices_index#:#Index
+qst_mc_choices_choice#:#Answer option
+qst_mc_choices_points#:#Points
+qst_mc_choices_count#:#Count
+qst_mc_choices_answer_options#:#Answer Options

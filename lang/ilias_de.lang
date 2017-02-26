@@ -22,32 +22,32 @@ average_points#:#Punkte
 average_points_description#:#Mittlere erreichte Punktzahl aller Nutzer, die diese Frage zugeteilt bekamen
 average_percentage#:#Prozent
 average_percentage_description#:#Mittlere Prozent der maximalen Punkte, die von Nutzern erreicht wurden, welche diese Frage zugeteilt bekamen
-ilexteevaltestmedian_title_long#:#Median der erreichten Punkte
-ilexteevaltestmedian_title_short#:#Median
-ilexteevaltestmedian_description#:#Der Median wird für Daten genutzt, die eine „natürliche“ Reihenfolge bilden und mit Zahlenwerten versehen werden können. Die Mitte dieser geordneten Datenreihe ist der Median. Anders als der Mittelwert ist der Media unempfindlich gegenüber Extremwerten.
-ilexteevaltestmean_title_long#:#Mittelwert der erreichten Punkte
-ilexteevaltestmean_title_short#:#Mittelwert
-ilexteevaltestmean_description#:#Der Mittelwert errechnet sich durch die Summe der Werte x 1 , x 2 , …, x n, dividiert duch die Anzahl n. Er ist empfindlich gegenüber Extremwerten.
-ilexteevalteststandarddeviation_title_long#:#Standardabweichung der erreichten Punkte im Test
-ilexteevalteststandarddeviation_title_short#:#Standardabweichung
-ilexteevalteststandarddeviation_description#:#Die Standardabweichung (s) ist die durchschnittliche Entfernung aller gemessenen Einzelwerte eines Merkmals vom Durchschnitt.
-ilexteevalteststandarddeviation_only_one_participant#:#Die Standardabweichung ist trivial, wenn der Test nur einmal durchgeführt wurde.
-ilexteevaltestcic_title_long#:#Koeffizient interner Konsistenz (Cronbach's alpha)
-ilexteevaltestcic_title_short#:#Chronbach’s Alpha
-ilexteeveltestcic_sum_of_mean_is_zero#:#Die Mittelwertsumme ist 0
-ilexteevaltestcic_description#:#Chronbach’s alpha bezeichnet das Ausmaß, in dem alle Aufgaben das Gleiche messen. Der Koeffizient steigt mit zunehmendem Zusammenhang zwischen den Items. Der maximale Wert ist 1. Als Daumenregel wird ein Alpha von 0.7 und mehr gefordert.
-ilexteevalquestionfacilityindex_title_long#:#Schwierigkeitsindex (Beantwortbarkeit) der Frage
-ilexteevalquestionfacilityindex_title_short#:#Schwierigkeitsindex
-ilexteevalquestionfacilityindex_description#:#Beim Schwierigkeitsindex p werden die Punkte, die bei dieser Frage von allen Testpersonen tatsächlich erreicht wurden, zusammengezählt und durch die maximal erreichbare Punktsumme aller Testpersonen bei diesem Item dividiert. Dieser Quotient wird mit 100 multipliziert. Eine Schwierigkeit von p=0 bedeutet, dass die Aufgabe von niemandem gelöst wurde und damit zu schwer war. Ganz einfach war sie, wenn p=100 ist. p sollte im Bereich 0,4 – 0,85 streuen.
-ilexteevalquestionfacilityindex_all_scores_identical#:#Bei dieser Frage haben alle Teilnehmer den gleichen Score eerreicht.
-ilexteevalquestionstandarddeviation_title_long#:#Standardabweichung der erreichten Punkte für diese Frage
-ilexteevalquestionstandarddeviation_title_short#:#Standardabweichung
-ilexteevalquestionstandarddeviation_description#:#Die Standardabweichung (s) ist die durchschnittliche Entfernung aller gemessenen Einzelwerte eines Merkmals vom Durchschnitt.
-ilexteevalquestiondiscriminationindex_title_long#:#Trennschärfe der Frage im Test
-ilexteevalquestiondiscriminationindex_title_short#:#Trennschärfe
-ilexteevalquestiondiscriminationindex_description#:#Über die Trennschärfe lässt sich ermitteln, wie gut eine Frage zwischen Personen mit niedriger und hoher Merkmalsausprägung trennt. Das Maß erfasst den Zusammenhang der einzelnen Testwerte mit dem endgültigen Testwert. Angestrebt werden Trennschärfen von  0,4 bis 0,7. Bei einer Trennschärfe < 0 wird die Frage von „schlechten“ Testpersonen gelöst und von „guten“ Testpersonen nicht.
-ilexteevalquestiondiscriminationindex_zero_variance_of_question#:#Die Punktevarianz der Frage ist 0
-ilexteevalquestiondiscriminationindex_zero_variance_of_other_question#:#Die Punktevarianz der übrigen Fragen ist 0
+tst_median_title_long#:#Median der erreichten Punkte
+tst_median_title_short#:#Median
+tst_median_description#:#Der Median wird für Daten genutzt, die eine „natürliche“ Reihenfolge bilden und mit Zahlenwerten versehen werden können. Die Mitte dieser geordneten Datenreihe ist der Median. Anders als der Mittelwert ist der Media unempfindlich gegenüber Extremwerten.
+tst_mean_title_long#:#Mittelwert der erreichten Punkte
+tst_mean_title_short#:#Mittelwert
+tst_mean_description#:#Der Mittelwert errechnet sich durch die Summe der Werte x 1 , x 2 , …, x n, dividiert duch die Anzahl n. Er ist empfindlich gegenüber Extremwerten.
+tst_standarddeviation_title_long#:#Standardabweichung der erreichten Punkte im Test
+tst_standarddeviation_title_short#:#Standardabweichung
+tst_standarddeviation_description#:#Die Standardabweichung (s) ist die durchschnittliche Entfernung aller gemessenen Einzelwerte eines Merkmals vom Durchschnitt.
+tst_standarddeviation_only_one_participant#:#Die Standardabweichung ist trivial, wenn der Test nur einmal durchgeführt wurde.
+tst_cic_title_long#:#Koeffizient interner Konsistenz (Cronbach's alpha)
+tst_cic_title_short#:#Chronbach’s Alpha
+tst_cic_sum_of_mean_is_zero#:#Die Mittelwertsumme ist 0
+tst_cic_description#:#Chronbach’s alpha bezeichnet das Ausmaß, in dem alle Aufgaben das Gleiche messen. Der Koeffizient steigt mit zunehmendem Zusammenhang zwischen den Items. Der maximale Wert ist 1. Als Daumenregel wird ein Alpha von 0.7 und mehr gefordert.
+qst_facility_title_long#:#Schwierigkeitsindex (Beantwortbarkeit) der Frage
+qst_facility_title_short#:#Schwierigkeitsindex
+qst_facility_description#:#Beim Schwierigkeitsindex p werden die Punkte, die bei dieser Frage von allen Testpersonen tatsächlich erreicht wurden, zusammengezählt und durch die maximal erreichbare Punktsumme aller Testpersonen bei diesem Item dividiert. Dieser Quotient wird mit 100 multipliziert. Eine Schwierigkeit von p=0 bedeutet, dass die Aufgabe von niemandem gelöst wurde und damit zu schwer war. Ganz einfach war sie, wenn p=100 ist. p sollte im Bereich 0,4 – 0,85 streuen.
+qst_facility_all_scores_identical#:#Bei dieser Frage haben alle Teilnehmer den gleichen Score eerreicht.
+qst_standarddeviation_title_long#:#Standardabweichung der erreichten Punkte für diese Frage
+qst_standarddeviation_title_short#:#Standardabweichung
+qst_standarddeviation_description#:#Die Standardabweichung (s) ist die durchschnittliche Entfernung aller gemessenen Einzelwerte eines Merkmals vom Durchschnitt.
+qst_discrimination_title_short#:#Trennschärfe
+qst_discrimination_title_long#:#Trennschärfe der Frage im Test
+qst_discrimination_description#:#Über die Trennschärfe lässt sich ermitteln, wie gut eine Frage zwischen Personen mit niedriger und hoher Merkmalsausprägung trennt. Das Maß erfasst den Zusammenhang der einzelnen Testwerte mit dem endgültigen Testwert. Angestrebt werden Trennschärfen von  0,4 bis 0,7. Bei einer Trennschärfe < 0 wird die Frage von „schlechten“ Testpersonen gelöst und von „guten“ Testpersonen nicht.
+qst_discrimination_zero_variance_of_question#:#Die Punktevarianz der Frage ist 0
+qst_discrimination_zero_variance_of_other_question#:#Die Punktevarianz der übrigen Fragen ist 0
 show_test_evaluations#:#Testauswertungen
 show_question_evaluations#:#Fragenauswertungen
 evaluation_available_for_admins#:#Administratoren
@@ -80,19 +80,19 @@ item_total_correlation#:#Gesamtkorrelation der Items
 name_user_name#:#Benutzername (Login)
 not_enough_test_results#:#Nicht genügend Testergebnisse verfügbar
 not_enough_answers#:#Nicht genügend Antworten verfügbar
-ilexteevalquestionsinglechoices_title_long#:#Liste der gewählten Optionen
-ilexteevalquestionsinglechoices_title_short#:#Optionswahlen
-ilexteevalquestionsinglechoices_description#:#Single Choice: zeigt eine Liste der Antwortoptionen mit Anzahl ihrer Auswahlen.
-ilexteevalquestionsinglechoices_index#:#Index
-ilexteevalquestionsinglechoices_choice#:#Antwortoption
-ilexteevalquestionsinglechoices_points#:#Punkte
-ilexteevalquestionsinglechoices_count#:#Anzahl
-ilexteevalquestionsinglechoices_answer_options#:#Antwortoptionen
-ilexteevalquestionmultiplechoices_title_long#:#Liste der gewählten Optionen
-ilexteevalquestionmultiplechoices_title_short#:#Optionswahlen
-ilexteevalquestionmultiplechoices_description#:#Multiple Choice: zeigt eine Liste der Antwortoptionen mit Anzahl ihrer Auswahlen.
-ilexteevalquestionmultiplechoices_index#:#Index
-ilexteevalquestionmultiplechoices_choice#:#Antwortoption
-ilexteevalquestionmultiplechoices_points#:#Punkte
-ilexteevalquestionmultiplechoices_count#:#Anzahl
-ilexteevalquestionmultiplechoices_answer_options#:#Antwortoptionen
+qst_sc_choices_title_long#:#Liste der gewählten Optionen
+qst_sc_choices_title_short#:#Optionswahlen
+qst_sc_choices_description#:#Single Choice: zeigt eine Liste der Antwortoptionen mit Anzahl ihrer Auswahlen.
+qst_sc_choices_index#:#Index
+qst_sc_choices_choice#:#Antwortoption
+qst_sc_choices_points#:#Punkte
+qst_sc_choices_count#:#Anzahl
+qst_sc_choices_answer_options#:#Antwortoptionen
+qst_mc_choices_title_long#:#Liste der gewählten Optionen
+qst_mc_choices_title_short#:#Optionswahlen
+qst_mc_choices_description#:#Multiple Choice: zeigt eine Liste der Antwortoptionen mit Anzahl ihrer Auswahlen.
+qst_mc_choices_index#:#Index
+qst_mc_choices_choice#:#Antwortoption
+qst_mc_choices_points#:#Punkte
+qst_mc_choices_count#:#Anzahl
+qst_mc_choices_answer_options#:#Antwortoptionen

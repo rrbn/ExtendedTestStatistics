@@ -25,6 +25,11 @@ class ilExteEvalTestStandardDeviation extends ilExteEvalTest
 	 */
 	protected static $allowed_question_types = array();
 
+	/**
+	 * @var string	specific prefix of language variables (lowercase classname is default)
+	 */
+	protected static $lang_prefix = 'tst_standarddeviation';
+
 
 	/**
 	 * Calculate and get the single value for a test

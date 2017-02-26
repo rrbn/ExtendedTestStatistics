@@ -88,9 +88,15 @@ class ilExtendedTestStatisticsConfig
 			'test' => array()
 		);
 
-		// scan the existing_classes
+		// read the availability settings of evaluations from the database
 		$availabilities = $this->readAvailabilities();
-		$classes = $this->getIncludedBuiltinEvaluations();
+
+		// get evaluation classes (builtin and hooked evaluations)
+		$classes = array_merge(
+			$this->getIncludedClasses($this->plugin->getDirectory() .'/classes/evaluations/class.*.php'),
+			$this->getIncludedClasses('./Customizing/global/plugins/Modules/Test/Evaluations/*/classes/class.*.php')
+		);
+
 		foreach ($classes as $class)
 		{
 			if (isset($availabilities[$class]))
@@ -125,32 +131,25 @@ class ilExtendedTestStatisticsConfig
 	}
 
 	/**
-	 * Include the builtin evaluations and get their names
+	 * Include classes from a file pattern and get their names
+	 * @param	string		$pattern	file pattern (relative to installation directory)
 	 * @return string[]		class names
 	 */
-	protected function getIncludedBuiltinEvaluations()
+	protected function getIncludedClasses($pattern)
 	{
 		$class_names = array();
-		$class_files = glob($this->plugin->getDirectory() .'/classes/evaluations/class.*.php');
+		$class_files = glob($pattern);
 		if (!empty($class_files))
 		{
 			foreach ($class_files as $file)
 			{
+				require_once($file);
 				$parts = explode('.', basename($file));
 				$class_name = $parts[1];
-				$this->plugin->includeClass("evaluations/class." . $class_name . ".php");
 				$class_names[] = $class_name;
 			}
 		}
 		return $class_names;
-	}
-
-
-
-
-	protected function getIncludedPluginEvaluations()
-	{
-
 	}
 
 }

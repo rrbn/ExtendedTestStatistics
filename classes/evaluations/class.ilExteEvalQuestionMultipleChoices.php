@@ -25,6 +25,11 @@ class ilExteEvalQuestionMultipleChoices extends ilExteEvalQuestion
 	 */
 	protected static $allowed_question_types = array('assMultipleChoice');
 
+	/**
+	 * @var string	specific prefix of language variables (lowercase classname is default)
+	 */
+	protected static $lang_prefix = 'qst_mc_choices';
+
 
     /**
      * Calculate the single value for a question (to be overwritten)

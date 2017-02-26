@@ -52,6 +52,11 @@ abstract class ilExteEvalBase
 	 */
 	protected static $allowed_question_types = array();
 
+	/**
+	 * @var string	specific prefix of language variables (lowercase classname is default)
+	 */
+	protected static $lang_prefix = null;
+
 	# endregion
 
 	########################
@@ -80,6 +85,14 @@ abstract class ilExteEvalBase
 	final public static function _getId()
 	{
 		return strtolower(get_called_class());
+	}
+
+	/**
+	 * @return string	prefix for language variables
+	 */
+	final public static function _getLangPrefix()
+	{
+		return isset(static::$lang_prefix) ? static::$lang_prefix : self::_getId();
 	}
 
 	/**
@@ -204,14 +217,14 @@ abstract class ilExteEvalBase
 
 	/**
 	 * Get a localized text
-	 * The language variable will be prefixed with lowercase class name, e.g. 'ilmyevaluation_'
+	 * The language variable will be prefixed by self::_getLangPrefix()
 	 *
 	 * @param string $a_langvar language variable
 	 * @return string
 	 */
 	protected function txt($a_langvar)
 	{
-		return $this->plugin->txt(self::_getId() . '_' . $a_langvar);
+		return $this->plugin->txt(self::_getLangPrefix() . '_' . $a_langvar);
 	}
 
 	/**

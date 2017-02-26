@@ -25,6 +25,11 @@ class ilExteEvalQuestionFacilityIndex extends ilExteEvalQuestion
 	 */
 	protected static $allowed_question_types = array();
 
+	/**
+	 * @var string	specific prefix of language variables (lowercase classname is default)
+	 */
+	protected static $lang_prefix = 'qst_facility';
+
 
 	/**
 	 * Calculate the single value for a question (to be overwritten)

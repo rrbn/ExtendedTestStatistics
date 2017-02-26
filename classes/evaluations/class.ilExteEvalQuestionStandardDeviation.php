@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Example evaluation for a whole test
+ * Standard deviation of a question
  */
 class ilExteEvalQuestionStandardDeviation extends ilExteEvalQuestion
 {
@@ -25,6 +25,10 @@ class ilExteEvalQuestionStandardDeviation extends ilExteEvalQuestion
 	 */
 	protected static $allowed_question_types = array();
 
+	/**
+	 * @var string	specific prefix of language variables (lowercase classname is default)
+	 */
+	protected static $lang_prefix = 'qst_standarddeviation';
 
 	/**
 	 * Calculate the Standard deviation for answers in this question
