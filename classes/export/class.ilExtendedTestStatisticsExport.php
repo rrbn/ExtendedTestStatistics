@@ -330,11 +330,11 @@ class ilExtendedTestStatisticsExport
 		$maxColumn++;
 
 		$counter = 11;
-		foreach($this->getTestStatistics()->getEvaluations() as $evaluation){
+		foreach($this->getTestStatistics()->getEvaluations() as $id => $evaluation){
 			//Name
 			$test_worksheet->setCellValue('B' . ($lastRowOfRawData + $counter), $evaluation->getTitle());
 			//Value
-			$value = $evaluation->calculateValue();
+			$value = $evaluation->getValue();
 			$test_worksheet->setCellValue('C' . ($lastRowOfRawData + $counter), $value->value);
 			$counter++;
 		}

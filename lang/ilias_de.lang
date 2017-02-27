@@ -96,3 +96,7 @@ qst_mc_choices_choice#:#Antwortoption
 qst_mc_choices_points#:#Punkte
 qst_mc_choices_count#:#Anzahl
 qst_mc_choices_answer_options#:#Antwortoptionen
+not_for_fixed_test#:#Nicht für Tests mit fester Fragenauswahl verfügbar
+not_for_random_test#:#Nicht für Tests mit zufälliger Fragenauswahl verfügbar
+not_for_dynamic_test#:#Nicht für fortlaufende Tests verfügbar
+not_for_test_type#:#Nicht für diesen Test-Typ verfügbar

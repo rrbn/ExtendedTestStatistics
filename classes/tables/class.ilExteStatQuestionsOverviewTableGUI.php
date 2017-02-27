@@ -9,6 +9,11 @@ include_once('./Services/Table/classes/class.ilTable2GUI.php');
  */
 class ilExteStatQuestionsOverviewTableGUI extends ilTable2GUI
 {
+	/**
+	 * @var ilExtendedTestStatisticsPlugin|null
+	 */
+	protected $plugin;
+
     /**
      * @var ilExtendedTestStatistics|null
      */
@@ -24,7 +29,6 @@ class ilExteStatQuestionsOverviewTableGUI extends ilTable2GUI
 	 * Constructor
 	 * @param   ilExtendedTestStatisticsPageGUI $a_parent_obj
      * @param   string                          $a_parent_cmd
-	 * @return
 	 */
 	public function __construct($a_parent_obj, $a_parent_cmd)
 	{
@@ -177,9 +181,7 @@ class ilExteStatQuestionsOverviewTableGUI extends ilTable2GUI
 
 	/**
 	 * fill row
-	 * @access public
-	 * @param
-	 * @return
+	 * @param array $data
 	 */
 	public function fillRow($data)
 	{
@@ -212,9 +214,9 @@ class ilExteStatQuestionsOverviewTableGUI extends ilTable2GUI
                 // values from evaluations
                 default:
                     $evaluation = $this->statObj->getEvaluation($colid);
-                    if (isset($evaluation) && $evaluation::_isQuestionTypeAllowed($data['question_type']) && $evaluation::_providesValue())
+                    if (isset($evaluation) && $evaluation->isQuestionTypeAllowed($data['question_type']) && $evaluation->providesValue())
                     {
-                        $value = $evaluation->calculateValue($data['question_id']);
+                        $value = $evaluation->getValue($data['question_id']);
 						$content = $this->valueGUI->getHTML($value);
 					}
                     break;
@@ -237,12 +239,15 @@ class ilExteStatQuestionsOverviewTableGUI extends ilTable2GUI
             $list->setId('actl_'.$data['question_id'].'_'.$this->getId());
             $list->setListTitle($this->plugin->txt('show_details'));
 
-            foreach($details as $evaluation)
+            foreach($details as $class => $evaluation)
             {
-                $this->ctrl->setParameter($this->parent_obj, 'qid', $data['question_id']);
-                $this->ctrl->setParameter($this->parent_obj, 'details', $evaluation::_getId());
+				if ($evaluation->isTestTypeAllowed())
+				{
+					$this->ctrl->setParameter($this->parent_obj, 'qid', $data['question_id']);
+					$this->ctrl->setParameter($this->parent_obj, 'details', $class);
+					$list->addItem($evaluation->getTitle(), '', $this->ctrl->getLinkTarget($this->parent_obj,'showQuestionDetails'));
+				}
 
-                $list->addItem($evaluation->getTitle(), '', $this->ctrl->getLinkTarget($this->parent_obj,'showQuestionDetails'));
             }
             $content = $list->getHTML();
         }

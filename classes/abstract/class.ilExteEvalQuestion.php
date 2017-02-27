@@ -5,15 +5,6 @@
  */
 abstract class ilExteEvalQuestion extends ilExteEvalBase
 {
-	/**
-	 * This evaluation is for questions
-     *
-	 * @return bool
-	 */
-	final public static function _isQuestionEvaluation()
-	{
-		return true;
-	}
 
 	/**
 	 * Calculate the single value for a question (to be overwritten)
@@ -26,7 +17,7 @@ abstract class ilExteEvalQuestion extends ilExteEvalBase
 	 * @param integer $a_question_id
 	 * @return ilExteStatValue
 	 */
-	public function calculateValue($a_question_id)
+	protected function calculateValue($a_question_id)
     {
         return new ilExteStatValue;
     }
@@ -37,8 +28,46 @@ abstract class ilExteEvalQuestion extends ilExteEvalBase
 	 * @param integer $a_question_id
 	 * @return ilExteStatDetails[]
 	 */
-	public function calculateDetails($a_question_id)
+	protected function calculateDetails($a_question_id)
     {
         return array();
     }
+
+	/**
+	 * Get the calculated value
+	 * This checks if the test type matches before
+	 *
+	 * @param integer $a_question_id
+	 * @return ilExteStatValue
+	 */
+	final public function getValue($a_question_id)
+	{
+		if (!$this->isTestTypeAllowed())
+		{
+			return $this->getValueNotAvailableForTestType();
+		}
+		else
+		{
+			return $this->calculateValue($a_question_id);
+		}
+	}
+
+	/**
+	 * Get the calculated details
+	 * This checks if the test type matches before
+	 *
+	 * @param integer $a_question_id
+	 * @return ilExteStatDetails[]
+	 */
+	final public function getDetails($a_question_id)
+	{
+		if (!$this->isTestTypeAllowed())
+		{
+			return array();
+		}
+		else
+		{
+			return $this->calculateDetails($a_question_id);
+		}
+	}
 }

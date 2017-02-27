@@ -84,14 +84,19 @@ class ilExteStatTestOverviewTableGUI extends ilTable2GUI
                     'details' => null
                 ));
         }
-        foreach ($this->statObj->getEvaluations() as $evaluation)
+
+		/**
+		 * @var string $class
+		 * @var  ilExteEvalTest|ilExteEvalQuestion $evaluation
+		 */
+		foreach ($this->statObj->getEvaluations() as $class => $evaluation)
         {
             array_push($data,
                 array(
                     'title' => $evaluation->getTitle(),
                     'description' => $evaluation->getDescription(),
-                    'value' => $evaluation::_providesValue() ? $evaluation->calculateValue() : null,
-                    'details' => $evaluation::_providesDetails() ? $evaluation::_getId() : null
+                    'value' => $evaluation->providesValue() ? $evaluation->getValue() : null,
+                    'details' => $evaluation->providesDetails() ? $class : null
                 ));
         }
 
@@ -103,8 +108,7 @@ class ilExteStatTestOverviewTableGUI extends ilTable2GUI
 	 * fill row 
 	 *
 	 * @access public
-	 * @param
-	 * @return
+	 * @param	array	$data
 	 */
 	protected function fillRow($data)
 	{

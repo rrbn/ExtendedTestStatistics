@@ -110,6 +110,7 @@ class ilExtendedTestStatisticsConfig
 				$this->writeAvailability($class, $availability);
 			}
 
+			// check the base class
 			if (is_subclass_of($class, 'ilExteEvalQuestion'))
 			{
 				$return_classes['question'][$class] = $availability;

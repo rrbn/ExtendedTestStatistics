@@ -36,7 +36,7 @@ class ilExtendedTestStatistics
 	protected $data;
 
 	/**
-	 * @var ilExteEvalBase[]
+	 * @var ilExteEvalBase[]	indexed by class name
 	 */
 	protected $evaluations = array();
 
@@ -62,7 +62,7 @@ class ilExtendedTestStatistics
 	 */
 	public function loadSourceData()
 	{
-        // workaround for missing incmude in ilObjtest::getQuestionCount()
+        // workaround for missing include in ilObjtest::getQuestionCount()
         if ($this->object->isRandomTest())
         {
             require_once('Modules/Test/classes/class.ilTestRandomQuestionSetConfig.php');
@@ -88,107 +88,77 @@ class ilExtendedTestStatistics
 
 	/**
 	 * Load the relevant evaluation objects
-	 * @param   string    $a_level	level of the statistics, e.g. self::LEVEL_TEST
-	 * @param   string  	$a_id	id of the evaluation to load
+	 * @param   string    	$a_level	level of the statistics, e.g. self::LEVEL_TEST
+	 * @param   string  	$a_class	class name of the evaluation to load
 	 */
-	public function loadEvaluations($a_level = '', $a_id = '')
+	public function loadEvaluations($a_level = '', $a_class = '')
 	{
 		$this->evaluations = array();
 
 		$isAdmin = $this->isAdmin();
 
-		/** @var ilExteEvalBase $class (not the class, but just its name) */
 		foreach ($this->config->getEvaluationClasses() as $class => $availability)
 		{
-			$fits = true;
+			// check evaluation id
+			if (!empty($a_class) && $a_class != $class)
+			{
+				continue;
+			}
 
 			// check configured availability
-			$fits = $fits && ($isAdmin || $availability == ilExtendedTestStatisticsConfig::FOR_USER);
+			if (!($isAdmin || $availability == ilExtendedTestStatisticsConfig::FOR_USER))
+			{
+				continue;
+			}
 
 			// check evaluation type
-			switch ($a_level)
+			if (($a_level == self::LEVEL_TEST && !is_subclass_of($class, 'ilExteEvalTest')) ||
+				($a_level == self::LEVEL_QUESTION && !is_subclass_of($class, 'ilExteEvalQuestion')))
 			{
-				case self::LEVEL_TEST:
-					$fits = $fits && $class::_isTestEvaluation();
-					break;
-				case self::LEVEL_QUESTION:
-					$fits = $fits && $class::_isQuestionEvaluation();
-					break;
-			}
-
-			// check test type
-			if ($this->object->isFixedTest())
-			{
-				$fits = $fits && $class::_isTestTypeAllowed(ilExteEvalBase::TEST_TYPE_FIXED);
-			}
-			elseif ($this->object->isRandomTest())
-			{
-				$fits = $fits && $class::_isTestTypeAllowed(ilExteEvalBase::TEST_TYPE_RANDOM);
-			}
-			elseif ($this->object->isDynamicTest())
-			{
-				$fits = $fits && $class::_isTestTypeAllowed(ilExteEvalBase::TEST_TYPE_DYNAMIC);
-			}
-
-			// check evaluation id
-			if (!empty($a_id))
-			{
-				$fits = $fits && ($class::_getId() == $a_id);
+				continue;
 			}
 
 			// instantiate the evaluation object
-			if ($fits)
-			{
-				$this->evaluations[$class::_getId()] = new $class($this->data, $this->plugin);
-			}
+			$this->evaluations[$class] = new $class($this->data, $this->plugin);
 		}
 	}
 
 	/**
 	 * Get a single loaded evaluation
-	 * @param string $a_id the evaluation id
+	 * @param string $a_class  class name of the evaluation
 	 * @return ilExteEvalTest|ilExteEvalQuestion|null
 	 */
-	public function getEvaluation($a_id)
+	public function getEvaluation($a_class)
 	{
-		return isset($this->evaluations[$a_id]) ? $this->evaluations[$a_id] : null;
+		return isset($this->evaluations[$a_class]) ? $this->evaluations[$a_class] : null;
 	}
 
 	/**
-	 * Get a subset of the loaded evaluations
+	 * Get a subset of the loaded evaluation objects
 	 * @param   string  $a_provides			provided result, e.g. self::PROVIDES_VALUE or empty for all
 	 * @param   string  $a_question_type	question type (for question evaluations) or empty for all
-	 * @return  ilExteEvalBase[]    		indexed by evaluation id
+	 * @return  ilExteEvalBase[]    indexed by class name
 	 */
 	public function getEvaluations($a_provides = '', $a_question_type = '')
 	{
 		$selected = array();
-
-		foreach ($this->evaluations as $evaluation)
+		foreach ($this->evaluations as $class => $evaluation)
 		{
-			$fits = true;
-
-			switch ($a_provides)
+			// check if value or details are provided
+			if (($a_provides == self::PROVIDES_VALUE && !$evaluation->providesValue()) ||
+				($a_provides == self::PROVIDES_DETAILS && !$evaluation->providesDetails()))
 			{
-				case self::PROVIDES_VALUE:
-					$fits = $fits && $evaluation::_providesValue();
-					break;
-				case self::PROVIDES_DETAILS:
-					$fits = $fits && $evaluation::_providesDetails();
-					break;
+				continue;
 			}
 
-			if (!empty($a_question_type))
+			// check if question type is supported
+			if (!empty($a_question_type) && !$evaluation->isQuestionTypeAllowed($a_question_type))
 			{
-				$fits = $fits && $evaluation::_isQuestionTypeAllowed($a_question_type);
+				continue;
 			}
 
-			if ($fits)
-			{
-				$selected[$evaluation::_getId()] = $evaluation;
-			}
+			$selected[$class] = $evaluation;
 		}
-
 		return $selected;
 	}
 

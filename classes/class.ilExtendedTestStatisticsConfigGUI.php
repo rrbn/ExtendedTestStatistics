@@ -76,6 +76,9 @@ class ilExtendedTestStatisticsConfigGUI extends ilPluginConfigGUI
 
 		// Run throw all the test evaluations to check if there must be available for admins
 		// or users or not available in test of current platform
+		/**
+		 * @var ilExteEvalBase $class	(classname, not object)
+		 */
 		foreach ($this->config->getEvaluationClasses($a_type) as $class => $value)
 		{
 			$prefix = $class::_getLangPrefix();

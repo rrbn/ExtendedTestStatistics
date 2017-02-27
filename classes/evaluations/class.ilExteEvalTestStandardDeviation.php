@@ -41,7 +41,36 @@ class ilExteEvalTestStandardDeviation extends ilExteEvalTest
 	 */
 	public function calculateValue()
 	{
-		return $this->getStandardDeviationOfTestResults();
+		$standard_deviation = new ilExteStatValue;
+
+		//Needed values
+		$participants_data = $this->data->getAllParticipants();
+		$mean = $this->getMeanOfReachedPoints();
+		$value_data = array();
+		foreach($participants_data as $participant){
+			$value_data[$participant->active_id] = $participant->current_reached_points;
+		}
+
+		//If more than one participant, then calculate.
+		if (count($value_data) > 1) {
+			//Fetch the sum of squared differences between total score and it's mean
+			$sum_sq_diff = $this->sumOfPowersOfDifferenceToMean($value_data, $mean->value, 2);
+			//Calculate Standard deviation
+			$std_deviation = sqrt($sum_sq_diff / (count($value_data) - 1));
+
+			$standard_deviation->type = ilExteStatValue::TYPE_NUMBER;
+			$standard_deviation->value = $std_deviation;
+			$standard_deviation->precision = 4;
+
+		} else {
+			$std_deviation = $this->txt("only_one_participant");
+
+			$standard_deviation->type = ilExteStatValue::TYPE_TEXT;
+			$standard_deviation->comment = $std_deviation;
+			$standard_deviation->alert = ilExteStatValue::ALERT_MEDIUM;
+		}
+
+		return $standard_deviation;
 	}
 
 
@@ -53,5 +82,27 @@ class ilExteEvalTestStandardDeviation extends ilExteEvalTest
 	public function calculateDetails()
 	{
 		return array();
+	}
+
+
+	/**
+	 * Calculate the sum of powers of the difference from values to their mean
+	 * (intermediate calculation for the standard deviation)
+	 *
+	 * @param array         $data   list of values
+	 * @param float         $mean   mean of values
+	 * @param integer       $power  power to use
+	 * @return float|int            calculated sum
+	 */
+	protected function sumOfPowersOfDifferenceToMean($data, $mean, $power = 2)
+	{
+		$sum_power_diff = 0.0;
+
+		//Fetch the sum of squared differences between total score and it's mean
+		foreach ($data as $id => $item) {
+			$sum_power_diff += pow((float)$item - $mean, $power);
+		}
+
+		return $sum_power_diff;
 	}
 }

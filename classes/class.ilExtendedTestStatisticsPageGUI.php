@@ -172,7 +172,7 @@ class ilExtendedTestStatisticsPageGUI
 
         $content = '';
         $evaluation = $this->statObj->getEvaluation($_GET['details']);
-        foreach ($evaluation->calculateDetails() as $detailsObj)
+        foreach ($evaluation->getDetails() as $detailsObj)
         {
             $this->plugin->includeClass('tables/class.ilExteStatDetailsTableGUI.php');
             $tableGUI = new ilExteStatDetailsTableGUI($this, 'showTestDetails');
@@ -214,7 +214,7 @@ class ilExtendedTestStatisticsPageGUI
 
         $content = '';
         $evaluation = $this->statObj->getEvaluation($_GET['details']);
-        foreach ($evaluation->calculateDetails($_GET['qid']) as $detailsObj)
+        foreach ($evaluation->getDetails($_GET['qid']) as $detailsObj)
         {
             $this->plugin->includeClass('tables/class.ilExteStatDetailsTableGUI.php');
             $tableGUI = new ilExteStatDetailsTableGUI($this, 'showTestDetails');

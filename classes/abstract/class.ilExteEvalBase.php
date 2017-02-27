@@ -7,30 +7,14 @@
  */
 abstract class ilExteEvalBase
 {
-	##################
-	# region constants
-	##################
 
 	/**
-	 * type setting value for fixed question set
+	 * type settings for test types
 	 */
 	const TEST_TYPE_FIXED = 'FIXED';
-
-	/**
-	 * type setting value for random question set
-	 */
 	const TEST_TYPE_RANDOM = 'RANDOM';
-
-	/**
-	 * type setting value for dynamic question set (continues testing mode)
-	 */
 	const TEST_TYPE_DYNAMIC = 'DYNAMIC';
-
-	# endregion
-
-	#########################
-	# region static variables
-	#########################
+	const TEST_TYPE_UNKNOWN = 'UNKNOWN';
 
 	/**
 	 * @var bool    evaluation provides a single value for the overview level
@@ -43,7 +27,7 @@ abstract class ilExteEvalBase
 	protected static $provides_details = false;
 
 	/**
-	 * @var array list of allowed test types, e.g. array(self::TEST_TYPE_FIXED)
+	 * @var array 	list of allowed test types, e.g. array(self::TEST_TYPE_FIXED)
 	 */
 	protected static $allowed_test_types = array();
 
@@ -53,18 +37,13 @@ abstract class ilExteEvalBase
 	protected static $allowed_question_types = array();
 
 	/**
-	 * @var string	specific prefix of language variables (lowercase classname is default)
+	 * @var string	specific prefix of language variables (lowercase class name is used as default)
 	 */
 	protected static $lang_prefix = null;
 
-	# endregion
-
-	########################
-	# region class variables
-	########################
 
 	/**
-	 * @var ilExtendedTestStatisticsPlugin    plugin object for txt() method
+	 * @var ilExtendedTestStatisticsPlugin    plugin object, used in txt() method
 	 */
 	protected $plugin;
 
@@ -73,106 +52,12 @@ abstract class ilExteEvalBase
 	 */
 	protected $data;
 
-	# endregion
-
-	#####################
-	# region API (static)
-	#####################
-
-	/**
-	 * @return string	class id (class name)
-	 */
-	final public static function _getId()
-	{
-		return strtolower(get_called_class());
-	}
-
-	/**
-	 * @return string	prefix for language variables
-	 */
-	final public static function _getLangPrefix()
-	{
-		return isset(static::$lang_prefix) ? static::$lang_prefix : self::_getId();
-	}
-
-	/**
-	 * @return bool
-	 */
-	public static function _isTestEvaluation()
-	{
-		return false;
-	}
-
-	/**
-	 * @return bool
-	 */
-	public static function _isQuestionEvaluation()
-	{
-		return false;
-	}
-
-	/**
-	 * @return array
-	 */
-	final public static function _allowedTestTypes()
-	{
-		return static::$allowed_test_types;
-	}
-
-	/**
-	 * @return array
-	 */
-	final public static function _allowedQuestionTypes()
-	{
-		return static::$allowed_question_types;
-	}
-
-	/**
-	 * @param string	$a_type		test type
-	 * @return bool
-	 */
-	final public static function _isTestTypeAllowed($a_type)
-	{
-		return empty(static::$allowed_test_types) || in_array($a_type, static::$allowed_test_types);
-	}
-
-	/**
-	 * @param string	$a_type		classname of question type
-	 * @return bool
-	 */
-	final public static function _isQuestionTypeAllowed($a_type)
-	{
-		return empty(static::$allowed_question_types) || in_array($a_type, static::$allowed_question_types);
-	}
-
-	/**
-	 * @return bool	evaluation provides a single value
-	 */
-	final public static function _providesValue()
-	{
-		return static::$provides_value;
-	}
-
-	/**
-	 * @return bool	evaluation provides an array of details
-	 */
-	final public static function _providesDetails()
-	{
-		return static::$provides_details;
-	}
-	# endregion
-
-
-	#####################
-	# region API (object)
-	#####################
-
 	/**
 	 * ilExtendedTestStatisticsEvalBase constructor.
 	 * @param ilExteStatSourceData $a_data
 	 * @param ilExtendedTestStatisticsPlugin $a_plugin
 	 */
-	final public function __construct($a_data, $a_plugin)
+	public function __construct($a_data, $a_plugin)
 	{
 		$this->data = $a_data;
 		$this->plugin = $a_plugin;
@@ -181,6 +66,21 @@ abstract class ilExteEvalBase
 		$this->plugin->includeClass('models/class.ilExteStatColumn.php');
 		$this->plugin->includeClass('models/class.ilExteStatDetails.php');
 	}
+
+
+	/**
+	 * Get the prefix for language variables of the evaluation
+	 * This prefix is used additionally to the prefix of the plugin
+	 * The function has to be static for the plugin configuration
+	 * because evaluation objects are not created there
+	 *
+	 * @return string	prefix
+	 */
+	public static function _getLangPrefix()
+	{
+		return isset(static::$lang_prefix) ? static::$lang_prefix : strtolower(get_called_class());
+	}
+
 
 	/**
 	 * Get the title of the evaluation (to be used in lists or as headline)
@@ -209,11 +109,37 @@ abstract class ilExteEvalBase
 		return $this->txt('description');
 	}
 
-	# endregion
+	/**
+	 * @return bool
+	 */
+	public function isTestTypeAllowed()
+	{
+		return empty(static::$allowed_test_types) || in_array($this->data->getTestType(), static::$allowed_test_types);
+	}
 
-	##################################
-	# region methods for child classes
-	##################################
+	/**
+	 * @return bool
+	 */
+	final public function isQuestionTypeAllowed($a_type)
+	{
+		return empty(static::$allowed_question_types) || in_array($a_type, static::$allowed_question_types);
+	}
+
+	/**
+	 * @return bool	evaluation provides a single value
+	 */
+	public function providesValue()
+	{
+		return static::$provides_value;
+	}
+
+	/**
+	 * @return bool	evaluation provides an array of details
+	 */
+	public function providesDetails()
+	{
+		return static::$provides_details;
+	}
 
 	/**
 	 * Get a localized text
@@ -227,26 +153,28 @@ abstract class ilExteEvalBase
 		return $this->plugin->txt(self::_getLangPrefix() . '_' . $a_langvar);
 	}
 
-	/**
-     * Calculate the sum of powers of the difference from values to their mean
-     * (intermediate calculation for the standard deviation)
-     *
-	 * @param array         $data   list of values
-	 * @param float         $mean   mean of values
-	 * @param integer       $power  power to use
-	 * @return float|int            calculated sum
-	 */
-	protected function sumOfPowersOfDifferenceToMean($data, $mean, $power = 2)
-	{
-		$sum_power_diff = 0.0;
 
-		//Fetch the sum of squared differences between total score and it's mean
-		foreach ($data as $id => $item) {
-			$sum_power_diff += pow((float)$item - $mean, $power);
+	/**
+	 * Get a value saying that the evaluation is not available for the test type
+	 * @return	ilExteStatValue
+	 */
+	protected function getValueNotAvailableForTestType()
+	{
+		switch ($this->data->getTestType())
+		{
+			case self::TEST_TYPE_FIXED:
+				$comment = $this->plugin->txt('not_for_fixed_test');
+				break;
+			case self::TEST_TYPE_RANDOM:
+				$comment = $this->plugin->txt('not_for_random_test');
+				break;
+			case self::TEST_TYPE_DYNAMIC:
+				$comment = $this->plugin->txt('not_for_dynamic_test');
+				break;
+			default:
+				$comment = $this->plugin->txt('not_for_test_type');
 		}
 
-		return $sum_power_diff;
+		return ilExteStatValue::_create(null, ilExteStatValue::TYPE_TEXT, 0, $comment, ilExteStatValue::ALERT_UNKNOWN);
 	}
-
-	# endregion
 }

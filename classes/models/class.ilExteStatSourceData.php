@@ -85,14 +85,38 @@ class ilExteStatSourceData
 		$this->plugin->includeClass('models/class.ilExteStatSourceQuestion.php');
 		$this->plugin->includeClass('models/class.ilExteStatSourceAnswer.php');
 		$this->plugin->includeClass('models/class.ilExteStatValue.php');
+		$this->plugin->includeClass('abstract/class.ilExteEvalBase.php');
+	}
+
+	/**
+	 * Get the test type (fixed, random, dynamic)
+	 * @return string
+	 */
+	public function getTestType()
+	{
+		if ($this->object->isFixedTest())
+		{
+			return ilExteEvalBase::TEST_TYPE_FIXED;
+		}
+		elseif ($this->object->isRandomTest())
+		{
+			return ilExteEvalBase::TEST_TYPE_RANDOM;
+		}
+		elseif ($this->object->isDynamicTest())
+		{
+			return ilExteEvalBase::TEST_TYPE_DYNAMIC;
+		}
+		else
+		{
+			return ilExteEvalBase::TEST_TYPE_UNKNOWN;
+		}
 	}
 
 
 	/**
 	 * Load the source data from the test
 	 *
-	 * @param    string    pass selection, e.g. self::PASS_SCORED
-	 *
+	 * @param    string    $a_pass_selection	pass selection, e.g. self::PASS_SCORED
 	 * @see ilTestEvaluationGUI::eval_a()
 	 */
 	public function load($a_pass_selection = self::PASS_SCORED)
@@ -491,7 +515,7 @@ class ilExteStatSourceData
 	/**
 	 * Get the original test evaluation data
 	 *
-	 * IMPORTANT NOTE:    This acesses an internal object of ILIAS
+	 * IMPORTANT NOTE:    This returns an internal object of ILIAS
 	 *                    Its API is not wrapped by the plugin
 	 *                    Use it in exceptional cases only!
 	 *
@@ -500,35 +524,5 @@ class ilExteStatSourceData
 	public function getOriginalTestEvaluationData()
 	{
 		return $this->eval;
-	}
-
-    /**
-     * Get a cached data value
-     * This gets stored intermediate values that are needed by different evaluations
-     * @see self::setCachedData()
-     *
-     * @param string    name of the cached value
-     * @return mixed
-     */
-	public function getCachedData($a_name)
-	{
-		if (isset($this->cached_data[$a_name])) {
-			return $this->cached_data[$a_name];
-		} else {
-			return NULL;
-		}
-	}
-
-    /**
-     * Cache data for this request
-     * This allows to store intermediate values that are needed by different evaluations
-     * Please use a unique value name, e.g. YourClass::yourMethod to avoid
-     *
-     * @param string $a_name    name of the cached value
-     * @param mixed $a_data     data of the cached value
-     */
-	public function setCachedData($a_name, $a_data)
-	{
-		$this->cached_data[$a_name] = $a_data;
 	}
 }
