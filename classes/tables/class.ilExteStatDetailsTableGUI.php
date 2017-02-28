@@ -2,43 +2,25 @@
 /* Copyright (c) 1998-2013 ILIAS open source, Extended GPL, see docs/LICENSE */
 
 
-include_once('./Services/Table/classes/class.ilTable2GUI.php');
-
 /**
  * Class ilExteStatDetailsTableGUI
  */
-class ilExteStatDetailsTableGUI extends ilTable2GUI
+class ilExteStatDetailsTableGUI extends ilExteStatTableGUI
 {
     /**
      * @var ilExteStatDetails
      */
     protected $details;
 
-    /**
-     * @var ilExteStatValueGUI
-     */
-    protected $valueGUI;
 
     /**
-	 * Constructor
-	 *
-	 * @access public
-	 * @param   object      parent gui object
-	 * @return  string      current command
-	 */
+     * ilExteStatDetailsTableGUI constructor.
+     * @param object    $a_parent_obj
+     * @param string    $a_parent_cmd
+     */
 	public function __construct($a_parent_obj, $a_parent_cmd)
 	{
-        global $lng, $ilCtrl;
-
-        $this->lng = $lng;
-        $this->ctrl = $ilCtrl;
-        $this->plugin = $a_parent_obj->getPlugin();
-        $this->parent_obj = $a_parent_obj;
-        $this->parent_cmd = $a_parent_cmd;
-
-        $this->plugin->includeClass('views/class.ilExteStatValueGUI.php');
-        $this->valueGUI = new ilExteStatValueGUI($this->plugin);
-        $this->valueGUI->setShowComment(true);
+        parent::__construct($a_parent_obj, $a_parent_cmd);
 
         $this->setStyle('table', 'fullwidth');
         $this->setRowTemplate("tpl.il_exte_stat_details_row.html", $this->plugin->getDirectory());

@@ -152,8 +152,9 @@ class ilExtendedTestStatisticsPageGUI
 		$ilToolbar->addButtonInstance($button);
 		$this->tpl->setContent($ilToolbar->getHTML());
 
-		$this->plugin->includeClass('tables/class.ilExteStatTestOverviewTableGUI.php');
-		$tableGUI = new ilExteStatTestOverviewTableGUI($this, 'showTestOverview');
+		$this->plugin->includeClass('tables/class.ilExteStatTableGUI.php');
+		/** @var  ilExteStatTestOverviewTableGUI $tableGUI */
+		$tableGUI = ilExteStatTableGUI::_create('ilExteStatTestOverviewTableGUI', $this, 'showTestOverview');
 		$tableGUI->prepareData();
 
 		$this->tpl->setContent($tableGUI->getHTML());
@@ -174,8 +175,9 @@ class ilExtendedTestStatisticsPageGUI
         $evaluation = $this->statObj->getEvaluation($_GET['details']);
         foreach ($evaluation->getDetails() as $detailsObj)
         {
-            $this->plugin->includeClass('tables/class.ilExteStatDetailsTableGUI.php');
-            $tableGUI = new ilExteStatDetailsTableGUI($this, 'showTestDetails');
+			$this->plugin->includeClass('tables/class.ilExteStatTableGUI.php');
+			/** @var  ilExteStatDetailsTableGUI $tableGUI */
+			$tableGUI = ilExteStatTableGUI::_create('ilExteStatDetailsTableGUI', $this, 'showTestDetails');
             $tableGUI->prepareData($detailsObj);
             $content .= $tableGUI->getHTML();
         }
@@ -192,8 +194,9 @@ class ilExtendedTestStatisticsPageGUI
         $this->statObj->loadSourceData();
         $this->statObj->loadEvaluations(ilExtendedTestStatistics::LEVEL_QUESTION);
 
-        $this->plugin->includeClass('tables/class.ilExteStatQuestionsOverviewTableGUI.php');
-        $tableGUI = new ilExteStatQuestionsOverviewTableGUI($this, 'showQuestionsOverview');
+		$this->plugin->includeClass('tables/class.ilExteStatTableGUI.php');
+		/** @var  ilExteStatQuestionsOverviewTableGUI $tableGUI */
+        $tableGUI = ilExteStatTableGUI::_create('ilExteStatQuestionsOverviewTableGUI', $this, 'showQuestionsOverview');
         $tableGUI->prepareData();
 
         $this->tpl->setContent($tableGUI->getHTML());
@@ -216,8 +219,9 @@ class ilExtendedTestStatisticsPageGUI
         $evaluation = $this->statObj->getEvaluation($_GET['details']);
         foreach ($evaluation->getDetails($_GET['qid']) as $detailsObj)
         {
-            $this->plugin->includeClass('tables/class.ilExteStatDetailsTableGUI.php');
-            $tableGUI = new ilExteStatDetailsTableGUI($this, 'showTestDetails');
+            $this->plugin->includeClass('tables/class.ilExteStatTableGUI.php');
+			/** @var  ilExteStatDetailsTableGUI $tableGUI */
+			$tableGUI = ilExteStatTableGUI::_create('ilExteStatDetailsTableGUI', $this, 'showTestDetails');
             $tableGUI->prepareData($detailsObj);
             $content .= $tableGUI->getHTML();
         }

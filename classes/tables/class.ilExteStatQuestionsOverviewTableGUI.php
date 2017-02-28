@@ -2,29 +2,11 @@
 /* Copyright (c) 1998-2013 ILIAS open source, Extended GPL, see docs/LICENSE */
 
 
-include_once('./Services/Table/classes/class.ilTable2GUI.php');
-
 /**
  * Class ilExteStatQuestionsOverviewTableGUI
  */
-class ilExteStatQuestionsOverviewTableGUI extends ilTable2GUI
+class ilExteStatQuestionsOverviewTableGUI extends ilExteStatTableGUI
 {
-	/**
-	 * @var ilExtendedTestStatisticsPlugin|null
-	 */
-	protected $plugin;
-
-    /**
-     * @var ilExtendedTestStatistics|null
-     */
-    protected $statObj;
-
-    /**
-     * @var ilExteStatValueGUI
-     */
-    protected $valueGUI;
-
-
     /**
 	 * Constructor
 	 * @param   ilExtendedTestStatisticsPageGUI $a_parent_obj
@@ -32,18 +14,6 @@ class ilExteStatQuestionsOverviewTableGUI extends ilTable2GUI
 	 */
 	public function __construct($a_parent_obj, $a_parent_cmd)
 	{
-        global $lng, $ilCtrl;
-
-        $this->lng  = $lng;
-        $this->ctrl = $ilCtrl;
-        $this->plugin = $a_parent_obj->getPlugin();
-        $this->statObj = $a_parent_obj->getStatisticsObject();
-
-        $this->plugin->includeClass('views/class.ilExteStatValueGUI.php');
-        $this->valueGUI = new ilExteStatValueGUI($this->plugin);
-        $this->valueGUI->setShowComment(true);
-
-
         $this->setId('ilExteStatQuestionsOverview');
         $this->setPrefix('ilExteStatQuestionsOverview');
 

@@ -1,50 +1,18 @@
 <?php
 /* Copyright (c) 1998-2013 ILIAS open source, Extended GPL, see docs/LICENSE */
 
-
-include_once('./Services/Table/classes/class.ilTable2GUI.php');
-
 /**
  * Class ilExteStatTestOverviewTableGUI
  */
-class ilExteStatTestOverviewTableGUI extends ilTable2GUI
+class ilExteStatTestOverviewTableGUI extends ilExteStatTableGUI
 {
     /**
-     * @var ilExtendedTestStatistics|null
-     */
-    protected $statObj;
-
-    /**
-     * @var ilExteStatValueGUI
-     */
-    protected $valueGUI;
-
-
-    /**
 	 * Constructor
-	 *
-	 * @access public
-	 * @param
-	 * @return
 	 */
 	public function __construct($a_parent_obj, $a_parent_cmd)
 	{
-        global $lng, $ilCtrl;
-
-        $this->lng = $lng;
-        $this->ctrl = $ilCtrl;
-        $this->plugin = $a_parent_obj->getPlugin();
-        $this->statObj = $a_parent_obj->getStatisticsObject();
-
-        $this->plugin->includeClass('views/class.ilExteStatValueGUI.php');
-        $this->valueGUI = new ilExteStatValueGUI($this->plugin);
-
         $this->setId('ilExteStatTestOverview');
         $this->setPrefix('ilExteStatTestOverview');
-
-		$template = new ilTemplate("tpl.il_as_tst_pass_details_overview_participants.html", TRUE, TRUE, "Modules/Test");
-		require_once 'Modules/Test/classes/toolbars/class.ilTestResultsToolbarGUI.php';
-		$toolbar = new ilTestResultsToolbarGUI($this->ctrl, $template, $this->lng);
 
         parent::__construct($a_parent_obj, $a_parent_cmd);
 
@@ -62,6 +30,9 @@ class ilExteStatTestOverviewTableGUI extends ilTable2GUI
 		$this->disable('sort');
 		$this->enable('header');
 		$this->disable('select_all');
+
+		$this->setEnableNumInfo(false);
+		$this->setExternalSegmentation(true);
 	}
 
     /**
@@ -100,6 +71,7 @@ class ilExteStatTestOverviewTableGUI extends ilTable2GUI
                 ));
         }
 
+		$this->setLimit(count($data));
         $this->setData($data);
     }
 
