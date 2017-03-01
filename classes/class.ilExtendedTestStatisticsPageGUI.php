@@ -73,11 +73,15 @@ class ilExtendedTestStatisticsPageGUI
                 $this->prepareOutput();
                 $this->$cmd();
                 break;
-			case "exportEvaluation":
+			case "exportTestEvaluations":
+			case "exportQuestionsEvaluations":
 				$this->plugin->includeClass("export/class.ilExtendedTestStatisticsExport.php");
-				$export = new ilExtendedTestStatisticsExport($this->plugin, $this->testObj);
+				require_once('Modules/Test/classes/class.ilTestExportFilename.php');
+				$level = ($cmd == "exportTestEvaluations") ? ilExtendedTestStatistics::LEVEL_TEST : ilExtendedTestStatistics::LEVEL_QUESTION;
+				$export = new ilExtendedTestStatisticsExport($this->plugin, $this->statObj, $level);
 				$export->buildExportFile(new ilTestExportFilename($this->testObj));
 				break;
+
 			default:
                 ilUtil::sendFailure($lng->txt("permission_denied"), true);
                 ilUtil::redirect("goto.php?target=tst_".$this->testObj->getRefId());
@@ -128,29 +132,9 @@ class ilExtendedTestStatisticsPageGUI
 	 */
 	protected function showTestOverview()
 	{
-		global $ilToolbar, $lng;
-
 		$this->statObj->loadSourceData();
 		$this->statObj->loadEvaluations(ilExtendedTestStatistics::LEVEL_TEST);
-
-		$ilToolbar->setFormName('form_output_eval');
-		$ilToolbar->setFormAction($this->ctrl->getFormAction($this, 'exportEvaluation'));
-
-		require_once 'Services/Form/classes/class.ilSelectInputGUI.php';
-		$export_type = new ilSelectInputGUI($lng->txt('exp_eval_data'), 'export_type');
-		$options = array(
-			'excel' => $lng->txt('exp_type_excel')
-		);
-		$export_type->setOptions($options);
-
-		$ilToolbar->addInputItem($export_type, true);
-		require_once 'Services/UIComponent/Button/classes/class.ilSubmitButton.php';
-		$button = ilSubmitButton::getInstance();
-		$button->setCommand('exportEvaluation');
-		$button->setCaption('export');
-		$button->getOmitPreventDoubleSubmission();
-		$ilToolbar->addButtonInstance($button);
-		$this->tpl->setContent($ilToolbar->getHTML());
+		$this->setOverviewToolbar(ilExtendedTestStatistics::LEVEL_TEST);
 
 		$this->plugin->includeClass('tables/class.ilExteStatTableGUI.php');
 		/** @var  ilExteStatTestOverviewTableGUI $tableGUI */
@@ -193,6 +177,7 @@ class ilExtendedTestStatisticsPageGUI
 	{
         $this->statObj->loadSourceData();
         $this->statObj->loadEvaluations(ilExtendedTestStatistics::LEVEL_QUESTION);
+		//$this->setOverviewToolbar(ilExtendedTestStatistics::LEVEL_QUESTION);
 
 		$this->plugin->includeClass('tables/class.ilExteStatTableGUI.php');
 		/** @var  ilExteStatQuestionsOverviewTableGUI $tableGUI */
@@ -229,5 +214,34 @@ class ilExtendedTestStatisticsPageGUI
         $this->tpl->setContent($content);
         $this->tpl->show();
     }
+
+	/**
+	 * Set the Toolbar for the page
+	 * @param string	$level
+	 */
+	protected function setOverviewToolbar($level)
+	{
+		/** @var ilToolbarGUI $ilToolbar */
+		global $ilToolbar, $lng;
+
+		$ilToolbar->setFormName('etstat_toolbar');
+		$ilToolbar->setFormAction($this->ctrl->getFormAction($this));
+
+		require_once 'Services/Form/classes/class.ilSelectInputGUI.php';
+		$export_type = new ilSelectInputGUI($lng->txt('exp_eval_data'), 'export_type');
+		$options = array(
+			'excel_overview' => $lng->txt('exp_type_excel')
+		);
+		$export_type->setOptions($options);
+
+		$ilToolbar->addInputItem($export_type, true);
+		require_once 'Services/UIComponent/Button/classes/class.ilSubmitButton.php';
+		$button = ilSubmitButton::getInstance();
+		$cmd = ($level == ilExtendedTestStatistics::LEVEL_TEST) ? 'exportTestEvaluations' : 'exportQuestionsEvaluations';
+		$button->setCommand($cmd);
+		$button->setCaption('export');
+		$button->getOmitPreventDoubleSubmission();
+		$ilToolbar->addButtonInstance($button);
+	}
 }
 ?>
