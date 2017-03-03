@@ -110,14 +110,4 @@ class ilExteEvalTestCIC extends ilExteEvalTest
 
 		return $cic;
 	}
-
-	/**
-	 * Calculate the details for a test
-	 *
-	 * @return ilExteStatDetails[]
-	 */
-	public function calculateDetails()
-	{
-		return array();
-	}
 }

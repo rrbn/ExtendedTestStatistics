@@ -52,7 +52,7 @@ class ilExteEvalQuestionSingleChoices extends ilExteEvalQuestion
      * Calculate the details question (to be overwritten)
      *
      * @param integer $a_question_id
-     * @return ilExteStatDetails[]
+     * @return ilExteStatDetails
      */
 	public function calculateDetails($a_question_id)
 	{
@@ -67,9 +67,6 @@ class ilExteEvalQuestionSingleChoices extends ilExteEvalQuestion
 
         // answer details
         $details = new ilExteStatDetails();
-        $details->id = 'answer_options';
-        $details->title = $question->getTitle();
-        $details->description = $this->txt('answer_options');
         $details->columns = array (
             ilExteStatColumn::_create('index',$this->txt('index'), ilExteStatColumn::SORT_NUMBER),
             ilExteStatColumn::_create('choice', $this->txt('choice'), ilExteStatColumn::SORT_TEXT),
@@ -111,9 +108,6 @@ class ilExteEvalQuestionSingleChoices extends ilExteEvalQuestion
             );
         }
 
-        $return = array();
-        $return[] = $details;
-
-        return $return;
+        return $details;
     }
 }

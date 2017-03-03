@@ -26,11 +26,11 @@ abstract class ilExteEvalQuestion extends ilExteEvalBase
 	 * Calculate the details question (to be overwritten)
      *
 	 * @param integer $a_question_id
-	 * @return ilExteStatDetails[]
+	 * @return ilExteStatDetails
 	 */
 	protected function calculateDetails($a_question_id)
     {
-        return array();
+       return new ilExteStatDetails();
     }
 
 	/**
@@ -57,13 +57,13 @@ abstract class ilExteEvalQuestion extends ilExteEvalBase
 	 * This checks if the test type matches before
 	 *
 	 * @param integer $a_question_id
-	 * @return ilExteStatDetails[]
+	 * @return ilExteStatDetails
 	 */
 	final public function getDetails($a_question_id)
 	{
 		if (!$this->isTestTypeAllowed())
 		{
-			return array();
+			return null;
 		}
 		else
 		{

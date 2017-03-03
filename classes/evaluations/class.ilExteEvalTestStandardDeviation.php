@@ -75,17 +75,6 @@ class ilExteEvalTestStandardDeviation extends ilExteEvalTest
 
 
 	/**
-	 * Calculate the details for a test
-	 *
-	 * @return ilExteStatDetails[]
-	 */
-	public function calculateDetails()
-	{
-		return array();
-	}
-
-
-	/**
 	 * Calculate the sum of powers of the difference from values to their mean
 	 * (intermediate calculation for the standard deviation)
 	 *

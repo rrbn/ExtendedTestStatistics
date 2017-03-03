@@ -347,7 +347,7 @@ class ilExteStatSourceData
 
 	/**
 	 * Get the basic question values
-	 * @return        question_id => value_id => ilExteStatValue[]
+	 * @return	array question_id => value_id => ilExteStatValue
 	 */
 	public function getBasicQuestionValues()
 	{

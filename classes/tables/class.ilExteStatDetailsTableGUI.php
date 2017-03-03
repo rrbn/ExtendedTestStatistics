@@ -39,23 +39,15 @@ class ilExteStatDetailsTableGUI extends ilExteStatTableGUI
     {
         $this->details = $a_details;
 
-        $this->setId('ilExteStatDetails_'.$this->details->id);
-        $this->setPrefix('ilExteStatDetails_'.$this->details->id);
-        $this->setFormName('ilExteStatDetails_'.$this->details->id);
+        $this->setId('ilExteStatDetails');
+        $this->setPrefix('ilExteStatDetails');
+        $this->setFormName('ilExteStatDetails');
 
         // we have to call the parent constructor here
         // because it needs the ids to determine the sorting
         parent::__construct($this->parent_obj, $this->parent_cmd);
 
-        // Header and columns
-        if(!empty($this->details->title))
-        {
-            $this->setTitle($this->details->title);
-        }
-        if (!empty($this->details->description))
-        {
-            $this->setDescription($this->details->description);
-        }
+        //Columns
         foreach ($this->details->columns as $column)
         {
             $this->addColumn($column->title, $column->sort ? 'sort_'.$column->name : '', '', false, '', $column->comment);

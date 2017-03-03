@@ -95,4 +95,26 @@ class ilExteStatValue
 
         return $value;
     }
+
+	/**
+	 * Get a list of  demo values for testing purpose
+	 * @return ilExteStatValue[]
+	 */
+	public static function getTestValues()
+	{
+		return array(
+			self::_create('Hallo', self::TYPE_TEXT, 0, 'Text'),
+			self::_create(0.13, self::TYPE_NUMBER, 2, 'Float'),
+			self::_create(48, self::TYPE_NUMBER, 0, 'Integer'),
+			self::_create(null, self::TYPE_NUMBER, 0, 'Unknown Integer',  self::ALERT_UNKNOWN),
+			self::_create(true, self::TYPE_BOOLEAN, 0, 'True Boolean', self::ALERT_GOOD),
+			self::_create(false, self::TYPE_BOOLEAN, 0, 'False Boolean', self::ALERT_BAD),
+			self::_create('Alert Text', self::TYPE_ALERT, 2, 'Alert', self::ALERT_MEDIUM),
+			self::_create(new ilDateTime(time(),IL_CAL_UNIX), self::TYPE_DATETIME, 0, 'DateTime'),
+			self::_create(10, self::TYPE_DURATION, 0, 'Duration'),
+			self::_create(50, self::TYPE_PERCENTAGE, 0, 'Percentge'),
+			self::_create(50.52, self::TYPE_PERCENTAGE, 2, 'Percentge')
+
+		);
+	}
 }

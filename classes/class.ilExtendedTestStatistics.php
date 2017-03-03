@@ -38,7 +38,7 @@ class ilExtendedTestStatistics
 	/**
 	 * @var ilExteEvalBase[]	indexed by class name
 	 */
-	protected $evaluations = array();
+	protected $evaluations;
 
 
 	/**
@@ -52,24 +52,9 @@ class ilExtendedTestStatistics
 		$this->plugin = $a_plugin;
 		$this->object = $a_test_obj;
 
-		//Set config object
+		//Set the config object
 		$this->plugin->includeClass("class.ilExtendedTestStatisticsConfig.php");
 		$this->config = new ilExtendedTestStatisticsConfig($this->plugin);
-	}
-
-	/**
-	 * Load the source data for all evaluations
-	 */
-	public function loadSourceData()
-	{
-        // workaround for missing include in ilObjtest::getQuestionCount()
-        if ($this->object->isRandomTest())
-        {
-            require_once('Modules/Test/classes/class.ilTestRandomQuestionSetConfig.php');
-        }
-		$this->plugin->includeClass('models/class.ilExteStatSourceData.php');
-		$this->data = new ilExteStatSourceData($this->object, $this->plugin);
-		$this->data->load();
 	}
 
 	/**
@@ -82,45 +67,7 @@ class ilExtendedTestStatistics
 		{
 			$this->loadSourceData();
 		}
-
 		return $this->data;
-	}
-
-	/**
-	 * Load the relevant evaluation objects
-	 * @param   string    	$a_level	level of the statistics, e.g. self::LEVEL_TEST
-	 * @param   string  	$a_class	class name of the evaluation to load
-	 */
-	public function loadEvaluations($a_level = '', $a_class = '')
-	{
-		$this->evaluations = array();
-
-		$isAdmin = $this->isAdmin();
-
-		foreach ($this->config->getEvaluationClasses() as $class => $availability)
-		{
-			// check evaluation id
-			if (!empty($a_class) && $a_class != $class)
-			{
-				continue;
-			}
-
-			// check configured availability
-			if (!($isAdmin || $availability == ilExtendedTestStatisticsConfig::FOR_USER))
-			{
-				continue;
-			}
-
-			// check evaluation type
-			if (($a_level == self::LEVEL_TEST && !is_subclass_of($class, 'ilExteEvalTest')) ||
-				($a_level == self::LEVEL_QUESTION && !is_subclass_of($class, 'ilExteEvalQuestion')))
-			{
-				continue;
-			}
-
-			// instantiate the evaluation object
-			$this->evaluations[$class] = new $class($this->data, $this->plugin);
-		}
 	}
 
 	/**
@@ -130,20 +77,37 @@ class ilExtendedTestStatistics
 	 */
 	public function getEvaluation($a_class)
 	{
+		if (!isset($this->evaluations))
+		{
+			$this->loadEvaluations();
+		}
 		return isset($this->evaluations[$a_class]) ? $this->evaluations[$a_class] : null;
 	}
 
 	/**
 	 * Get a subset of the loaded evaluation objects
+	 * @param   string  $a_level			level of the statistics, e.g. self::LEVEL_TEST or empty for all
 	 * @param   string  $a_provides			provided result, e.g. self::PROVIDES_VALUE or empty for all
 	 * @param   string  $a_question_type	question type (for question evaluations) or empty for all
 	 * @return  ilExteEvalBase[]    indexed by class name
 	 */
-	public function getEvaluations($a_provides = '', $a_question_type = '')
+	public function getEvaluations($a_level = '', $a_provides = '', $a_question_type = '')
 	{
+		if (!isset($this->evaluations))
+		{
+			$this->loadEvaluations();
+		}
+
 		$selected = array();
 		foreach ($this->evaluations as $class => $evaluation)
 		{
+			// check evaluation type
+			if (($a_level == self::LEVEL_TEST && !is_subclass_of($class, 'ilExteEvalTest')) ||
+				($a_level == self::LEVEL_QUESTION && !is_subclass_of($class, 'ilExteEvalQuestion')))
+			{
+				continue;
+			}
+
 			// check if value or details are provided
 			if (($a_provides == self::PROVIDES_VALUE && !$evaluation->providesValue()) ||
 				($a_provides == self::PROVIDES_DETAILS && !$evaluation->providesDetails()))
@@ -163,10 +127,46 @@ class ilExtendedTestStatistics
 	}
 
 	/**
+	 * Load the source data for all evaluations
+	 */
+	protected function loadSourceData()
+	{
+		// workaround for missing include in ilObjtest::getQuestionCount()
+		if ($this->object->isRandomTest())
+		{
+			require_once('Modules/Test/classes/class.ilTestRandomQuestionSetConfig.php');
+		}
+		$this->plugin->includeClass('models/class.ilExteStatSourceData.php');
+		$this->data = new ilExteStatSourceData($this->object, $this->plugin);
+		$this->data->load();
+	}
+
+	/**
+	 * Load the evaluation objects
+	 */
+	protected function loadEvaluations()
+	{
+		$isAdmin = $this->isAdmin();
+
+		foreach ($this->config->getEvaluationClasses() as $class => $availability)
+		{
+			// check configured availability
+			if (!($isAdmin || $availability == ilExtendedTestStatisticsConfig::FOR_USER))
+			{
+				continue;
+			}
+
+			// instantiate the evaluation object
+			$this->evaluations[$class] = new $class($this->getSourceData(), $this->plugin);
+		}
+	}
+
+
+	/**
 	 * Check if the current user is administrator of the test system
 	 * @return bool
 	 */
-	private function isAdmin()
+	protected function isAdmin()
 	{
 		global $tree, $rbacsystem;
 

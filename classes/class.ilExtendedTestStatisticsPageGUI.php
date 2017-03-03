@@ -73,15 +73,9 @@ class ilExtendedTestStatisticsPageGUI
                 $this->prepareOutput();
                 $this->$cmd();
                 break;
-			case "exportTestEvaluations":
-			case "exportQuestionsEvaluations":
-				$this->plugin->includeClass("export/class.ilExtendedTestStatisticsExport.php");
-				require_once('Modules/Test/classes/class.ilTestExportFilename.php');
-				$level = ($cmd == "exportTestEvaluations") ? ilExtendedTestStatistics::LEVEL_TEST : ilExtendedTestStatistics::LEVEL_QUESTION;
-				$export = new ilExtendedTestStatisticsExport($this->plugin, $this->statObj, $level);
-				$export->buildExportFile(new ilTestExportFilename($this->testObj));
+			case "exportEvaluations":
+				$this->$cmd();
 				break;
-
 			default:
                 ilUtil::sendFailure($lng->txt("permission_denied"), true);
                 ilUtil::redirect("goto.php?target=tst_".$this->testObj->getRefId());
@@ -132,12 +126,10 @@ class ilExtendedTestStatisticsPageGUI
 	 */
 	protected function showTestOverview()
 	{
-		$this->statObj->loadSourceData();
-		$this->statObj->loadEvaluations(ilExtendedTestStatistics::LEVEL_TEST);
 		$this->setOverviewToolbar(ilExtendedTestStatistics::LEVEL_TEST);
 
-		$this->plugin->includeClass('tables/class.ilExteStatTableGUI.php');
 		/** @var  ilExteStatTestOverviewTableGUI $tableGUI */
+		$this->plugin->includeClass('tables/class.ilExteStatTableGUI.php');
 		$tableGUI = ilExteStatTableGUI::_create('ilExteStatTestOverviewTableGUI', $this, 'showTestOverview');
 		$tableGUI->prepareData();
 
@@ -150,24 +142,20 @@ class ilExtendedTestStatisticsPageGUI
      */
     protected function showTestDetails()
     {
+		$this->setDetailsToolbar('showTestOverview');
         $this->ctrl->saveParameter($this, 'details');
 
-        $this->statObj->loadSourceData();
-        $this->statObj->loadEvaluations(ilExtendedTestStatistics::LEVEL_TEST, $_GET['details']);
-
-        $content = '';
         $evaluation = $this->statObj->getEvaluation($_GET['details']);
-        foreach ($evaluation->getDetails() as $detailsObj)
-        {
-			$this->plugin->includeClass('tables/class.ilExteStatTableGUI.php');
-			/** @var  ilExteStatDetailsTableGUI $tableGUI */
-			$tableGUI = ilExteStatTableGUI::_create('ilExteStatDetailsTableGUI', $this, 'showTestDetails');
-            $tableGUI->prepareData($detailsObj);
-            $content .= $tableGUI->getHTML();
-        }
 
-        $this->tpl->setContent($content);
-        $this->tpl->show();
+		/** @var  ilExteStatDetailsTableGUI $tableGUI */
+		$this->plugin->includeClass('tables/class.ilExteStatTableGUI.php');
+		$tableGUI = ilExteStatTableGUI::_create('ilExteStatDetailsTableGUI', $this, 'showTestDetails');
+		$tableGUI->prepareData($evaluation->getDetails());
+		$tableGUI->setTitle($evaluation->getShortTitle());
+		$tableGUI->setDescription($evaluation->getDescription());
+
+		$this->tpl->setContent($tableGUI->getHTML());
+		$this->tpl->show();
     }
 
     /**
@@ -175,12 +163,10 @@ class ilExtendedTestStatisticsPageGUI
      */
 	protected function showQuestionsOverview()
 	{
-        $this->statObj->loadSourceData();
-        $this->statObj->loadEvaluations(ilExtendedTestStatistics::LEVEL_QUESTION);
-		//$this->setOverviewToolbar(ilExtendedTestStatistics::LEVEL_QUESTION);
+		$this->setOverviewToolbar(ilExtendedTestStatistics::LEVEL_QUESTION);
 
-		$this->plugin->includeClass('tables/class.ilExteStatTableGUI.php');
 		/** @var  ilExteStatQuestionsOverviewTableGUI $tableGUI */
+		$this->plugin->includeClass('tables/class.ilExteStatTableGUI.php');
         $tableGUI = ilExteStatTableGUI::_create('ilExteStatQuestionsOverviewTableGUI', $this, 'showQuestionsOverview');
         $tableGUI->prepareData();
 
@@ -194,29 +180,25 @@ class ilExtendedTestStatisticsPageGUI
      */
     protected function showQuestionDetails()
     {
+		$this->setDetailsToolbar('showQuestionsOverview');
         $this->ctrl->saveParameter($this, 'details');
         $this->ctrl->saveParameter($this, 'qid');
 
-        $this->statObj->loadSourceData();
-        $this->statObj->loadEvaluations(ilExtendedTestStatistics::LEVEL_QUESTION, $_GET['details']);
-
-        $content = '';
         $evaluation = $this->statObj->getEvaluation($_GET['details']);
-        foreach ($evaluation->getDetails($_GET['qid']) as $detailsObj)
-        {
-            $this->plugin->includeClass('tables/class.ilExteStatTableGUI.php');
-			/** @var  ilExteStatDetailsTableGUI $tableGUI */
-			$tableGUI = ilExteStatTableGUI::_create('ilExteStatDetailsTableGUI', $this, 'showTestDetails');
-            $tableGUI->prepareData($detailsObj);
-            $content .= $tableGUI->getHTML();
-        }
 
-        $this->tpl->setContent($content);
+		/** @var  ilExteStatDetailsTableGUI $tableGUI */
+		$this->plugin->includeClass('tables/class.ilExteStatTableGUI.php');
+		$tableGUI = ilExteStatTableGUI::_create('ilExteStatDetailsTableGUI', $this, 'showQuestionDetails');
+		$tableGUI->prepareData($evaluation->getDetails($_GET['qid']));
+		$tableGUI->setTitle($evaluation->getShortTitle());
+		$tableGUI->setDescription($evaluation->getDescription());
+
+        $this->tpl->setContent($tableGUI->getHTML());
         $this->tpl->show();
     }
 
 	/**
-	 * Set the Toolbar for the page
+	 * Set the Toolbar for the overview page
 	 * @param string	$level
 	 */
 	protected function setOverviewToolbar($level)
@@ -230,18 +212,58 @@ class ilExtendedTestStatisticsPageGUI
 		require_once 'Services/Form/classes/class.ilSelectInputGUI.php';
 		$export_type = new ilSelectInputGUI($lng->txt('exp_eval_data'), 'export_type');
 		$options = array(
-			'excel_overview' => $lng->txt('exp_type_excel')
+			'excel_overview' => $this->plugin->txt('exp_type_excel_overviews'),
+			'excel_details' => $this->plugin->txt('exp_type_excel_details'),
 		);
 		$export_type->setOptions($options);
 
 		$ilToolbar->addInputItem($export_type, true);
 		require_once 'Services/UIComponent/Button/classes/class.ilSubmitButton.php';
 		$button = ilSubmitButton::getInstance();
-		$cmd = ($level == ilExtendedTestStatistics::LEVEL_TEST) ? 'exportTestEvaluations' : 'exportQuestionsEvaluations';
-		$button->setCommand($cmd);
+		$button->setCommand('exportEvaluations');
 		$button->setCaption('export');
 		$button->getOmitPreventDoubleSubmission();
 		$ilToolbar->addButtonInstance($button);
+	}
+
+	/**
+	 * Set the Toolbar for the details page
+	 * @param string  $backCmd
+	 */
+	protected function setDetailsToolbar($backCmd)
+	{
+		/** @var ilToolbarGUI $ilToolbar */
+		global $ilToolbar, $lng;
+
+		$ilToolbar->setFormName('etstat_toolbar');
+		$ilToolbar->setFormAction($this->ctrl->getFormAction($this));
+
+		require_once 'Services/UIComponent/Button/classes/class.ilSubmitButton.php';
+		$button = ilSubmitButton::getInstance();
+		$button->setCommand($backCmd);
+		$button->setCaption('back');
+		$button->getOmitPreventDoubleSubmission();
+		$ilToolbar->addButtonInstance($button);
+
+	}
+
+	/**
+	 * Export the evaluations
+	 */
+	protected function exportEvaluations()
+	{
+		switch ($_POST['export_type'])
+		{
+			case 'excel_overview':
+			case 'excel_details':
+				$this->plugin->includeClass("export/class.ilExteStatExportExcel.php");
+				require_once('Modules/Test/classes/class.ilTestExportFilename.php');
+
+				$export = new ilExteStatExportExcel($this->plugin, $this->statObj, $_POST['export_type'] == 'excel_details');
+				$export->buildExportFile(new ilTestExportFilename($this->testObj));
+				break;
+
+		}
 	}
 }
 ?>

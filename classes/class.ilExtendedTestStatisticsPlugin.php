@@ -16,6 +16,14 @@ class ilExtendedTestStatisticsPlugin extends ilUserInterfaceHookPlugin
 		return "ExtendedTestStatistics";
 	}
 
+	/**
+	 * Get debugging output of different value formats
+	 * @return bool
+	 */
+	public function debugFormats()
+	{
+		return false;
+	}
 
 	/**
 	 * Update all or selected languages

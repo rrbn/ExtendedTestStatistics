@@ -95,7 +95,9 @@ class ilExteStatQuestionsOverviewTableGUI extends ilExteStatTableGUI
         // basic question values
        $columns = $this->getBasicSelectableColumns();
 
-       foreach ($this->statObj->getEvaluations(ilExtendedTestStatistics::PROVIDES_VALUE) as $id => $evaluation)
+       foreach ($this->statObj->getEvaluations(
+		   ilExtendedTestStatistics::LEVEL_QUESTION,
+		   ilExtendedTestStatistics::PROVIDES_VALUE) as $id => $evaluation)
        {
            $columns[$id] = array(
                'txt' => $evaluation->getShortTitle(),
@@ -197,7 +199,9 @@ class ilExteStatQuestionsOverviewTableGUI extends ilExteStatTableGUI
         }
 
         // evaluations with details
-        $details = $this->statObj->getEvaluations(ilExtendedTestStatistics::PROVIDES_DETAILS, $data['question_type']);
+        $details = $this->statObj->getEvaluations(
+			ilExtendedTestStatistics::LEVEL_QUESTION,
+			ilExtendedTestStatistics::PROVIDES_DETAILS, $data['question_type']);
 
         if (!empty($details))
         {

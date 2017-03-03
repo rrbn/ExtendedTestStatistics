@@ -75,21 +75,7 @@ class ilExteEvalTestMedian extends ilExteEvalTest
 
 			return $value;
 		}
-
-
 	}
-
-
-	/**
-	 * Calculate the details for a test
-	 *
-	 * @return ilExteStatDetails[]
-	 */
-	public function calculateDetails()
-	{
-		return array();
-	}
-
 
 	/** Compare function for sorting an array of Participants in a test by current reached points.
 	 * @param $a

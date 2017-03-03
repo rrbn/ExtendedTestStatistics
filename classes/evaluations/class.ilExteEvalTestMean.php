@@ -41,15 +41,4 @@ class ilExteEvalTestMean extends ilExteEvalTest
 	{
 		return $this->getMeanOfReachedPoints();
 	}
-
-
-	/**
-	 * Calculate the details for a test
-	 *
-	 * @return ilExteStatDetails[]
-	 */
-	public function calculateDetails()
-	{
-		return array();
-	}
 }

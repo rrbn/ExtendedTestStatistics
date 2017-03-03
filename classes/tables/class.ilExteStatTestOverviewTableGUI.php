@@ -6,6 +6,9 @@
  */
 class ilExteStatTestOverviewTableGUI extends ilExteStatTableGUI
 {
+	/** @var bool get demo output of various value formats */
+	protected $debugFormats = false;
+
     /**
 	 * Constructor
 	 */
@@ -60,7 +63,7 @@ class ilExteStatTestOverviewTableGUI extends ilExteStatTableGUI
 		 * @var string $class
 		 * @var  ilExteEvalTest|ilExteEvalQuestion $evaluation
 		 */
-		foreach ($this->statObj->getEvaluations() as $class => $evaluation)
+		foreach ($this->statObj->getEvaluations(ilExtendedTestStatistics::LEVEL_TEST) as $class => $evaluation)
         {
             array_push($data,
                 array(
@@ -70,6 +73,22 @@ class ilExteStatTestOverviewTableGUI extends ilExteStatTableGUI
                     'details' => $evaluation->providesDetails() ? $class : null
                 ));
         }
+
+		// Debug value formats
+		if ($this->debugFormats)
+		{
+			foreach (ilExteStatValue::getTestValues() as $value)
+			{
+				array_push($data,
+					array(
+						'title' => $value->comment,
+						'description' => '',
+						'value' => $value,
+						'details' => null
+					));
+			}
+		}
+
 
 		$this->setLimit(count($data));
         $this->setData($data);

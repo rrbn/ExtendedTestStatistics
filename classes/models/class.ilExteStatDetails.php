@@ -6,25 +6,6 @@
 class ilExteStatDetails
 {
     /**
-     * Id
-     * Should be a short variable-like name which is unique within an evaluation
-     * @var string
-     */
-    public $id;
-
-    /**
-     * Title
-     * @var string
-     */
-    public $title;
-
-    /**
-     * Description
-     * @var string
-     */
-    public $description;
-
-    /**
      * Table columns
      * @var ilExteStatColumn[]
      */

@@ -18,11 +18,11 @@ abstract class ilExteEvalTest extends ilExteEvalBase
 	/**
 	 * Calculate the details for a test (to be overwritten)
 	 *
-	 * @return ilExteStatDetails[]
+	 * @return ilExteStatDetails
 	 */
 	protected function calculateDetails()
 	{
-		return array();
+		return new ilExteStatDetails();
 	}
 
 	/**
@@ -47,13 +47,13 @@ abstract class ilExteEvalTest extends ilExteEvalBase
 	 * Get the calculated details
 	 * This checks if the test type matches before
 	 *
-	 * @return ilExteStatDetails[]
+	 * @return ilExteStatDetails
 	 */
 	final public function getDetails()
 	{
 		if (!$this->isTestTypeAllowed())
 		{
-			return array();
+			return null;
 		}
 		else
 		{
