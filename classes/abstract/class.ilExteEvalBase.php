@@ -155,26 +155,34 @@ abstract class ilExteEvalBase
 
 
 	/**
-	 * Get a value saying that the evaluation is not available for the test type
-	 * @return	ilExteStatValue
+	 * Get a message saying that the evaluation is not available for the test type
+	 * @return	string
 	 */
-	protected function getValueNotAvailableForTestType()
+	protected function getMessageNotAvailableForTestType()
 	{
 		switch ($this->data->getTestType())
 		{
 			case self::TEST_TYPE_FIXED:
-				$comment = $this->plugin->txt('not_for_fixed_test');
-				break;
-			case self::TEST_TYPE_RANDOM:
-				$comment = $this->plugin->txt('not_for_random_test');
-				break;
-			case self::TEST_TYPE_DYNAMIC:
-				$comment = $this->plugin->txt('not_for_dynamic_test');
-				break;
-			default:
-				$comment = $this->plugin->txt('not_for_test_type');
-		}
+				return $this->plugin->txt('not_for_fixed_test');
 
-		return ilExteStatValue::_create(null, ilExteStatValue::TYPE_TEXT, 0, $comment, ilExteStatValue::ALERT_UNKNOWN);
+			case self::TEST_TYPE_RANDOM:
+				return $this->plugin->txt('not_for_random_test');
+
+			case self::TEST_TYPE_DYNAMIC:
+				return $this->plugin->txt('not_for_dynamic_test');
+
+			default:
+				return $this->plugin->txt('not_for_test_type');
+		}
 	}
+
+	/**
+	 * Get a message saying that the evaluation is not available for the question type
+	 * @return	string
+	 */
+	protected function getMessageNotAvailableForQuestionType()
+	{
+		return $this->plugin->txt('not_for_question_type');
+	}
+
 }

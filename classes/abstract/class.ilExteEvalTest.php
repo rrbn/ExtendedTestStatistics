@@ -35,7 +35,8 @@ abstract class ilExteEvalTest extends ilExteEvalBase
 	{
 		if (!$this->isTestTypeAllowed())
 		{
-			return $this->getValueNotAvailableForTestType();
+			$message = $this->getMessageNotAvailableForTestType();
+			return ilExteStatValue::_create(null, ilExteStatValue::TYPE_TEXT, 0, $message, ilExteStatValue::ALERT_UNKNOWN);
 		}
 		else
 		{
@@ -53,7 +54,8 @@ abstract class ilExteEvalTest extends ilExteEvalBase
 	{
 		if (!$this->isTestTypeAllowed())
 		{
-			return null;
+			$message = $this->getMessageNotAvailableForTestType();
+			return (new ilExteStatDetails)->setEmptyMessage($message);
 		}
 		else
 		{

@@ -68,6 +68,7 @@ class ilExteStatDetailsTableGUI extends ilExteStatTableGUI
             $data[] = $values;
         }
         $this->setData($data);
+        $this->setNoEntriesText($a_details->getEmptyMessage());
     }
 
     /**

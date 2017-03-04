@@ -336,6 +336,58 @@ class ilExteStatSourceData
 	}
 
 	/**
+	 * Get a list of id, title and description of the basic question values
+	 * @return array	[['id' => string, 'title' => string, 'description' => string], ...]
+	 */
+	public function getBasicQuestionValuesList()
+	{
+		global $lng;
+
+		return array(
+			array(
+				'id' => 'question_id',
+				'title' => $lng->txt('question_id'),
+				'description' => '',
+			),
+			array(
+				'id' => 'question_title',
+				'title' => $lng->txt('question_title'),
+				'description' => '',
+			),
+			array(
+				'id' => 'question_type_label',
+				'title' => $this->plugin->txt('question_type'),
+				'description' => '',
+			),
+			array(
+				'id' => 'assigned_count',
+				'title' => $this->plugin->txt('assigned_count'),
+				'description' => $this->plugin->txt('assigned_count_description'),
+			),
+			array(
+				'id' => 'answers_count',
+				'title' => $this->plugin->txt('answers_count'),
+				'description' => $this->plugin->txt('answers_count_description'),
+			),
+			array(
+				'id' => 'maximum_points',
+				'title' => $this->plugin->txt('max_points'),
+				'description' => ''
+			),
+			array(
+				'id' => 'average_points',
+				'title' => $this->plugin->txt('average_points'),
+				'description' => $this->plugin->txt('average_points_description'),
+			),
+			array(
+				'id' => 'average_percentage',
+				'title' => $this->plugin->txt('average_percentage'),
+				'description' => $this->plugin->txt('average_percentage_description'),
+			)
+		);
+	}
+
+		/**
 	 * Get the basic test values
 	 * @return array    value_id => ilExteStatValue
 	 */

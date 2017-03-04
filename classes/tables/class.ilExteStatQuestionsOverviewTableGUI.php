@@ -186,7 +186,7 @@ class ilExteStatQuestionsOverviewTableGUI extends ilExteStatTableGUI
                 // values from evaluations
                 default:
                     $evaluation = $this->statObj->getEvaluation($colid);
-                    if (isset($evaluation) && $evaluation->isQuestionTypeAllowed($data['question_type']) && $evaluation->providesValue())
+                    if (isset($evaluation) && $evaluation->providesValue())
                     {
                         $value = $evaluation->getValue($data['question_id']);
 						$content = $this->valueGUI->getHTML($value);
@@ -215,14 +215,10 @@ class ilExteStatQuestionsOverviewTableGUI extends ilExteStatTableGUI
 
             foreach($details as $class => $evaluation)
             {
-				if ($evaluation->isTestTypeAllowed())
-				{
-					$this->ctrl->setParameter($this->parent_obj, 'qid', $data['question_id']);
-					$this->ctrl->setParameter($this->parent_obj, 'details', $class);
-					$list->addItem($evaluation->getTitle(), '', $this->ctrl->getLinkTarget($this->parent_obj,'showQuestionDetails'));
-				}
-
-            }
+				$this->ctrl->setParameter($this->parent_obj, 'qid', $data['question_id']);
+				$this->ctrl->setParameter($this->parent_obj, 'details', $class);
+				$list->addItem($evaluation->getTitle(), '', $this->ctrl->getLinkTarget($this->parent_obj,'showQuestionDetails'));
+		}
             $content = $list->getHTML();
         }
         else

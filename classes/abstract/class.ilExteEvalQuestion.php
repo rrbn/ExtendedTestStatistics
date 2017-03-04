@@ -44,7 +44,13 @@ abstract class ilExteEvalQuestion extends ilExteEvalBase
 	{
 		if (!$this->isTestTypeAllowed())
 		{
-			return $this->getValueNotAvailableForTestType();
+			$message = $this->getMessageNotAvailableForTestType();
+			return ilExteStatValue::_create(null, ilExteStatValue::TYPE_TEXT, 0, $message, ilExteStatValue::ALERT_UNKNOWN);
+		}
+		elseif (!$this->isQuestionTypeAllowed($this->data->getQuestion($a_question_id)->question_type))
+		{
+			$message = $this->getMessageNotAvailableForQuestionType();
+			return ilExteStatValue::_create(null, ilExteStatValue::TYPE_TEXT, 0, $message, ilExteStatValue::ALERT_UNKNOWN);
 		}
 		else
 		{
@@ -63,7 +69,13 @@ abstract class ilExteEvalQuestion extends ilExteEvalBase
 	{
 		if (!$this->isTestTypeAllowed())
 		{
-			return null;
+			$message = $this->getMessageNotAvailableForTestType();
+			return (new ilExteStatDetails)->setEmptyMessage($message);
+		}
+		elseif (!$this->isQuestionTypeAllowed($this->data->getQuestion($a_question_id)->question_type))
+		{
+			$message = $this->getMessageNotAvailableForQuestionType();
+			return (new ilExteStatDetails)->setEmptyMessage($message);
 		}
 		else
 		{

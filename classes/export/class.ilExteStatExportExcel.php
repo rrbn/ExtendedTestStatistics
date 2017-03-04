@@ -73,7 +73,15 @@ class ilExteStatExportExcel
 
 		// Create the first sheets with test and questions statistics
 		$this->fillTestOverview( $excelObj->getActiveSheet());
-		$this->fillQuestionsOverview( $excelObj->createSheet());
+		$this->fillQuestionsOverview($excelObj->createSheet());
+
+		foreach ($this->statObj->getEvaluations(
+			ilExtendedTestStatistics::LEVEL_TEST,
+			ilExtendedTestStatistics::PROVIDES_DETAILS) as $class => $evaluation)
+		{
+
+		}
+
 
 		$excelObj->setActiveSheetIndex(0);
 
@@ -175,7 +183,21 @@ class ilExteStatExportExcel
 	{
 		global $lng;
 
-		$header = $this->getQuestionOverviewHeader();
+		$header = $this->statObj->getSourceData()->getBasicQuestionValuesList();
+
+		/** @var  ilExteEvalQuestion $evaluation */
+		$evaluations = array();
+		foreach ($this->statObj->getEvaluations(
+			ilExtendedTestStatistics::LEVEL_QUESTION,
+			ilExtendedTestStatistics::PROVIDES_VALUE) as $class => $evaluation)
+		{
+			$header[] = array(
+				'id' => $class,
+				'title' => $evaluation->getShortTitle(),
+				'description' => $evaluation->getDescription(),
+			);
+			$evaluations[$class] = $evaluation;
+		}
 
 		$comments = array();
 		$mapping = array();
@@ -187,9 +209,9 @@ class ilExteStatExportExcel
 			$cell = $worksheet->getCell($coordinate);
 			$cell->setValueExplicit($def['title'], PHPExcel_Cell_DataType::TYPE_STRING);
 			$cell->getStyle()->applyFromArray($this->headerStyle);
-			if (!empty($def['comment']))
+			if (!empty($def['description']))
 			{
-				$comments[$coordinate] = $this->createComment($def['comment']);
+				$comments[$coordinate] = $this->createComment($def['description']);
 			}
 		}
 
@@ -212,9 +234,7 @@ class ilExteStatExportExcel
 			}
 
 			/** @var  ilExteEvalQuestion $evaluation */
-			foreach ($this->statObj->getEvaluations(
-				ilExtendedTestStatistics::LEVEL_QUESTION,
-				ilExtendedTestStatistics::PROVIDES_VALUE) as $class => $evaluation)
+			foreach ($evaluations as $class => $evaluation)
 			{
 				$coordinate = $mapping[$class].(string) $row;
 				$cell = $worksheet->getCell($coordinate);
@@ -235,71 +255,6 @@ class ilExteStatExportExcel
 		$worksheet->freezePane('A2');
 	}
 
-	/**
-	 * Get the selectable columns with basic question data
-	 * @return array
-	 */
-	public function getQuestionOverviewHeader()
-	{
-		global $lng;
-
-		$header = array(
-			array(
-				'id' => 'question_id',
-				'title' => $lng->txt('question_id'),
-				'comment' => '',
-			),
-			array(
-				'id' => 'question_title',
-				'title' => $lng->txt('question_title'),
-				'comment' => '',
-			),
-			array(
-				'id' => 'question_type_label',
-				'title' => $this->plugin->txt('question_type'),
-				'comment' => '',
-			),
-			array(
-				'id' => 'assigned_count',
-				'title' => $this->plugin->txt('assigned_count'),
-				'comment' => $this->plugin->txt('assigned_count_description'),
-			),
-			array(
-				'id' => 'answers_count',
-				'title' => $this->plugin->txt('answers_count'),
-				'comment' => $this->plugin->txt('answers_count_description'),
-			),
-			array(
-				'id' => 'maximum_points',
-				'title' => $this->plugin->txt('max_points'),
-				'comment' => ''
-			),
-			array(
-				'id' => 'average_points',
-				'title' => $this->plugin->txt('average_points'),
-				'comment' => $this->plugin->txt('average_points_description'),
-			),
-			array(
-				'id' => 'average_percentage',
-				'title' => $this->plugin->txt('average_percentage'),
-				'comment' => $this->plugin->txt('average_percentage_description'),
-			)
-		);
-
-		/** @var  ilExteEvalQuestion $evaluation */
-		foreach ($this->statObj->getEvaluations(
-			ilExtendedTestStatistics::LEVEL_QUESTION,
-			ilExtendedTestStatistics::PROVIDES_VALUE) as $class => $evaluation)
-		{
-			$header[] = array(
-				'id' => $class,
-				'title' => $evaluation->getShortTitle(),
-				'comment' => $evaluation->getDescription(),
-			);
-		}
-
-		return $header;
-	}
 
 	/**
 	 * @param $text

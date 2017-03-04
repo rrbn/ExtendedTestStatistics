@@ -92,7 +92,6 @@ class ilExteEvalQuestionStandardDeviation extends ilExteEvalQuestion
 			$standard_deviation = 100 * (sqrt($variance) / ($highest_score - $lowest_score));
 		}
 
-
 		$value->value = $standard_deviation;
 		return $value;
 	}
