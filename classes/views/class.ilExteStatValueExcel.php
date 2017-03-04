@@ -64,7 +64,7 @@ class ilExteStatValueExcel
 
 				case ilExteStatValue::TYPE_DURATION:
 					$cell->setValueExplicit($value->value/86400, PHPExcel_Cell_DataType::TYPE_NUMERIC);
-					$numberFormat->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_DATE_TIME2);
+					$numberFormat->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_DATE_TIME4);
 					$alignment->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
 					break;
 
@@ -122,16 +122,27 @@ class ilExteStatValueExcel
 
 	/**
 	 * Get the Excel comment for the value
+	 * @param ilExteStatValue $value
 	 * @return PHPExcel_Comment
 	 */
 	public function getComment(ilExteStatValue $value)
 	{
+		return self::createComment((string) $value->comment);
+	}
+
+	/**
+	 * Create an excel comment from a text
+	 * @param $text
+	 * @return	PHPExcel_Comment
+	 */
+	public static function createComment($text)
+	{
 		$comment = new PHPExcel_Comment();
 		$richText = new PHPExcel_RichText();
-		$extElement = new PHPExcel_RichText_TextElement((string) $value->comment);
+		$extElement = new PHPExcel_RichText_TextElement($text);
 		$richText->addText($extElement);
 		$comment->setText($richText);
-		$comment->setHeight('100pt');
+		$comment->setHeight('150pt');
 		$comment->setWidth('200pt');
 		return $comment;
 	}

@@ -240,16 +240,9 @@ class ilExteStatSourceData
 		$this->basic_test_values['tst_eval_total_finished'] = $value;
 
 		// Average test processing time
-		$average_time = $this->object->evalTotalStartedAverageTime();
-		$diff_seconds = $average_time;
-		$diff_hours = floor($diff_seconds / 3600);
-		$diff_seconds -= $diff_hours * 3600;
-		$diff_minutes = floor($diff_seconds / 60);
-		$diff_seconds -= $diff_minutes * 60;
-
 		$value = new ilExteStatValue();
-		$value->type = ilExteStatValue::TYPE_TEXT;
-		$value->value = sprintf("%02d:%02d:%02d", $diff_hours, $diff_minutes, $diff_seconds);
+		$value->type = ilExteStatValue::TYPE_DURATION;
+		$value->value = (int) $this->object->evalTotalStartedAverageTime();
 		$this->basic_test_values['tst_eval_total_finished_average_time'] = $value;
 
 		// (intermediate calculations)
@@ -277,26 +270,74 @@ class ilExteStatSourceData
 		$value->value = $total_passed;
 		$this->basic_test_values['tst_eval_total_passed'] = $value;
 
+		// Average maximum points of passed tests
+		$value = new ilExteStatValue();
+		$value->type = ilExteStatValue::TYPE_NUMBER;
+		$value->precision = 2;
+		$value->value = $average_passed_max;
+		$this->basic_test_values['tst_eval_total_passed_average_max_points'] = $value;
+
 		// Average points of passed tests
 		$value = new ilExteStatValue();
-		$value->type = ilExteStatValue::TYPE_TEXT;
-		$value->value = sprintf("%2.2f", $average_passed_reached) . " " . strtolower($lng->txt("of")) . " " . sprintf("%2.2f", $average_passed_max);
+		$value->type = ilExteStatValue::TYPE_NUMBER;
+		$value->precision = 2;
+		$value->value = $average_passed_reached;
 		$this->basic_test_values['tst_eval_total_passed_average_points'] = $value;
 
 		// Average processing time of all passed tests
-		$average_time = $average_passed_time;
-		$diff_seconds = $average_time;
-		$diff_hours = floor($diff_seconds / 3600);
-		$diff_seconds -= $diff_hours * 3600;
-		$diff_minutes = floor($diff_seconds / 60);
-		$diff_seconds -= $diff_minutes * 60;
-
 		$value = new ilExteStatValue();
-		$value->type = ilExteStatValue::TYPE_TEXT;
-		$value->value = sprintf("%02d:%02d:%02d", $diff_hours, $diff_minutes, $diff_seconds);
+		$value->type = ilExteStatValue::TYPE_DURATION;
+		$value->value = (int) $average_passed_time;
 		$this->basic_test_values['tst_eval_total_passed_average_time'] = $value;
 	}
 
+
+	/**
+	 * Get a list of id, title and description of the basic question values
+	 * @return array	[['id' => string, 'title' => string, 'description' => string], ...]
+	 */
+	public function getBasicTestValuesList()
+	{
+		global $lng;
+
+		return array(
+			array(
+				'id' => 'tst_eval_total_persons',
+				'title' => $lng->txt('tst_eval_total_persons'),
+				'description' => '',
+			),
+			array(
+				'id' => 'tst_eval_total_finished',
+				'title' => $lng->txt('tst_eval_total_finished'),
+				'description' => '',
+			),
+			array(
+				'id' => 'tst_eval_total_passed',
+				'title' => $lng->txt('tst_eval_total_passed'),
+				'description' => '',
+			),
+			array(
+				'id' => 'tst_eval_total_passed_average_max_points',
+				'title' => $this->plugin->txt('tst_passed_average_max_points'),
+				'description' => '',
+			),
+			array(
+				'id' => 'tst_eval_total_passed_average_points',
+				'title' => $lng->txt('tst_eval_total_passed_average_points'),
+				'description' => '',
+			),
+			array(
+				'id' => 'tst_eval_total_finished_average_time',
+				'title' => $lng->txt('tst_eval_total_finished_average_time'),
+				'description' => '',
+			),
+			array(
+				'id' => 'tst_eval_total_passed_average_time',
+				'title' => $lng->txt('tst_eval_total_passed_average_time'),
+				'description' => '',
+			)
+		);
+	}
 
 	/**
 	 * Calculate the basic values for test questions (as in original ILIAS)
@@ -372,7 +413,7 @@ class ilExteStatSourceData
 			array(
 				'id' => 'maximum_points',
 				'title' => $this->plugin->txt('max_points'),
-				'description' => ''
+				'description' => $this->plugin->txt('max_points_description'),
 			),
 			array(
 				'id' => 'average_points',

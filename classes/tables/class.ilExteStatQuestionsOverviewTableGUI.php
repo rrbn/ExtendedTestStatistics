@@ -7,6 +7,12 @@
  */
 class ilExteStatQuestionsOverviewTableGUI extends ilExteStatTableGUI
 {
+	/** @var array $basicValues 	question_id => ilExteStatValue[] */
+	protected $basicValues = array();
+
+	/** @var array names of the columns with basic values */
+	protected $basicColumns = array();
+
     /**
 	 * Constructor
 	 * @param   ilExtendedTestStatisticsPageGUI $a_parent_obj
@@ -23,8 +29,6 @@ class ilExteStatQuestionsOverviewTableGUI extends ilExteStatTableGUI
 		$this->setTitle($this->plugin->txt('questions_results'));
 		$this->setStyle('table', 'fullwidth');
 
-		$this->addColumn($this->lng->txt("question_id"), 'question_id');
-		$this->addColumn($this->lng->txt("question_title"), 'question_title');
         foreach ($this->getSelectableColumns() as $colid => $settings)
         {
             if ($this->isColumnSelected($colid))
@@ -57,7 +61,19 @@ class ilExteStatQuestionsOverviewTableGUI extends ilExteStatTableGUI
      */
     public function getBasicSelectableColumns()
     {
+		global $lng;
+
         return array(
+			'question_id' => array(
+				'txt' => $lng->txt('question_id'),
+				'tooltip' => '',
+				'default' => true
+			),
+			'question_title' => array(
+				'txt' => $lng->txt('question_title'),
+				'tooltip' => '',
+				'default' => true
+			),
             'question_type_label' => array(
                 'txt' => $this->plugin->txt('question_type'),
                 'tooltip' => '',
@@ -73,12 +89,17 @@ class ilExteStatQuestionsOverviewTableGUI extends ilExteStatTableGUI
                 'tooltip' => $this->plugin->txt('answers_count_description'),
                 'default' => true
             ),
-            'average_points' => array(
+			'maximum_points' => array(
+				'txt' => $this->plugin->txt('max_points'),
+				'tooltip' => $this->plugin->txt('max_points_description'),
+				'default' => true
+			),
+			'average_points' => array(
                 'txt' => $this->plugin->txt('average_points'),
                 'tooltip' => $this->plugin->txt('average_points_description'),
                 'default' => true
             ),
-            'average_percentage' => array(
+			'average_percentage' => array(
                 'txt' => $this->plugin->txt('average_percentage'),
                 'tooltip' => $this->plugin->txt('average_percentage_description'),
                 'default' => false
@@ -102,7 +123,7 @@ class ilExteStatQuestionsOverviewTableGUI extends ilExteStatTableGUI
            $columns[$id] = array(
                'txt' => $evaluation->getShortTitle(),
                'tooltip' => $evaluation->getDescription(),
-               'default' => false
+               'default' => true
            );
        }
        return $columns;
@@ -110,13 +131,15 @@ class ilExteStatQuestionsOverviewTableGUI extends ilExteStatTableGUI
 
     /**
      * Prepare the data to be shown
-     * This only adds the basic questrion values that will be used for filtering and sorting
+     * This only adds the basic question values that will be used for filtering and sorting
      * The more complex evaluations are only applied for the filled rows of the page
      */
     public function prepareData()
     {
         $data = array();
-        foreach ($this->statObj->getSourceData()->getBasicQuestionValues() as $question_id => $values)
+		$this->basicColumns = array_keys($this->getBasicSelectableColumns());
+		$this->basicValues = $this->statObj->getSourceData()->getBasicQuestionValues();
+        foreach ($this->basicValues as $question_id => $values)
         {
             $row = array();
 
@@ -142,6 +165,7 @@ class ilExteStatQuestionsOverviewTableGUI extends ilExteStatTableGUI
             case 'question_id':
             case 'assigned_count':
             case 'answers_count':
+			case 'maximum_points':
 			case 'average_points':
 			case 'average_percentage':
 				return true;
@@ -157,42 +181,26 @@ class ilExteStatQuestionsOverviewTableGUI extends ilExteStatTableGUI
 	 */
 	public function fillRow($data)
 	{
-        $this->tpl->setCurrentBlock('column');
-        $this->tpl->setVariable('CONTENT', $data['question_id']);
-        $this->tpl->parseCurrentBlock();
-
-        $this->tpl->setCurrentBlock('column');
-        $this->tpl->setVariable('CONTENT', $data['question_title']);
-        $this->tpl->parseCurrentBlock();
+		$question_id = $data['question_id'];
 
         foreach ($this->getSelectedColumns() as $colid)
         {
             $content ='';
-            switch ($colid)
-            {
-                // basic question values
-                case 'question_type_label':
-                case 'assigned_count':
-                case 'answers_count':
-                    $content = ilUtil::prepareFormOutput($data[$colid]);
-                    break;
-                case 'average_points':
-                    $content = round($data['average_points'],2) . ' ' . strtolower($this->lng->txt('of')) . ' ' . round($data['maximum_points'],2);
-                    break;
-                case 'average_percentage':
-                    $content = round($data['average_percentage'],2) . '%';
-                    break;
+			if (in_array($colid, $this->basicColumns))
+			{
+				$value = $this->basicValues[$question_id][$colid];
+				$content = $this->valueGUI->getHTML($value);
+			}
+			else
+			{
+				$evaluation = $this->statObj->getEvaluation($colid);
+				if (isset($evaluation) && $evaluation->providesValue())
+				{
+					$value = $evaluation->getValue($data['question_id']);
+					$content = $this->valueGUI->getHTML($value);
+				}
+			}
 
-                // values from evaluations
-                default:
-                    $evaluation = $this->statObj->getEvaluation($colid);
-                    if (isset($evaluation) && $evaluation->providesValue())
-                    {
-                        $value = $evaluation->getValue($data['question_id']);
-						$content = $this->valueGUI->getHTML($value);
-					}
-                    break;
-            }
             $this->tpl->setCurrentBlock('column');
             $this->tpl->setVariable('CONTENT', $content);
             $this->tpl->parseCurrentBlock();

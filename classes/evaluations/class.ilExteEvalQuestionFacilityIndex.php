@@ -70,7 +70,7 @@ class ilExteEvalQuestionFacilityIndex extends ilExteEvalQuestion
         //Calculate facility index, if possible
         $value = new ilExteStatValue;
         $value->type = ilExteStatValue::TYPE_PERCENTAGE;
-        $value->precision = 4;
+        $value->precision = 2;
 
         if ($count == 0)
         {

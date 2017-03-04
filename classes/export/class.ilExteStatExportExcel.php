@@ -55,7 +55,7 @@ class ilExteStatExportExcel
 	{
 		$this->statObj = $statObj;
 		$this->plugin  = $plugin;
-		$this->withDetails = false;
+		$this->withDetails = $withDetails;
 
 		$this->plugin->includeClass('views/class.ilExteStatValueExcel.php');
 		$this->valView = new ilExteStatValueExcel($this->plugin);
@@ -75,13 +75,16 @@ class ilExteStatExportExcel
 		$this->fillTestOverview( $excelObj->getActiveSheet());
 		$this->fillQuestionsOverview($excelObj->createSheet());
 
-		foreach ($this->statObj->getEvaluations(
-			ilExtendedTestStatistics::LEVEL_TEST,
-			ilExtendedTestStatistics::PROVIDES_DETAILS) as $class => $evaluation)
+		if ($this->withDetails)
 		{
-
+			/** @var  ilExteEvalTest $evaluation */
+			foreach ($this->statObj->getEvaluations(
+				ilExtendedTestStatistics::LEVEL_TEST,
+				ilExtendedTestStatistics::PROVIDES_DETAILS) as $class => $evaluation)
+			{
+				$this->addTestDetailsSheet($excelObj, $evaluation);
+			}
 		}
-
 
 		$excelObj->setActiveSheetIndex(0);
 
@@ -107,13 +110,16 @@ class ilExteStatExportExcel
 		global $lng;
 
 		$data = array();
-		foreach ($this->statObj->getSourceData()->getBasicTestValues() as $value_id => $value)
+		/** @var ilExteStatValue[]  $values */
+		$values = $this->statObj->getSourceData()->getBasicTestValues();
+		foreach ($this->statObj->getSourceData()->getBasicTestValuesList() as $def)
 		{
 			array_push($data,
 				array(
-					'title' => $lng->txt($value_id),
-					'description' => '',
-					'value' => $value,
+					'title' => $def['title'],
+					'description' => $def['description'],
+					'value' => $values[$def['id']],
+					'details' => null
 				));
 		}
 
@@ -156,7 +162,7 @@ class ilExteStatExportExcel
 			$cell->getStyle()->applyFromArray($this->headerStyle);
 			if (!empty($row['description']))
 			{
-				$comments['A'.$rownum] = $this->createComment($row['description']);
+				$comments['A'.$rownum] = ilExteStatValueExcel::createComment($row['description']);
 			}
 
 			/** @var ilExteStatValue $value */
@@ -211,7 +217,7 @@ class ilExteStatExportExcel
 			$cell->getStyle()->applyFromArray($this->headerStyle);
 			if (!empty($def['description']))
 			{
-				$comments[$coordinate] = $this->createComment($def['description']);
+				$comments[$coordinate] = ilExteStatValueExcel::createComment($def['description']);
 			}
 		}
 
@@ -257,36 +263,64 @@ class ilExteStatExportExcel
 
 
 	/**
-	 * @param $text
-	 * @return	PHPExcel_Comment
+	 * Add a sheet with details for the test
+	 * @param PHPExcel	$excelObj
+	 * @param ilExteEvalTest $evaluation
 	 */
-	protected function createComment($text)
+	protected function addTestDetailsSheet($excelObj, $evaluation)
 	{
-		$comment = new PHPExcel_Comment();
-		$richText = new PHPExcel_RichText();
-		$extElement = new PHPExcel_RichText_TextElement($text);
-		$richText->addText($extElement);
-		$comment->setText($richText);
-		$comment->setHeight('100pt');
-		$comment->setWidth('200pt');
-		return $comment;
+		$worksheet = $excelObj->createSheet();
+		$worksheet->setTitle($evaluation->getTitle());
+
+		$details = $evaluation->getDetails();
+		if (empty($details->rows))
+		{
+			$worksheet->setCellValue('A1', $details->getEmptyMessage());
+			return;
+		}
+
+		$col = 0;
+		$comments = array();
+		$mapping = array();
+		foreach ($details->columns as $column)
+		{
+			$letter = PHPExcel_Cell::stringFromColumnIndex($col);
+			$mapping[$column->name] = $letter;
+			$coordinate = $letter.'1';
+			$cell = $worksheet->getCell($coordinate);
+			$cell->setValueExplicit($column->title, PHPExcel_Cell_DataType::TYPE_STRING);
+			$cell->getStyle()->applyFromArray($this->headerStyle);
+			if (!empty($column->comment))
+			{
+				$comments[$coordinate] = ilExteStatValueExcel::createComment($column->comment);
+			}
+			$col++;
+		}
+
+		$row = 2;
+		foreach ($details->rows as $coldata)
+		{
+			/**@var  ilExteStatValue $value */
+			foreach ($coldata as $name => $value)
+			{
+				if (isset($mapping[$name]))
+				{
+					$coordinate = $mapping[$name].(string) $row;
+					$cell = $worksheet->getCell($coordinate);
+					$this->valView->writeInCell($cell, $value);
+					if (!empty($value->comment))
+					{
+						$comments[$coordinate] = $this->valView->getComment($value);
+					}
+				}
+			}
+			$row++;
+		}
+
+		$worksheet->setComments($comments);
+		$this->adjustSizes($worksheet);
 	}
 
-	/**
-	 * @param PHPExcel_Worksheet	$worksheet
-	 * @param string[] $titles
-	 */
-	protected function fillTitleRow($worksheet, $titles = array())
-	{
-		$column = 0;
-		foreach ($titles as $title)
-		{
-			$cell = $worksheet->getCellByColumnAndRow($column, 1);
-			$cell->setValueExplicit($title, PHPExcel_Cell_DataType::TYPE_STRING);
-			$cell->getStyle()->applyFromArray($this->headerStyle);
-			$column++;
-		}
-	}
 
 	/**
 	 * @param PHPExcel_Worksheet	$worksheet

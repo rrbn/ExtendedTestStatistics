@@ -262,7 +262,6 @@ class ilExtendedTestStatisticsPageGUI
 				$export = new ilExteStatExportExcel($this->plugin, $this->statObj, $_POST['export_type'] == 'excel_details');
 				$export->buildExportFile(new ilTestExportFilename($this->testObj));
 				break;
-
 		}
 	}
 }

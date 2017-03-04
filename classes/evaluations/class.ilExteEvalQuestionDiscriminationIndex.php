@@ -41,7 +41,7 @@ class ilExteEvalQuestionDiscriminationIndex extends ilExteEvalQuestion
         // Prepare the return value
         $value = new ilExteStatValue;
         $value->type = ilExteStatValue::TYPE_PERCENTAGE;
-        $value->precision = 4;
+        $value->precision = 2;
         $value->value = null;
 
         //Get needed data

@@ -103,3 +103,5 @@ not_for_test_type#:#Nicht für diesen Test-Typ verfügbar
 not_for_question_type#:#Nicht für diesen Fragen-Typ verfügbar
 exp_type_excel_overviews#:#Microsoft Excel
 exp_type_excel_details#:#Microsoft Excel (mit Details)
+tst_passed_average_max_points#:#Durchschnittliche Maximalpunktzahl aller bestandenen Tests
+max_points_description#:#Maximal erreichbare Punkte dieser Frage

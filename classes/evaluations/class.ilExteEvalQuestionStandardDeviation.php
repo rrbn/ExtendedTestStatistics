@@ -44,7 +44,7 @@ class ilExteEvalQuestionStandardDeviation extends ilExteEvalQuestion
 		//Prepare variables
 		$value = new ilExteStatValue;
         $value->type = ilExteStatValue::TYPE_PERCENTAGE;
-        $value->precision = 4;
+        $value->precision = 2;
         $value->value = null;
 
 		$lowest_score = $question_data->maximum_points;

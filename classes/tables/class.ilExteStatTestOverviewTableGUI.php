@@ -47,14 +47,15 @@ class ilExteStatTestOverviewTableGUI extends ilExteStatTableGUI
 
         $data = array();
 
-        /** @var ilExteStatValue  $value */
-        foreach ($this->statObj->getSourceData()->getBasicTestValues() as $value_id => $value)
+        /** @var ilExteStatValue[]  $values */
+        $values = $this->statObj->getSourceData()->getBasicTestValues();
+		foreach ($this->statObj->getSourceData()->getBasicTestValuesList() as $def)
         {
             array_push($data,
                 array(
-                    'title' => $lng->txt($value_id),
-                    'description' => '',
-                    'value' => $value,
+                    'title' => $def['title'],
+                    'description' => $def['description'],
+                    'value' => $values[$def['id']],
                     'details' => null
                 ));
         }
