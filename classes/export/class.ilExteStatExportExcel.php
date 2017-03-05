@@ -23,6 +23,13 @@ class ilExteStatExportExcel
 		)
 	);
 
+	protected $questionStyle = array(
+		'fill' => array(
+			'type' => 'solid',
+			'color' => array('rgb' => 'EEEEEE'),
+		)
+	);
+
 
 	/**
 	 * @var ilExtendedTestStatisticsPlugin
@@ -84,11 +91,19 @@ class ilExteStatExportExcel
 			{
 				$this->addTestDetailsSheet($excelObj, $evaluation);
 			}
+
+			/** @var  ilExteEvalQuestion $evaluation */
+			foreach ($this->statObj->getEvaluations(
+				ilExtendedTestStatistics::LEVEL_QUESTION,
+				ilExtendedTestStatistics::PROVIDES_DETAILS) as $class => $evaluation)
+			{
+				$this->addQuestionsDetailsSheet($excelObj, $evaluation);
+			}
 		}
 
 		$excelObj->setActiveSheetIndex(0);
 
-		$name = 'statistics';
+		$name = $this->withDetails ? 'detailed_statistics' : 'statistics';
 		$path = $file_name->getPathname('xlsx', $name);
 
 		// Save XSLX file
@@ -107,8 +122,6 @@ class ilExteStatExportExcel
 	 */
 	protected function fillTestOverview($worksheet)
 	{
-		global $lng;
-
 		$data = array();
 		/** @var ilExteStatValue[]  $values */
 		$values = $this->statObj->getSourceData()->getBasicTestValues();
@@ -187,8 +200,6 @@ class ilExteStatExportExcel
 	 */
 	protected function fillQuestionsOverview($worksheet)
 	{
-		global $lng;
-
 		$header = $this->statObj->getSourceData()->getBasicQuestionValuesList();
 
 		/** @var  ilExteEvalQuestion $evaluation */
@@ -270,7 +281,7 @@ class ilExteStatExportExcel
 	protected function addTestDetailsSheet($excelObj, $evaluation)
 	{
 		$worksheet = $excelObj->createSheet();
-		$worksheet->setTitle($evaluation->getTitle());
+		$worksheet->setTitle($evaluation->getShortTitle());
 
 		$details = $evaluation->getDetails();
 		if (empty($details->rows))
@@ -315,6 +326,97 @@ class ilExteStatExportExcel
 				}
 			}
 			$row++;
+		}
+
+		$worksheet->setComments($comments);
+		$this->adjustSizes($worksheet);
+	}
+
+
+	/**
+	 * Add a sheet with details for the test
+	 * @param PHPExcel	$excelObj
+	 * @param ilExteEvalQuestion $evaluation
+	 */
+	protected function addQuestionsDetailsSheet($excelObj, $evaluation)
+	{
+		global $lng;
+
+		$worksheet = $excelObj->createSheet();
+		$worksheet->setTitle($evaluation->getShortTitle());
+
+		if (!$evaluation->isTestTypeAllowed())
+		{
+			$worksheet->setCellValue('A1', $evaluation->getMessageNotAvailableForQuestionType());
+			return;
+		}
+
+		$columns = array();
+		$mapping = array();
+		$comments = array();
+		$columns['_question_id'] = ilExteStatColumn::_create('_question_id', $lng->txt('question_id'));
+		$columns['_question_title'] = ilExteStatColumn::_create('_question_title', $lng->txt('question_title'));
+		$mapping['_question_id'] = 'A';
+		$mapping['_question_title'] = 'B';
+
+		$row = 2;
+		$col = 2;
+		foreach($this->statObj->getSourceData()->getBasicQuestionValues() as $question_id => $questionValues)
+		{
+			$details = $evaluation->getDetails($question_id);
+			if (!empty($details->rows))
+			{
+				// question id
+				$cell = $worksheet->getCell('A'.$row);
+				$cell->getStyle()->applyFromArray($this->questionStyle);
+				$this->valView->writeInCell($cell, $questionValues['question_id']);
+
+				// question title
+				$cell = $worksheet->getCell('B'.$row);
+				$cell->getStyle()->applyFromArray($this->questionStyle);
+				$this->valView->writeInCell($cell, $questionValues['question_title']);
+
+				// add columns that are not yet defined
+				foreach($details->columns as $column)
+				{
+					if (!isset($columns[$column->name]))
+					{
+						$letter = PHPExcel_Cell::stringFromColumnIndex($col);
+						$columns[$column->name] = $column;
+						$mapping[$column->name] = $letter;
+						$col++;
+					}
+				}
+				//write lines of the evaluation
+				foreach ($details->rows as $rowValues)
+				{
+					foreach ($rowValues as $name => $value)
+					{
+						$coordinate = $mapping[$name].$row;
+						$cell = $worksheet->getCell($coordinate);
+						$this->valView->writeInCell($cell, $value);
+						if (!empty($value->comment))
+						{
+							$comments[$coordinate] = $this->valView->getComment($value);
+						}
+					}
+					$row++;
+				}
+			}
+		}
+
+		// write the header row with column titles
+		// can be written when all columns are known
+		foreach ($columns as $column)
+		{
+			$coordinate = $coordinate = $mapping[$column->name].'1';
+			$cell = $worksheet->getCell($coordinate);
+			$cell->setValueExplicit($column->title, PHPExcel_Cell_DataType::TYPE_STRING);
+			$cell->getStyle()->applyFromArray($this->headerStyle);
+			if (!empty($column->comment))
+			{
+				$comments[$coordinate] = ilExteStatValueExcel::createComment($column->comment);
+			}
 		}
 
 		$worksheet->setComments($comments);

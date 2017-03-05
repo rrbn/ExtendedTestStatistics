@@ -81,7 +81,7 @@ name_user_name#:#Benutzername (Login)
 not_enough_test_results#:#Nicht genügend Testergebnisse verfügbar
 not_enough_answers#:#Nicht genügend Antworten verfügbar
 qst_sc_choices_title_long#:#Liste der gewählten Optionen
-qst_sc_choices_title_short#:#Optionswahlen
+qst_sc_choices_title_short#:#SC-Optionswahlen
 qst_sc_choices_description#:#Single Choice: zeigt eine Liste der Antwortoptionen mit Anzahl ihrer Auswahlen.
 qst_sc_choices_index#:#Index
 qst_sc_choices_choice#:#Antwortoption
@@ -89,7 +89,7 @@ qst_sc_choices_points#:#Punkte
 qst_sc_choices_count#:#Anzahl
 qst_sc_choices_answer_options#:#Antwortoptionen
 qst_mc_choices_title_long#:#Liste der gewählten Optionen
-qst_mc_choices_title_short#:#Optionswahlen
+qst_mc_choices_title_short#:#MC-Optionswahlen
 qst_mc_choices_description#:#Multiple Choice: zeigt eine Liste der Antwortoptionen mit Anzahl ihrer Auswahlen.
 qst_mc_choices_index#:#Index
 qst_mc_choices_choice#:#Antwortoption

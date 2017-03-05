@@ -158,7 +158,7 @@ abstract class ilExteEvalBase
 	 * Get a message saying that the evaluation is not available for the test type
 	 * @return	string
 	 */
-	protected function getMessageNotAvailableForTestType()
+	public function getMessageNotAvailableForTestType()
 	{
 		switch ($this->data->getTestType())
 		{
@@ -180,7 +180,7 @@ abstract class ilExteEvalBase
 	 * Get a message saying that the evaluation is not available for the question type
 	 * @return	string
 	 */
-	protected function getMessageNotAvailableForQuestionType()
+	public function getMessageNotAvailableForQuestionType()
 	{
 		return $this->plugin->txt('not_for_question_type');
 	}
