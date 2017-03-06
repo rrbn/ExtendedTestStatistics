@@ -103,5 +103,9 @@ not_for_test_type#:#Nicht für diesen Test-Typ verfügbar
 not_for_question_type#:#Nicht für diesen Fragen-Typ verfügbar
 exp_type_excel_overviews#:#Microsoft Excel
 exp_type_excel_details#:#Microsoft Excel (mit Details)
+exp_type_csv_test#:#Durch Komma getrennte Werte (CSV), nur Testübersicht
+exp_type_csv_questions#:#Durch Komma getrennte Werte (CSV), nur Fragenübersicht
 tst_passed_average_max_points#:#Durchschnittliche Maximalpunktzahl aller bestandenen Tests
 max_points_description#:#Maximal erreichbare Punkte dieser Frage
+export_written#:#Die <a href='%s'>Exportdatei</a> wurde geschrieben und kann auch auf dem Reiter "Export" heruntergeladen werden.
+export_not_found#:#Die Export-Datei wurde nicht gefunden!

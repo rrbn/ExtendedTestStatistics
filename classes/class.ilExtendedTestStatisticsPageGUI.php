@@ -74,6 +74,7 @@ class ilExtendedTestStatisticsPageGUI
                 $this->$cmd();
                 break;
 			case "exportEvaluations":
+			case "deliverExportFile":
 				$this->$cmd();
 				break;
 			default:
@@ -214,6 +215,8 @@ class ilExtendedTestStatisticsPageGUI
 		$options = array(
 			'excel_overview' => $this->plugin->txt('exp_type_excel_overviews'),
 			'excel_details' => $this->plugin->txt('exp_type_excel_details'),
+			'csv_test' => $this->plugin->txt('exp_type_csv_test'),
+			'csv_questions' => $this->plugin->txt('exp_type_csv_questions'),
 		);
 		$export_type->setOptions($options);
 
@@ -224,6 +227,11 @@ class ilExtendedTestStatisticsPageGUI
 		$button->setCaption('export');
 		$button->getOmitPreventDoubleSubmission();
 		$ilToolbar->addButtonInstance($button);
+
+		require_once 'Services/Form/classes/class.ilHiddenInputGUI.php';
+		$levelField = new ilHiddenInputGUI('level');
+		$levelField->setValue($level);
+		$ilToolbar->addInputItem($levelField);
 	}
 
 	/**
@@ -244,7 +252,6 @@ class ilExtendedTestStatisticsPageGUI
 		$button->setCaption('back');
 		$button->getOmitPreventDoubleSubmission();
 		$ilToolbar->addButtonInstance($button);
-
 	}
 
 	/**
@@ -252,16 +259,93 @@ class ilExtendedTestStatisticsPageGUI
 	 */
 	protected function exportEvaluations()
 	{
+		$this->plugin->includeClass("export/class.ilExteStatExport.php");
+
+		// set the parameters based on the selection
 		switch ($_POST['export_type'])
 		{
-			case 'excel_overview':
-			case 'excel_details':
-				$this->plugin->includeClass("export/class.ilExteStatExportExcel.php");
-				require_once('Modules/Test/classes/class.ilTestExportFilename.php');
-
-				$export = new ilExteStatExportExcel($this->plugin, $this->statObj, $_POST['export_type'] == 'excel_details');
-				$export->buildExportFile(new ilTestExportFilename($this->testObj));
+			case 'csv_test':
+				$name = 'test_statistics';
+				$suffix = 'csv';
+				$type = ilExteStatExport::TYPE_CSV;
+				$level = ilExtendedTestStatistics::LEVEL_TEST;
+				$details = false;
 				break;
+
+			case 'csv_questions':
+				$name = 'questions_statistics';
+				$suffix = 'csv';
+				$type = ilExteStatExport::TYPE_CSV;
+				$level = ilExtendedTestStatistics::LEVEL_QUESTION;
+				$details = false;
+				break;
+
+			case 'excel_details':
+				$name = 'detailed_statistics';
+				$suffix = 'xlsx';
+				$type = ilExteStatExport::TYPE_EXCEL;
+				$level = '';
+				$details = true;
+				break;
+
+			case 'excel_overview':
+			default:
+				$name = 'statistics';
+				$suffix = 'xlsx';
+				$type = ilExteStatExport::TYPE_EXCEL;
+				$level = '';
+				$details = false;
+				break;
+		}
+
+		// write the export file
+		require_once('Modules/Test/classes/class.ilTestExportFilename.php');
+		$filename = new ilTestExportFilename($this->testObj);
+		$export = new ilExteStatExport($this->plugin, $this->statObj, $type, $level, $details);
+		$export->buildExportFile($filename->getPathname($suffix, $name));
+
+		// build the success message with download link for the file
+		$this->ctrl->setParameter($this, 'name', $name);
+		$this->ctrl->setParameter($this, 'suffix', $suffix);
+		$this->ctrl->setParameter($this, 'time', $filename->getTimestamp());
+		$link = $this->ctrl->getLinkTarget($this, 'deliverExportFile');
+		ilUtil::sendSuccess(sprintf($this->plugin->txt('export_written'), $link), true);
+		$this->ctrl->clearParameters($this);
+
+		// show the screen from which the export was started
+		switch ($_GET['level'])
+		{
+			case ilExtendedTestStatistics::LEVEL_QUESTION:
+				$this->ctrl->redirect($this, 'showQuestionsOverview');
+				break;
+			default:
+				$this->ctrl->redirect($this, 'showTestOverview');
+		}
+	}
+
+	/**
+	 * Deliver a previously generated export file
+	 */
+	protected function deliverExportFile()
+	{
+		// sanitize parameters
+		$name = preg_replace("/[^a-z_]/", '', $_GET['name']);
+		$suffix = preg_replace("/[^a-z]/", '', $_GET['suffix']);
+		$time = preg_replace("/[^0-9]/", '', $_GET['time']);
+
+		require_once('Modules/Test/classes/class.ilTestExportFilename.php');
+		$filename = new ilTestExportFilename($this->testObj);
+		$path = $filename->getPathname($suffix, $name);
+		$path = str_replace($filename->getTimestamp(), $time, $path);
+
+		if (is_file($path))
+		{
+			ilUtil::deliverFile($path, basename($path));
+		}
+		else
+		{
+			ilUtil::sendFailure($this->plugin->txt('export_not_found'), true);
+			$this->ctrl->redirect($this);
 		}
 	}
 }

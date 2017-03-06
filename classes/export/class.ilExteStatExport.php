@@ -5,14 +5,17 @@
  */
 
 /**
- * ilExtendedTestStatisticsExport Export
+ * Extended Test Statistics Export
  *
  * @author Fred Neumann <fred.neumann@ili.fau.de>
  * @author Jesus Copado <jesus.copado@ili.fau.de>
  *
  */
-class ilExteStatExportExcel
+class ilExteStatExport
 {
+	const TYPE_EXCEL = 'excel';
+	const TYPE_CSV = 'csv';
+
 	protected $headerStyle = array(
 		'font' => array(
 			'bold' => true
@@ -41,10 +44,20 @@ class ilExteStatExportExcel
 	 */
 	protected $statObj;
 
+
+	/** @var  string Writer Type ('Excel2007' or 'CSV') */
+	protected $type;
+
+
+
+	/** @var string Evaluation Level ('test' or 'questions') */
+	protected $level;
+
 	/**
 	 * @var bool
 	 */
-	protected $withDetails = false;
+	protected $details = false;
+
 
 	/**
 	 * @var ilExteStatValueExcel
@@ -53,16 +66,20 @@ class ilExteStatExportExcel
 
 
 	/**
-	 * ilExtendedTestStatisticsExport constructor.
+	 * Constructor.
 	 * @param ilExtendedTestStatisticsPlugin	$plugin
 	 * @param ilExtendedTestStatistics			$statObj
-	 * @param bool							$withDetails
+	 * @param string							$type
+	 * @param string							$level
+	 * @param bool								$details
 	 */
-	public function __construct($plugin, $statObj, $withDetails = false)
+	public function __construct($plugin, $statObj, $type = self::TYPE_EXCEL, $level = '', $details = false)
 	{
 		$this->statObj = $statObj;
 		$this->plugin  = $plugin;
-		$this->withDetails = $withDetails;
+		$this->type = $type;
+		$this->level = $level;
+		$this->details = $details;
 
 		$this->plugin->includeClass('views/class.ilExteStatValueExcel.php');
 		$this->valView = new ilExteStatValueExcel($this->plugin);
@@ -70,49 +87,78 @@ class ilExteStatExportExcel
 
 
 	/**
-	 * @param ilTestExportFilename $file_name
+	 * Build an Excel Export file
+	 * @param string	$path	full path of the file to create
 	 */
-	public function buildExportFile(ilTestExportFilename $file_name)
+	public function buildExportFile($path)
 	{
 		//Creating Files with Charts using PHPExcel
 		require_once $this->plugin->getDirectory(). '/classes/export/PHPExcel-1.8/Classes/PHPExcel.php';
 		$excelObj = new PHPExcel();
 
-		// Create the first sheets with test and questions statistics
-		$this->fillTestOverview( $excelObj->getActiveSheet());
-		$this->fillQuestionsOverview($excelObj->createSheet());
-
-		if ($this->withDetails)
+		// Create the overview sheet(s)
+		switch ($this->level)
 		{
-			/** @var  ilExteEvalTest $evaluation */
-			foreach ($this->statObj->getEvaluations(
-				ilExtendedTestStatistics::LEVEL_TEST,
-				ilExtendedTestStatistics::PROVIDES_DETAILS) as $class => $evaluation)
+			case ilExtendedTestStatistics::LEVEL_TEST:
+				$this->fillTestOverview($excelObj->getActiveSheet());
+				break;
+
+			case ilExtendedTestStatistics::LEVEL_QUESTION:
+				$this->fillQuestionsOverview($excelObj->getActiveSheet());
+				break;
+
+			default:
+				if ($this->type == self::TYPE_EXCEL)
+				{
+					$this->fillTestOverview($excelObj->getActiveSheet());
+					$this->fillQuestionsOverview($excelObj->createSheet());
+				}
+		}
+
+		// Create the details worksheets
+		if ($this->type == self::TYPE_EXCEL && $this->details == true)
+		{
+			if (empty($this->level || $this->level == ilExtendedTestStatistics::LEVEL_TEST))
 			{
-				$this->addTestDetailsSheet($excelObj, $evaluation);
+				/** @var  ilExteEvalTest $evaluation */
+				foreach ($this->statObj->getEvaluations(
+					ilExtendedTestStatistics::LEVEL_TEST,
+					ilExtendedTestStatistics::PROVIDES_DETAILS) as $class => $evaluation)
+				{
+					$this->addTestDetailsSheet($excelObj, $evaluation);
+				}
 			}
 
-			/** @var  ilExteEvalQuestion $evaluation */
-			foreach ($this->statObj->getEvaluations(
-				ilExtendedTestStatistics::LEVEL_QUESTION,
-				ilExtendedTestStatistics::PROVIDES_DETAILS) as $class => $evaluation)
+			if (empty($this->level || $this->level == ilExtendedTestStatistics::LEVEL_QUESTION))
 			{
-				$this->addQuestionsDetailsSheet($excelObj, $evaluation);
+				/** @var  ilExteEvalQuestion $evaluation */
+				foreach ($this->statObj->getEvaluations(
+					ilExtendedTestStatistics::LEVEL_QUESTION,
+					ilExtendedTestStatistics::PROVIDES_DETAILS) as $class => $evaluation)
+				{
+					$this->addQuestionsDetailsSheet($excelObj, $evaluation);
+				}
 			}
 		}
 
 		$excelObj->setActiveSheetIndex(0);
 
-		$name = $this->withDetails ? 'detailed_statistics' : 'statistics';
-		$path = $file_name->getPathname('xlsx', $name);
-
-		// Save XSLX file
+		// Save the file
 		ilUtil::makeDirParents(dirname($path));
-		$writerObj = PHPExcel_IOFactory::createWriter($excelObj, 'Excel2007');
-		$writerObj->save($path);
-
-		//Deliver file
-		ilUtil::deliverFile($path, basename($path));
+		switch ($this->type)
+		{
+			case self::TYPE_EXCEL:
+				/** @var PHPExcel_Writer_Excel2007 $writerObj */
+				$writerObj = PHPExcel_IOFactory::createWriter($excelObj, 'Excel2007');
+				$writerObj->save($path);
+				break;
+			case self::TYPE_CSV:
+				/** @var PHPExcel_Writer_CSV $writerObj */
+				$writerObj = PHPExcel_IOFactory::createWriter($excelObj, 'CSV');
+				$writerObj->setDelimiter(';');
+				$writerObj->setEnclosure('"');
+				$writerObj->save($path);
+		}
 	}
 
 
