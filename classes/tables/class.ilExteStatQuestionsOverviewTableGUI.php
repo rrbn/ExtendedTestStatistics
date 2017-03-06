@@ -63,23 +63,33 @@ class ilExteStatQuestionsOverviewTableGUI extends ilExteStatTableGUI
     {
 		global $lng;
 
-        return array(
+        $columns = array(
+			'order_position' => array(
+				'txt' => $lng->txt('position'),
+				'tooltip' => '',
+				'default' => true
+			),
 			'question_id' => array(
-				'txt' => $lng->txt('question_id'),
+				'txt' => $lng->txt('id'),
 				'tooltip' => '',
 				'default' => true
 			),
 			'question_title' => array(
-				'txt' => $lng->txt('question_title'),
+				'txt' => $lng->txt('title'),
 				'tooltip' => '',
 				'default' => true
 			),
             'question_type_label' => array(
-                'txt' => $this->plugin->txt('question_type'),
+                'txt' => $lng->txt('type'),
                 'tooltip' => '',
                 'default' => false
             ),
-            'assigned_count' => array(
+			'obligatory' => array(
+				'txt' => $lng->txt('obligatory'),
+				'tooltip' => '',
+				'default' => true
+			),
+			'assigned_count' => array(
                 'txt' => $this->plugin->txt('assigned_count'),
                 'tooltip' => $this->plugin->txt('assigned_count_description'),
                 'default' => false
@@ -105,6 +115,14 @@ class ilExteStatQuestionsOverviewTableGUI extends ilExteStatTableGUI
                 'default' => false
             ),
         );
+
+		if ($this->statObj->getSourceData()->getTestType() != ilExteEvalBase::TEST_TYPE_FIXED)
+		{
+			unset($columns['order_position']);
+			unset($columns['obligatory']);
+		}
+
+		return $columns;
     }
 
 
@@ -162,6 +180,7 @@ class ilExteStatQuestionsOverviewTableGUI extends ilExteStatTableGUI
 	{
 		switch($a_field)
 		{
+			case 'order_position':
             case 'question_id':
             case 'assigned_count':
             case 'answers_count':

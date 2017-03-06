@@ -254,8 +254,7 @@ class ilExteStatExport
 			ilExtendedTestStatistics::LEVEL_QUESTION,
 			ilExtendedTestStatistics::PROVIDES_VALUE) as $class => $evaluation)
 		{
-			$header[] = array(
-				'id' => $class,
+			$header[$class] = array(
 				'title' => $evaluation->getShortTitle(),
 				'description' => $evaluation->getDescription(),
 			);
@@ -264,10 +263,15 @@ class ilExteStatExport
 
 		$comments = array();
 		$mapping = array();
-		foreach ($header as $column => $def)
+		$col = 0;
+		foreach ($header as $name => $def)
 		{
-			$letter = PHPExcel_Cell::stringFromColumnIndex($column);
-			$mapping[$def['id']] = $letter;
+			if (!empty($def['test_types'] && !in_array($this->statObj->getSourceData()->getTestType(), $def['test_types'])))
+			{
+				continue;
+			}
+			$letter = PHPExcel_Cell::stringFromColumnIndex($col++);
+			$mapping[$name] = $letter;
 			$coordinate = $letter.'1';
 			$cell = $worksheet->getCell($coordinate);
 			$cell->setValueExplicit($def['title'], PHPExcel_Cell_DataType::TYPE_STRING);

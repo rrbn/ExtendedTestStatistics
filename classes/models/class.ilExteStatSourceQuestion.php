@@ -40,6 +40,16 @@ class ilExteStatSourceQuestion
 	public $maximum_points;
 
 	/**
+	 * @var	integer	order position of the question in a fixed test
+	 */
+	public $order_position;
+
+	/**
+	 * @var bool obligatory status of the question in a fixed test
+	 */
+	public $obligatory;
+
+	/**
 	 * @var	float	average of points reached by the participants that got this question assigned
 	 */
 	public $average_points;

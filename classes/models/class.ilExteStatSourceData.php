@@ -124,6 +124,13 @@ class ilExteStatSourceData
 		$this->pass_selection = $a_pass_selection;
 		$this->eval = $this->object->getUnfilteredEvaluationData();
 
+		// get the order and obligatory data of questions in a fixed test
+		if ($this->object->isFixedTest())
+		{
+			$this->loadFixedTestQuestionData();
+		}
+
+		// get the question titles
 		$question_titles = $this->eval->getQuestionTitles();
 
 		/** @var ilTestEvaluationUserData[] $participants */
@@ -213,9 +220,29 @@ class ilExteStatSourceData
                 $this->questions[$row['question_id']]->question_type = $row['type_tag'];
                 $this->questions[$row['question_id']]->question_type_label = $type_translations[$row['type_tag']];
             }
-
 		}
 	}
+
+	/**
+	 * Load the order of questions in a fixed test
+	 */
+	protected function loadFixedTestQuestionData()
+	{
+		global $ilDB;
+
+		$query = "SELECT question_fi, sequence, obligatory FROM tst_test_question WHERE test_fi = "
+			. $ilDB->quote($this->object->getTestId())
+			. " ORDER BY sequence";
+		$result = $ilDB->query($query);
+
+		while ($row = $ilDB->fetchAssoc($result))
+		{
+			$question = $this->getQuestion($row['question_fi'], true);
+			$question->order_position = $row['sequence'];
+			$question->obligatory = (bool) $row['obligatory'];
+		}
+	}
+
 
 	/**
 	 * Calculate the basic values for a test (as in original ILIAS)
@@ -366,6 +393,8 @@ class ilExteStatSourceData
 			$values['question_title'] = ilExteStatValue::_create($question->question_title, ilExteStatValue::TYPE_TEXT);
 			$values['question_type'] = ilExteStatValue::_create($question->question_type, ilExteStatValue::TYPE_TEXT);
 			$values['question_type_label'] = ilExteStatValue::_create($question->question_type_label, ilExteStatValue::TYPE_TEXT);
+			$values['order_position'] = ilExteStatValue::_create($question->order_position, ilExteStatValue::TYPE_NUMBER, 0);
+			$values['obligatory'] = ilExteStatValue::_create($question->obligatory, ilExteStatValue::TYPE_BOOLEAN);
 			$values['assigned_count'] = ilExteStatValue::_create($question->assigned_count, ilExteStatValue::TYPE_NUMBER, 0);
 			$values['answers_count'] = ilExteStatValue::_create($question->answers_count, ilExteStatValue::TYPE_NUMBER, 0);
 			$values['maximum_points'] = ilExteStatValue::_create($question->maximum_points, ilExteStatValue::TYPE_NUMBER, 2);
@@ -385,45 +414,55 @@ class ilExteStatSourceData
 		global $lng;
 
 		return array(
-			array(
-				'id' => 'question_id',
+			'order_position' => array(
+				'title' => $lng->txt('position'),
+				'description' => '',
+				'test_types' => array(ilExteEvalBase::TEST_TYPE_FIXED)
+			),
+			'question_id' => array(
 				'title' => $lng->txt('question_id'),
 				'description' => '',
+				'test_types' => array()
 			),
-			array(
-				'id' => 'question_title',
+			'question_title' => array(
 				'title' => $lng->txt('question_title'),
 				'description' => '',
+				'test_types' => array()
 			),
-			array(
-				'id' => 'question_type_label',
+			'question_type_label' => array(
 				'title' => $this->plugin->txt('question_type'),
 				'description' => '',
+				'test_types' => array()
 			),
-			array(
-				'id' => 'assigned_count',
+			'obligatory' => array(
+				'title' => $lng->txt('obligatory'),
+				'description' => '',
+				'test_types' => array(ilExteEvalBase::TEST_TYPE_FIXED)
+			),
+			'assigned_count' => array(
 				'title' => $this->plugin->txt('assigned_count'),
 				'description' => $this->plugin->txt('assigned_count_description'),
+				'test_types' => array()
 			),
-			array(
-				'id' => 'answers_count',
+			'answers_count' => array(
 				'title' => $this->plugin->txt('answers_count'),
 				'description' => $this->plugin->txt('answers_count_description'),
+				'test_types' => array()
 			),
-			array(
-				'id' => 'maximum_points',
+			'maximum_points' => array(
 				'title' => $this->plugin->txt('max_points'),
 				'description' => $this->plugin->txt('max_points_description'),
+				'test_types' => array()
 			),
-			array(
-				'id' => 'average_points',
+			'average_points' => array(
 				'title' => $this->plugin->txt('average_points'),
 				'description' => $this->plugin->txt('average_points_description'),
+				'test_types' => array()
 			),
-			array(
-				'id' => 'average_percentage',
+			'average_percentage' => array(
 				'title' => $this->plugin->txt('average_percentage'),
 				'description' => $this->plugin->txt('average_percentage_description'),
+				'test_types' => array()
 			)
 		);
 	}
