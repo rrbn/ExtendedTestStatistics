@@ -46,12 +46,12 @@ class ilExteStatValueExcel
 			switch ($value->type)
 			{
 				case ilExteStatValue::TYPE_ALERT:
-					$cell->setValueExplicit($value->value, PHPExcel_Cell_DataType::TYPE_STRING);
+					$cell->setValueExplicit(ilUtil::secureString($value->value), PHPExcel_Cell_DataType::TYPE_STRING);
 					$numberFormat->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
 					break;
 
 				case ilExteStatValue::TYPE_TEXT:
-					$cell->setValueExplicit($value->value, PHPExcel_Cell_DataType::TYPE_STRING);
+					$cell->setValueExplicit(ilUtil::secureString($value->value), PHPExcel_Cell_DataType::TYPE_STRING);
 					$numberFormat->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
 					break;
 

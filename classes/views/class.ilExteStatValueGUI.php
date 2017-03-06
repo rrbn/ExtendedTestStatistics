@@ -68,11 +68,11 @@ class ilExteStatValueGUI
 					break;
 
 				case ilExteStatValue::TYPE_TEXT:
-					$template->setVariable('VALUE', ilUtil::prepareFormOutput($value->value));
+					$template->setVariable('VALUE', $this->textDisplay($value->value), true);
 					break;
 
 				case ilExteStatValue::TYPE_NUMBER:
-					$template->setVariable('VALUE', ilUtil::prepareFormOutput(round($value->value, $value->precision)));
+					$template->setVariable('VALUE', round($value->value, $value->precision));
 					break;
 
 				case ilExteStatValue::TYPE_DURATION:
@@ -110,5 +110,23 @@ class ilExteStatValueGUI
 		}
 
 		return $template->get();
+	}
+
+	/**
+	 * Prepare a string value to be displayed in HTML
+	 * @param $text
+	 * @return mixed|string
+	 */
+	protected function textDisplay($text)
+	{
+		// these would be deleted by the template engine
+		$text = str_replace('{','&#123;', $text);
+		$text = str_replace('}','&#125;', $text);
+
+		$text = preg_replace('/<span class="latex">(.*)<\/span>/','[tex]$1[/tex]', $text);
+		$text = ilUtil::secureString($text, false);
+		$text = ilUtil::insertLatexImages($text);
+
+		return $text;
 	}
 }

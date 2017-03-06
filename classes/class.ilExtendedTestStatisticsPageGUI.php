@@ -191,8 +191,8 @@ class ilExtendedTestStatisticsPageGUI
 		$this->plugin->includeClass('tables/class.ilExteStatTableGUI.php');
 		$tableGUI = ilExteStatTableGUI::_create('ilExteStatDetailsTableGUI', $this, 'showQuestionDetails');
 		$tableGUI->prepareData($evaluation->getDetails($_GET['qid']));
-		$tableGUI->setTitle($evaluation->getShortTitle());
-		$tableGUI->setDescription($evaluation->getDescription());
+		$tableGUI->setTitle($this->statObj->getSourceData()->getQuestion($_GET['qid'])->question_title);
+		$tableGUI->setDescription($evaluation->getTitle());
 
         $this->tpl->setContent($tableGUI->getHTML());
         $this->tpl->show();
