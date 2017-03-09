@@ -266,7 +266,7 @@ class ilExteStatExport
 		$col = 0;
 		foreach ($header as $name => $def)
 		{
-			if (!empty($def['test_types'] && !in_array($this->statObj->getSourceData()->getTestType(), $def['test_types'])))
+			if (!empty($def['test_types']) && !in_array($this->statObj->getSourceData()->getTestType(), $def['test_types']))
 			{
 				continue;
 			}
