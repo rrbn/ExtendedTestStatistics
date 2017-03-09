@@ -118,7 +118,7 @@ class ilExteStatExport
 		// Create the details worksheets
 		if ($this->type == self::TYPE_EXCEL && $this->details == true)
 		{
-			if (empty($this->level || $this->level == ilExtendedTestStatistics::LEVEL_TEST))
+			if (empty($this->level) || $this->level == ilExtendedTestStatistics::LEVEL_TEST)
 			{
 				/** @var  ilExteEvalTest $evaluation */
 				foreach ($this->statObj->getEvaluations(
@@ -129,7 +129,7 @@ class ilExteStatExport
 				}
 			}
 
-			if (empty($this->level || $this->level == ilExtendedTestStatistics::LEVEL_QUESTION))
+			if (empty($this->level) || $this->level == ilExtendedTestStatistics::LEVEL_QUESTION)
 			{
 				/** @var  ilExteEvalQuestion $evaluation */
 				foreach ($this->statObj->getEvaluations(
