@@ -22,15 +22,21 @@ class ilExteStatExport
 		),
 		'fill' => array(
 			'type' => 'solid',
-			'color' => array('rgb' => 'EEEEEE'),
+			'color' => array('rgb' => 'DDDDDD'),
 		)
 	);
 
-	protected $questionStyle = array(
-		'fill' => array(
-			'type' => 'solid',
-			'color' => array('rgb' => 'EEEEEE'),
-		)
+	protected $rowStyles = array(
+		0 => array(
+			'fill' => array(
+				'type' => 'solid',
+				'color' => array('rgb' => 'FFFFFF'),
+			)),
+		1 => array(
+			'fill' => array(
+				'type' => 'solid',
+				'color' => array('rgb' => 'EEEEEE'),
+			)),
 	);
 
 
@@ -411,21 +417,12 @@ class ilExteStatExport
 
 		$row = 2;
 		$col = 2;
+		$qst = 0;
 		foreach($this->statObj->getSourceData()->getBasicQuestionValues() as $question_id => $questionValues)
 		{
 			$details = $evaluation->getDetails($question_id);
 			if (!empty($details->rows))
 			{
-				// question id
-				$cell = $worksheet->getCell('A'.$row);
-				$cell->getStyle()->applyFromArray($this->questionStyle);
-				$this->valView->writeInCell($cell, $questionValues['question_id']);
-
-				// question title
-				$cell = $worksheet->getCell('B'.$row);
-				$cell->getStyle()->applyFromArray($this->questionStyle);
-				$this->valView->writeInCell($cell, $questionValues['question_title']);
-
 				// add columns that are not yet defined
 				foreach($details->columns as $column)
 				{
@@ -440,10 +437,20 @@ class ilExteStatExport
 				//write lines of the evaluation
 				foreach ($details->rows as $rowValues)
 				{
+					// question id
+					$cell = $worksheet->getCell('A'.$row);
+					$cell->getStyle()->applyFromArray($this->rowStyles[$qst % 2]);
+					$this->valView->writeInCell($cell, $questionValues['question_id']);
+					// question title
+					$cell = $worksheet->getCell('B'.$row);
+					$cell->getStyle()->applyFromArray($this->rowStyles[$qst % 2]);
+					$this->valView->writeInCell($cell, $questionValues['question_title']);
+
 					foreach ($rowValues as $name => $value)
 					{
 						$coordinate = $mapping[$name].$row;
 						$cell = $worksheet->getCell($coordinate);
+						//$cell->getStyle()->applyFromArray($this->rowStyles[$row % 2]);
 						$this->valView->writeInCell($cell, $value);
 						if (!empty($value->comment))
 						{
@@ -453,6 +460,7 @@ class ilExteStatExport
 					$row++;
 				}
 			}
+			$qst++;
 		}
 
 		// write the header row with column titles

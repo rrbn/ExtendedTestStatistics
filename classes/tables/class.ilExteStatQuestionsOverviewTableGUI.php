@@ -50,12 +50,46 @@ class ilExteStatQuestionsOverviewTableGUI extends ilExteStatTableGUI
 
 		$this->setDefaultOrderField("title");
 		$this->setDefaultOrderDirection("asc");
+		$this->setDisableFilterHiding(true);
 		$this->enable('sort');
 		$this->enable('header');
 		$this->disable('select_all');
+		$this->initFilter();
 	}
 
-    /**
+	/**
+	 * Initialize the filter controls
+	 */
+	public function initFilter()
+	{
+		global $lng;
+
+		include_once("./Services/Form/classes/class.ilTextInputGUI.php");
+		$ti = new ilTextInputGUI($lng->txt('id'), 'question_id');
+		$ti->setParent($this->parent_obj);
+		$ti->readFromSession();
+		$this->addFilterItem($ti);
+
+		include_once("./Services/Form/classes/class.ilTextInputGUI.php");
+		$ti = new ilTextInputGUI($lng->txt('title'), 'question_title');
+		$ti->setParent($this->parent_obj);
+		$ti->readFromSession();
+		$this->addFilterItem($ti);
+
+		$options = array();
+		$options[""] = $this->plugin->txt("any_question_type");
+		$options = array_merge($options, $this->statObj->getSourceData()->getQuestionTypes());
+
+		include_once("./Services/Form/classes/class.ilSelectInputGUI.php");
+		$si = new ilSelectInputGUI($lng->txt('type'), "question_type");
+		$si->setParent($this->parent_obj);
+		$si->setOptions($options);
+		$si->readFromSession();
+		$this->addFilterItem($si);
+	}
+
+
+	/**
      * Get the selectable columns with basic question data
      * @return array
      */
@@ -154,11 +188,23 @@ class ilExteStatQuestionsOverviewTableGUI extends ilExteStatTableGUI
      */
     public function prepareData()
     {
+		$filter_id = $this->getFilterItemByPostVar('question_id')->getValue();
+		$filter_title = $this->getFilterItemByPostVar('question_title')->getValue();
+		$filter_type = $this->getFilterItemByPostVar('question_type')->getValue();
+
         $data = array();
 		$this->basicColumns = array_keys($this->getBasicSelectableColumns());
 		$this->basicValues = $this->statObj->getSourceData()->getBasicQuestionValues();
         foreach ($this->basicValues as $question_id => $values)
         {
+			if((!empty($filter_id) && $filter_id != $question_id) ||
+				(!empty($filter_title) && strpos($values['question_title']->value, $filter_title) === false) ||
+				(!empty($filter_type) && $values['question_type']->value != $filter_type)
+			)
+			{
+				continue;
+			}
+
             $row = array();
 
             /** @var ilExteStatValue  $value */

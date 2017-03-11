@@ -81,16 +81,48 @@ class ilExtendedTestStatisticsConfigGUI extends ilPluginConfigGUI
 		 */
 		foreach ($this->config->getEvaluationClasses($a_type) as $class => $value)
 		{
-			$prefix = $class::_getLangPrefix();
+			/** @var ilExteEvalBase $evaluation */
+			$evaluation = new $class($this->plugin);
+			$prefix = $evaluation->getLangPrefix();
+
 			$select_input = new ilSelectInputGUI($this->plugin->txt($prefix . "_title_long"), $class);
 			$select_input->setOptions($this->config->getAvailabilityOptions());
 			$select_input->setValue($value);
 			$select_input->setInfo($this->plugin->txt($prefix . "_description").'<br /><em>'.$class.'</em>');
 			$form->addItem($select_input);
+
+			foreach ($evaluation->getParams() as $name => $param)
+			{
+				$title = $evaluation->txt($name.'_title');
+				$description = $evaluation->txt($name.'_description');
+				$postvar = get_class($evaluation).'_'.$name;
+
+				switch($param->type)
+				{
+					case ilExteStatParam::TYPE_BOOLEAN:
+						$input = new ilCheckboxInputGUI($title, $postvar);
+						$input->setChecked($param->value);
+						break;
+					case ilExteStatParam::TYPE_FLOAT:
+						$input = new ilNumberInputGUI($title, $postvar);
+						$input->allowDecimals(true);
+						$input->setValue($param->value);
+						break;
+					case ilExteStatParam::TYPE_INT:
+					default:
+						$input = new ilNumberInputGUI($title, $postvar);
+						$input->allowDecimals(false);
+						$input->setValue($param->value);
+						break;
+				}
+				$input->setInfo($description);
+				$select_input->addSubItem($input);
+			}
+
 		}
 
 		$form->setTitle($this->plugin->txt($a_type == 'test' ? 'test_evaluation_settings' : 'question_evaluation_settings'));
-		$form->addCommandButton("saveTestSettings", $lng->txt("save"));
+		$form->addCommandButton($a_type == 'test' ? "saveTestSettings" : "saveQuestionSettings", $lng->txt("save"));
 		return $form;
 	}
 
@@ -105,13 +137,23 @@ class ilExtendedTestStatisticsConfigGUI extends ilPluginConfigGUI
 		$form = $this->initConfigurationForm($a_type);
 		if ($form->checkInput())
 		{
-			foreach ($this->config->getEvaluationClasses($a_type) as $evaluation_class => $value)
+			foreach ($this->config->getEvaluationClasses($a_type) as $class => $value)
 			{
-				$new_value = $form->getInput($evaluation_class);
+				$new_value = $form->getInput($class);
 				if ($new_value)
 				{
-					$this->config->writeAvailability($evaluation_class, $new_value);
+					$this->config->writeAvailability($class, $new_value);
+
+					/** @var ilExteEvalBase $evaluation */
+					$evaluation = new $class($this->plugin);
+					foreach ($evaluation->getParams() as $name => $param)
+					{
+						$postvar = get_class($evaluation).'_'.$name;
+						$evaluation->setParam($name, $form->getInput($postvar));
+					}
+
 				}
+
 			}
 			ilUtil::sendSuccess($this->plugin->txt($a_type == 'test' ? "test_settings_saved" : "question_settings_saved"), true);
 			$ilCtrl->redirect($this, $a_type == 'test' ? "showTestEvaluations" : "showQuestionEvaluations");

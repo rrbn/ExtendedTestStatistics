@@ -157,7 +157,8 @@ class ilExtendedTestStatistics
 			}
 
 			// instantiate the evaluation object
-			$this->evaluations[$class] = new $class($this->getSourceData(), $this->plugin);
+			$this->evaluations[$class] = new $class($this->plugin);
+			$this->evaluations[$class]->setData($this->getSourceData());
 		}
 	}
 

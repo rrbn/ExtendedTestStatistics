@@ -69,9 +69,9 @@ class ilExteEvalQuestionMultipleChoices extends ilExteEvalQuestion
         $details = new ilExteStatDetails();
         $details->columns = array (
             ilExteStatColumn::_create('index',$this->txt('index'), ilExteStatColumn::SORT_NUMBER),
-            ilExteStatColumn::_create('choice', $this->txt('choice'), ilExteStatColumn::SORT_TEXT),
-            ilExteStatColumn::_create('points',$this->txt('points'),ilExteStatColumn::SORT_NUMBER),
-            ilExteStatColumn::_create('count',$this->txt('count'),ilExteStatColumn::SORT_NUMBER),
+			ilExteStatColumn::_create('points',$this->txt('points'),ilExteStatColumn::SORT_NUMBER),
+			ilExteStatColumn::_create('count',$this->txt('count'),ilExteStatColumn::SORT_NUMBER),
+            ilExteStatColumn::_create('choice', $this->txt('choice'), ilExteStatColumn::SORT_TEXT)
         );
 
         $option_count = array();
@@ -102,9 +102,9 @@ class ilExteEvalQuestionMultipleChoices extends ilExteEvalQuestion
         {
            $details->rows[] = array(
                 'index' => ilExteStatValue::_create($option->getOrder(), ilExteStatValue::TYPE_NUMBER, 0),
-                'choice' => ilExteStatValue::_create($option->getAnswertext(), ilExteStatValue::TYPE_TEXT, 0),
-                'points' => ilExteStatValue::_create($option->getPoints(), ilExteStatValue::TYPE_NUMBER, 2),
-                'count' => ilExteStatValue::_create($option_count[$key], ilExteStatValue::TYPE_NUMBER, 0)
+			   'points' => ilExteStatValue::_create($option->getPoints(), ilExteStatValue::TYPE_NUMBER, 2),
+			   'count' => ilExteStatValue::_create($option_count[$key], ilExteStatValue::TYPE_NUMBER, 0),
+                'choice' => ilExteStatValue::_create($option->getAnswertext(), ilExteStatValue::TYPE_TEXT, 0)
             );
         }
 

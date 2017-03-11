@@ -77,6 +77,12 @@ class ilExtendedTestStatisticsPageGUI
 			case "deliverExportFile":
 				$this->$cmd();
 				break;
+			case "applyFilter":
+			case "resetFilter":
+				$this->prepareOutput();
+				$this->showQuestionsOverview();
+				break;
+
 			default:
                 ilUtil::sendFailure($lng->txt("permission_denied"), true);
                 ilUtil::redirect("goto.php?target=tst_".$this->testObj->getRefId());
@@ -101,6 +107,15 @@ class ilExtendedTestStatisticsPageGUI
     {
         return $this->statObj;
     }
+
+	/**
+	 * Get the test object id (needed for table filter)
+	 * @return int
+	 */
+	public function getId()
+	{
+		return $this->testObj->getId();
+	}
 
 	/**
 	 * Prepare the test header, tabs etc.
@@ -169,7 +184,19 @@ class ilExtendedTestStatisticsPageGUI
 		/** @var  ilExteStatQuestionsOverviewTableGUI $tableGUI */
 		$this->plugin->includeClass('tables/class.ilExteStatTableGUI.php');
         $tableGUI = ilExteStatTableGUI::_create('ilExteStatQuestionsOverviewTableGUI', $this, 'showQuestionsOverview');
-        $tableGUI->prepareData();
+
+		if ($this->ctrl->getCmd() == 'applyFilter')
+		{
+			$tableGUI->resetOffset();
+			$tableGUI->writeFilterToSession();
+		}
+		elseif (($this->ctrl->getCmd() == 'applyFilter'))
+		{
+			$tableGUI->resetOffset();
+			$tableGUI->resetFilter();
+		}
+
+		$tableGUI->prepareData();
 
         $this->tpl->setContent($tableGUI->getHTML());
         $this->tpl->show();

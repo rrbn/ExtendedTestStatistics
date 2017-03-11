@@ -32,6 +32,17 @@ class ilExteEvalQuestionDiscriminationIndex extends ilExteEvalQuestion
 
 
 	/**
+	 * Get the available parameters for this evaluation
+	 * @return ilExteStatParam
+	 */
+	public function getAvailableParams()
+	{
+		return array(
+			ilExteStatParam::_create('min_qst', ilExteStatParam::TYPE_INT, 0)
+		);
+	}
+
+	/**
 	 * Calculate the discrimination index
 	 * @param integer $a_question_id
 	 * @return ilExteStatValue

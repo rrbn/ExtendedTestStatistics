@@ -36,6 +36,11 @@ class ilExteStatSourceData
 	protected $questions = array();
 
 	/**
+	 * @var array   class => title
+	 */
+	protected $question_types = array();
+
+	/**
 	 * @var array    active_id => ilExteStatSourceParticipant
 	 */
 	protected $participants = array();
@@ -112,6 +117,14 @@ class ilExteStatSourceData
 		}
 	}
 
+	/**
+	 * Get an assoc list of the question types
+	 * @return	array	class => type name
+	 */
+	public function getQuestionTypes()
+	{
+		return $this->question_types;
+	}
 
 	/**
 	 * Load the source data from the test
@@ -206,6 +219,7 @@ class ilExteStatSourceData
 		global $ilDB;
 
 		$type_translations = $this->object->getQuestionTypeTranslations();
+		$this->question_types = array();
 
 		if (!empty($this->questions))
         {
@@ -217,6 +231,8 @@ class ilExteStatSourceData
             $result = $ilDB->query($query);
             while ($row = $ilDB->fetchAssoc($result))
             {
+				$this->question_types[$row['type_tag']] = $type_translations[$row['type_tag']];
+
                 $this->questions[$row['question_id']]->question_type = $row['type_tag'];
                 $this->questions[$row['question_id']]->question_type_label = $type_translations[$row['type_tag']];
             }

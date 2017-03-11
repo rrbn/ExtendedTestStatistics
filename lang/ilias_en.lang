@@ -48,6 +48,8 @@ qst_discrimination_title_short#:#Discrimination index
 qst_discrimination_description#:#this is the correlation between the score for this question and the score for the whole quiz. That is, for a good question, you hope that the students who score highly on this question are the same students who score highly on the whole test. Higher numbers are better
 qst_discrimination_zero_variance_of_question#:#The variance of points is 0 for this question
 qst_discrimination_zero_variance_of_other_question#:#The variance of points is 0 for the other questions
+qst_discrimination_min_qst_title#:#Minimum Questions
+qst_discrimination_min_qst_description#:#Minimum number of questions for a meaningful discrimination index
 show_test_evaluations#:#Show test evaluations
 show_question_evaluations#:#Show question evaluations
 evaluation_available_for_admins#:#Admins
@@ -101,3 +103,4 @@ tst_passed_average_max_points#:#Average maximum points of passed tests
 max_points_description#:#Maximum points reachable for this question
 export_written#:#The <a href="%s">export file</a> is written and can also be downloaded on the 'Export' tab.
 export_not_found#:#The export file was not found!
+any_question_type#:#Any Question Type

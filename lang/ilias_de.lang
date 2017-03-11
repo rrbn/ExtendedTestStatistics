@@ -48,6 +48,8 @@ qst_discrimination_title_long#:#Trennschärfe der Frage im Test
 qst_discrimination_description#:#Über die Trennschärfe lässt sich ermitteln, wie gut eine Frage zwischen Personen mit niedriger und hoher Merkmalsausprägung trennt. Das Maß erfasst den Zusammenhang der einzelnen Testwerte mit dem endgültigen Testwert. Angestrebt werden Trennschärfen von  0,4 bis 0,7. Bei einer Trennschärfe < 0 wird die Frage von „schlechten“ Testpersonen gelöst und von „guten“ Testpersonen nicht.
 qst_discrimination_zero_variance_of_question#:#Die Punktevarianz der Frage ist 0
 qst_discrimination_zero_variance_of_other_question#:#Die Punktevarianz der übrigen Fragen ist 0
+qst_discrimination_min_qst_title#:#Mindestanzahl Fragen
+qst_discrimination_min_qst_description#:#Minimale Anzahl Fragen, ab der eine Berechnung des der Trennschärfe sinnvoll ist
 show_test_evaluations#:#Testauswertungen
 show_question_evaluations#:#Fragenauswertungen
 evaluation_available_for_admins#:#Administratoren
@@ -101,3 +103,4 @@ tst_passed_average_max_points#:#Durchschnittliche Maximalpunktzahl aller bestand
 max_points_description#:#Maximal erreichbare Punkte dieser Frage
 export_written#:#Die <a href='%s'>Exportdatei</a> wurde geschrieben und kann auch auf dem Reiter "Export" heruntergeladen werden.
 export_not_found#:#Die Export-Datei wurde nicht gefunden!
+any_question_type#:#Beliebiger Fragentyp
