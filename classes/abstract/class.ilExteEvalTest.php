@@ -92,7 +92,7 @@ abstract class ilExteEvalTest extends ilExteEvalBase
 			if($total_attempts){
 				$mean->value = $scoring_sum / $total_attempts;
 				$mean->type = ilExteStatValue::TYPE_NUMBER;
-				$mean->precision = 4;
+				$mean->precision = 2;
 			}else{
 				$mean->value = "NAN";
 				$mean->type = ilExteStatValue::TYPE_TEXT;

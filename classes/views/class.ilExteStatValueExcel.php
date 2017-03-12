@@ -28,6 +28,7 @@ class ilExteStatValueExcel
 	public function __construct($a_plugin)
 	{
 		$this->plugin = $a_plugin;
+		$this->plugin->includeClass('models/class.ilExteStatValue.php');
 	}
 
 	/**
@@ -113,9 +114,18 @@ class ilExteStatValueExcel
 					$color = self::COLOR_NONE;
 			}
 
-			$cell->getStyle()->applyFromArray(array('fill' => array(
-				'type' => PHPExcel_Style_Fill::FILL_SOLID,
-				'color' => array('rgb' => $color),
+			$cell->getStyle()->applyFromArray(array(
+				'fill' => array(
+					'type' => PHPExcel_Style_Fill::FILL_SOLID,
+					'color' => array('rgb' => $color),
+			)));
+		}
+
+		if ($value->uncertain)
+		{
+			$cell->getStyle()->applyFromArray(array(
+				'font' => array(
+					'italic' => true
 			)));
 		}
 	}
@@ -146,4 +156,44 @@ class ilExteStatValueExcel
 		$comment->setWidth('200pt');
 		return $comment;
 	}
+
+
+	/**
+	 * Get legend data
+	 * @return array	[ ['value' => ilExteStatValue, 'description' => string], ...]
+	 */
+	public function getLegendData()
+	{
+		global $lng;
+
+		$data = array (
+			array(
+				'value' => ilExteStatValue::_create('', ilExteStatValue::TYPE_ALERT, 0, '', ilExteStatValue::ALERT_GOOD),
+				'description' => $this->plugin->txt('legend_alert_good')
+			),
+			array(
+				'value' => ilExteStatValue::_create('', ilExteStatValue::TYPE_ALERT, 0, '', ilExteStatValue::ALERT_MEDIUM),
+				'description' => $this->plugin->txt('legend_alert_medium')
+			),
+			array(
+				'value' => ilExteStatValue::_create('', ilExteStatValue::TYPE_ALERT, 0, '', ilExteStatValue::ALERT_BAD),
+				'description' => $this->plugin->txt('legend_alert_bad')
+			),
+			array(
+				'value' => ilExteStatValue::_create('', ilExteStatValue::TYPE_ALERT, 0, '', ilExteStatValue::ALERT_UNKNOWN),
+				'description' => $this->plugin->txt('legend_alert_unknown')
+			),
+			array(
+				'value' => ilExteStatValue::_create($lng->txt('value'), ilExteStatValue::TYPE_TEXT, 0, '', ilExteStatValue::ALERT_NONE, true),
+				'description' => $this->plugin->txt('legend_uncertain')
+			),
+			array(
+				'value' => ilExteStatValue::_create($lng->txt('value'), ilExteStatValue::TYPE_TEXT, 0, $lng->txt('comment')),
+				'description' => $this->plugin->txt('legend_comment')
+			)
+		);
+
+		return $data;
+	}
+
 }

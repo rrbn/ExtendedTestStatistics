@@ -76,15 +76,28 @@ class ilExteStatValue
 	public $alert = self::ALERT_NONE;
 
 
+	/**
+	 * Optional uncertainty
+	 *
+	 * Can be set if the calculated value has an uncertainty, e.g. due to a small data set
+	 * This will be shown with a specific markup
+	 * @var bool
+	 */
+	public $uncertain = false;
+
+
     /**
      * Create a value by parameters
      *
      * @param mixed $a_value
      * @param string $a_type
      * @param int $a_precision
+	 * @param string $a_comment
+	 * @param string $a_alert
+	 * @param bool $a_uncertain
      * @return ilExteStatValue
      */
-    public static function _create($a_value, $a_type = self::TYPE_TEXT, $a_precision = 2, $a_comment = '', $a_alert = self::ALERT_NONE)
+    public static function _create($a_value, $a_type = self::TYPE_TEXT, $a_precision = 2, $a_comment = '', $a_alert = self::ALERT_NONE, $a_uncertain = false)
     {
         $value = new self;
         $value->value = $a_value;
@@ -92,6 +105,7 @@ class ilExteStatValue
         $value->precision = $a_precision;
         $value->comment = $a_comment;
         $value->alert = $a_alert;
+		$value->uncertain = $a_uncertain;
 
         return $value;
     }
@@ -106,10 +120,10 @@ class ilExteStatValue
 			self::_create('Hallo', self::TYPE_TEXT, 0, 'Text'),
 			self::_create(0.13, self::TYPE_NUMBER, 2, 'Float'),
 			self::_create(48, self::TYPE_NUMBER, 0, 'Integer'),
-			self::_create(null, self::TYPE_NUMBER, 0, 'Unknown Integer',  self::ALERT_UNKNOWN),
-			self::_create(true, self::TYPE_BOOLEAN, 0, 'True Boolean', self::ALERT_GOOD),
-			self::_create(false, self::TYPE_BOOLEAN, 0, 'False Boolean', self::ALERT_BAD),
-			self::_create('Alert Text', self::TYPE_ALERT, 2, 'Alert', self::ALERT_MEDIUM),
+			self::_create(null, self::TYPE_NUMBER, 0, 'Unknown Integer',  self::ALERT_UNKNOWN, true),
+			self::_create(true, self::TYPE_BOOLEAN, 0, 'True Boolean', self::ALERT_GOOD, true),
+			self::_create(false, self::TYPE_BOOLEAN, 0, 'False Boolean', self::ALERT_BAD, true),
+			self::_create('Alert Text', self::TYPE_ALERT, 2, 'Alert', self::ALERT_MEDIUM, true),
 			self::_create(new ilDateTime(time(),IL_CAL_UNIX), self::TYPE_DATETIME, 0, 'DateTime'),
 			self::_create(10, self::TYPE_DURATION, 0, 'Duration'),
 			self::_create(50, self::TYPE_PERCENTAGE, 0, 'Percentge'),

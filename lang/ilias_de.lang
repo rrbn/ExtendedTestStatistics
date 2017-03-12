@@ -2,7 +2,7 @@
 // Copyright (c) 2016 Institut fuer Lern-Innovation, Friedrich-Alexander-Universitaet Erlangen-Nuernberg
 // GPLv2, see LICENSE
 //
-// English Language File for the Extended Test Statistiks Plugin
+// German Language File for the Extended Test Statistiks Plugin
 //
 
 <!-- language file start -->
@@ -104,3 +104,10 @@ max_points_description#:#Maximal erreichbare Punkte dieser Frage
 export_written#:#Die <a href='%s'>Exportdatei</a> wurde geschrieben und kann auch auf dem Reiter "Export" heruntergeladen werden.
 export_not_found#:#Die Export-Datei wurde nicht gefunden!
 any_question_type#:#Beliebiger Fragentyp
+legend_symbol_format#:#Symbol/Format
+legend_alert_good#:#Der Wert deutet eine gute Qualität an
+legend_alert_medium#:#Der Wert deutet eine mittlere Qualität an
+legend_alert_bad#:#Der Wert deutet eine schlechte Qualität an
+legend_alert_unknown#:#Der Wert ist nicht definiert oder nicht interpretierbar
+legend_uncertain#:#Ein kursiv geschriebener Wert ist aufgrund ungenügender Datenbasis unsicher
+legend_comment#:#Das Symbol zeigt einen verfügbaren Kommentar an (Tooltip)

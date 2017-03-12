@@ -6,9 +6,6 @@
  */
 class ilExteStatTestOverviewTableGUI extends ilExteStatTableGUI
 {
-	/** @var bool get demo output of various value formats */
-	protected $debugFormats = false;
-
     /**
 	 * Constructor
 	 */
@@ -76,7 +73,7 @@ class ilExteStatTestOverviewTableGUI extends ilExteStatTableGUI
         }
 
 		// Debug value formats
-		if ($this->debugFormats)
+		if ($this->plugin->debugFormats())
 		{
 			foreach (ilExteStatValue::getTestValues() as $value)
 			{

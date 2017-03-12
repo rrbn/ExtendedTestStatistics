@@ -22,6 +22,7 @@ class ilExteStatValueGUI
 	public function __construct($a_plugin)
 	{
 		$this->plugin = $a_plugin;
+		$this->plugin->includeClass('models/class.ilExteStatValue.php');
 	}
 
 	/**
@@ -61,6 +62,7 @@ class ilExteStatValueGUI
 		// value
 		if (isset($value->value))
 		{
+			$template->setCurrentBlock($value->uncertain ? 'uncertain_value' : 'value');
 			switch ($value->type)
 			{
 				case ilExteStatValue::TYPE_ALERT:
@@ -98,6 +100,7 @@ class ilExteStatValueGUI
 					$template->setVariable('VALUE', $value->value ? $lng->txt('yes') : $lng->txt('no'));
 					break;
 			}
+			$template->parseCurrentBlock();
 		}
 
 		// comment
@@ -111,6 +114,45 @@ class ilExteStatValueGUI
 
 		return $template->get();
 	}
+
+	/**
+	 * Get legend data
+	 * @return array	[ ['value' => ilExteStatValue, 'description' => string], ...]
+	 */
+	public function getLegendData()
+	{
+		global $lng;
+
+		$data = array (
+			array(
+				'value' => ilExteStatValue::_create('', ilExteStatValue::TYPE_ALERT, 0, '', ilExteStatValue::ALERT_GOOD),
+				'description' => $this->plugin->txt('legend_alert_good')
+			),
+			array(
+				'value' => ilExteStatValue::_create('', ilExteStatValue::TYPE_ALERT, 0, '', ilExteStatValue::ALERT_MEDIUM),
+				'description' => $this->plugin->txt('legend_alert_medium')
+			),
+			array(
+				'value' => ilExteStatValue::_create('', ilExteStatValue::TYPE_ALERT, 0, '', ilExteStatValue::ALERT_BAD),
+				'description' => $this->plugin->txt('legend_alert_bad')
+			),
+			array(
+				'value' => ilExteStatValue::_create('', ilExteStatValue::TYPE_ALERT, 0, '', ilExteStatValue::ALERT_UNKNOWN),
+				'description' => $this->plugin->txt('legend_alert_unknown')
+			),
+			array(
+				'value' => ilExteStatValue::_create($lng->txt('value'), ilExteStatValue::TYPE_TEXT, 0, '', ilExteStatValue::ALERT_NONE, true),
+				'description' => $this->plugin->txt('legend_uncertain')
+			),
+			array(
+				'value' => ilExteStatValue::_create($lng->txt('value'), ilExteStatValue::TYPE_TEXT, 0, $lng->txt('comment')),
+				'description' => $this->plugin->txt('legend_comment')
+			)
+		);
+
+		return $data;
+	}
+
 
 	/**
 	 * Prepare a string value to be displayed in HTML

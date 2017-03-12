@@ -102,47 +102,58 @@ class ilExteStatExport
 		require_once $this->plugin->getDirectory(). '/classes/export/PHPExcel-1.8/Classes/PHPExcel.php';
 		$excelObj = new PHPExcel();
 
-		// Create the overview sheet(s)
-		switch ($this->level)
+		if ($this->type == self::TYPE_CSV)
 		{
-			case ilExtendedTestStatistics::LEVEL_TEST:
-				$this->fillTestOverview($excelObj->getActiveSheet());
-				break;
-
-			case ilExtendedTestStatistics::LEVEL_QUESTION:
-				$this->fillQuestionsOverview($excelObj->getActiveSheet());
-				break;
-
-			default:
-				if ($this->type == self::TYPE_EXCEL)
-				{
+			// Create the overview sheet(s)
+			switch ($this->level)
+			{
+				case ilExtendedTestStatistics::LEVEL_TEST:
 					$this->fillTestOverview($excelObj->getActiveSheet());
-					$this->fillQuestionsOverview($excelObj->createSheet());
-				}
-		}
+					break;
 
-		// Create the details worksheets
-		if ($this->type == self::TYPE_EXCEL && $this->details == true)
+				case ilExtendedTestStatistics::LEVEL_QUESTION:
+					$this->fillQuestionsOverview($excelObj->getActiveSheet());
+					break;
+			}
+		}
+		elseif($this->type == self::TYPE_EXCEL)
 		{
+			$this->fillLegend($excelObj->getActiveSheet());
+
+			// Create the overview sheet(s)
 			if (empty($this->level) || $this->level == ilExtendedTestStatistics::LEVEL_TEST)
 			{
-				/** @var  ilExteEvalTest $evaluation */
-				foreach ($this->statObj->getEvaluations(
-					ilExtendedTestStatistics::LEVEL_TEST,
-					ilExtendedTestStatistics::PROVIDES_DETAILS) as $class => $evaluation)
-				{
-					$this->addTestDetailsSheet($excelObj, $evaluation);
-				}
+				$this->fillTestOverview($excelObj->createSheet());
 			}
 
 			if (empty($this->level) || $this->level == ilExtendedTestStatistics::LEVEL_QUESTION)
 			{
-				/** @var  ilExteEvalQuestion $evaluation */
-				foreach ($this->statObj->getEvaluations(
-					ilExtendedTestStatistics::LEVEL_QUESTION,
-					ilExtendedTestStatistics::PROVIDES_DETAILS) as $class => $evaluation)
+				$this->fillQuestionsOverview($excelObj->createSheet());
+			}
+
+			// Create the details worksheets
+			if ($this->details == true)
+			{
+				if (empty($this->level) || $this->level == ilExtendedTestStatistics::LEVEL_TEST)
 				{
-					$this->addQuestionsDetailsSheet($excelObj, $evaluation);
+					/** @var  ilExteEvalTest $evaluation */
+					foreach ($this->statObj->getEvaluations(
+						ilExtendedTestStatistics::LEVEL_TEST,
+						ilExtendedTestStatistics::PROVIDES_DETAILS) as $class => $evaluation)
+					{
+						$this->addTestDetailsSheet($excelObj, $evaluation);
+					}
+				}
+
+				if (empty($this->level) || $this->level == ilExtendedTestStatistics::LEVEL_QUESTION)
+				{
+					/** @var  ilExteEvalQuestion $evaluation */
+					foreach ($this->statObj->getEvaluations(
+						ilExtendedTestStatistics::LEVEL_QUESTION,
+						ilExtendedTestStatistics::PROVIDES_DETAILS) as $class => $evaluation)
+					{
+						$this->addQuestionsDetailsSheet($excelObj, $evaluation);
+					}
 				}
 			}
 		}
@@ -167,6 +178,44 @@ class ilExteStatExport
 		}
 	}
 
+	/**
+	 * Fill the legend sheet
+	 * @param PHPExcel_Worksheet	$worksheet
+	 */
+	protected function fillLegend($worksheet)
+	{
+		global $lng;
+
+		$cell = $worksheet->getCell('A1');
+		$cell->setValueExplicit($this->plugin->txt('legend_symbol_format'), PHPExcel_Cell_DataType::TYPE_STRING);
+		$cell->getStyle()->applyFromArray($this->headerStyle);
+
+		$cell = $worksheet->getCell('B1');
+		$cell->setValueExplicit($lng->txt('description'), PHPExcel_Cell_DataType::TYPE_STRING);
+		$cell->getStyle()->applyFromArray($this->headerStyle);
+
+		$row = 2;
+		$comments = array();
+		foreach($this->valView->getLegendData() as $data)
+		{
+			$value = $data['value'];
+
+			$cell = $worksheet->getCell('A'.$row);
+			$this->valView->writeInCell($cell, $value);
+			if (!empty($value->comment))
+			{
+				$comments['A'.$row] = $this->valView->getComment($value);
+			}
+
+			$cell = $worksheet->getCell('B'.$row);
+			$cell->setValueExplicit($data['description'], PHPExcel_Cell_DataType::TYPE_STRING);
+			$row++;
+		}
+
+		$worksheet->setTitle($lng->txt('legend'));
+		$worksheet->setComments($comments);
+		$this->adjustSizes($worksheet);
+	}
 
 	/**
 	 * Fill the test overview sheet

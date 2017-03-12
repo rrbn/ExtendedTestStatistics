@@ -1,0 +1,49 @@
+<?php
+/* Copyright (c) 1998-2013 ILIAS open source, Extended GPL, see docs/LICENSE */
+
+
+/**
+ * Class ilExteStatLegendTableGUI
+ */
+class ilExteStatLegendTableGUI extends ilExteStatTableGUI
+{
+
+    /**
+     * Constructor
+     * @param object    $a_parent_obj
+     * @param string    $a_parent_cmd
+     */
+	public function __construct($a_parent_obj, $a_parent_cmd)
+	{
+        parent::__construct($a_parent_obj, $a_parent_cmd);
+
+        $this->setStyle('table', 'fullwidth');
+        $this->setRowTemplate("tpl.il_exte_stat_legend_row.html", $this->plugin->getDirectory());
+        $this->setFormAction($this->ctrl->getFormAction($a_parent_obj, $a_parent_cmd));
+
+        $this->disable('sort');
+        $this->enable('header');
+        $this->disable('select_all');
+
+        $this->setEnableNumInfo(false);
+        $this->setExternalSegmentation(true);
+        $this->setId('ilExteStatLegend');
+
+        parent::__construct($this->parent_obj, $this->parent_cmd);
+
+        $this->setTitle($this->lng->txt('legend'));
+        $this->addColumn($this->plugin->txt("legend_symbol_format"));
+        $this->addColumn($this->lng->txt("description"));
+
+        $this->setData($this->valueGUI->getLegendData());
+    }
+
+    /**
+	 * fill row 
+	 */
+	protected function fillRow($data)
+	{
+        $this->tpl->setVariable('VALUE', $this->valueGUI->getHTML($data['value']));
+        $this->tpl->setVariable('DESCRIPTION', $data['description']);
+	}
+}

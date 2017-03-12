@@ -18,7 +18,7 @@ class ilExteEvalTestStandardDeviation extends ilExteEvalTest
 	/**
 	 * @var array list of allowed test types, e.g. array(self::TEST_TYPE_FIXED)
 	 */
-	protected static $allowed_test_types = array(self::TEST_TYPE_FIXED);
+	protected static $allowed_test_types = array();
 
 	/**
 	 * @var array    list of question types, e.g. array('assSingleChoice', 'assMultipleChoice', ...)
@@ -60,7 +60,7 @@ class ilExteEvalTestStandardDeviation extends ilExteEvalTest
 
 			$standard_deviation->type = ilExteStatValue::TYPE_NUMBER;
 			$standard_deviation->value = $std_deviation;
-			$standard_deviation->precision = 4;
+			$standard_deviation->precision = 2;
 
 		} else {
 			$std_deviation = $this->txt("only_one_participant");

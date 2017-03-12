@@ -149,7 +149,8 @@ class ilExtendedTestStatisticsPageGUI
 		$tableGUI = ilExteStatTableGUI::_create('ilExteStatTestOverviewTableGUI', $this, 'showTestOverview');
 		$tableGUI->prepareData();
 
-		$this->tpl->setContent($tableGUI->getHTML());
+		$legendGUI = ilExteStatTableGUI::_create('ilExteStatLegendTableGUI', $this, 'showTestOverview');
+		$this->tpl->setContent($tableGUI->getHTML() . $legendGUI->getHTML());
 		$this->tpl->show();
 	}
 
@@ -170,7 +171,8 @@ class ilExtendedTestStatisticsPageGUI
 		$tableGUI->setTitle($evaluation->getShortTitle());
 		$tableGUI->setDescription($evaluation->getDescription());
 
-		$this->tpl->setContent($tableGUI->getHTML());
+		$legendGUI = ilExteStatTableGUI::_create('ilExteStatLegendTableGUI', $this, 'showTestDetails');
+		$this->tpl->setContent($tableGUI->getHTML() . $legendGUI->getHTML());
 		$this->tpl->show();
     }
 
@@ -198,7 +200,8 @@ class ilExtendedTestStatisticsPageGUI
 
 		$tableGUI->prepareData();
 
-        $this->tpl->setContent($tableGUI->getHTML());
+		$legendGUI = ilExteStatTableGUI::_create('ilExteStatLegendTableGUI', $this, 'showQuestionsOverview');
+		$this->tpl->setContent($tableGUI->getHTML() . $legendGUI->getHTML());
         $this->tpl->show();
 	}
 
@@ -221,7 +224,8 @@ class ilExtendedTestStatisticsPageGUI
 		$tableGUI->setTitle($this->statObj->getSourceData()->getQuestion($_GET['qid'])->question_title);
 		$tableGUI->setDescription($evaluation->getTitle());
 
-        $this->tpl->setContent($tableGUI->getHTML());
+		$legendGUI = ilExteStatTableGUI::_create('ilExteStatLegendTableGUI', $this, 'showQuestionDetails');
+        $this->tpl->setContent($tableGUI->getHTML() . $legendGUI->getHTML());
         $this->tpl->show();
     }
 

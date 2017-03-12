@@ -18,7 +18,7 @@ class ilExteEvalQuestionFacilityIndex extends ilExteEvalQuestion
 	/**
 	 * @var array   list of allowed test types, e.g. array(self::TEST_TYPE_FIXED)
 	 */
-	protected static $allowed_test_types = array(self::TEST_TYPE_FIXED);
+	protected static $allowed_test_types = array();
 
 	/**
 	 * @var array    list of question types, e.g. array('assSingleChoice', 'assMultipleChoice', ...)

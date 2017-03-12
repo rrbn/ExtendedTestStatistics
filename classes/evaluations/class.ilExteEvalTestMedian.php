@@ -18,7 +18,7 @@ class ilExteEvalTestMedian extends ilExteEvalTest
 	/**
 	 * @var array list of allowed test types, e.g. array(self::TEST_TYPE_FIXED)
 	 */
-	protected static $allowed_test_types = array(self::TEST_TYPE_FIXED);
+	protected static $allowed_test_types = array();
 
 	/**
 	 * @var array    list of question types, e.g. array('assSingleChoice', 'assMultipleChoice', ...)
@@ -52,7 +52,8 @@ class ilExteEvalTestMedian extends ilExteEvalTest
 		$data = $this->data->getAllParticipants();
 		usort($data, array("ilExteEvalTestMedian", "cmp"));
 
-		if ($total_attempts % 2 === 0) {
+		if ($total_attempts % 2 === 0)
+		{
 			//Attemps are even, take two middle values
 			$major = $data[$total_attempts / 2];
 			$minor = $data[$total_attempts / 2 - 1];
@@ -62,16 +63,17 @@ class ilExteEvalTestMedian extends ilExteEvalTest
 
 			$value->type = ilExteStatValue::TYPE_NUMBER;
 			$value->value = $median;
-			$value->precision = 4;
+			$value->precision = 2;
 
 			return $value;
-		} else {
+		} else
+		{
 			//Attemps are odd, returns the middle value
 			$median = (int)floor($total_attempts / 2);
 
 			$value->type = ilExteStatValue::TYPE_NUMBER;
 			$value->value = $data[$median]->current_reached_points;
-			$value->precision = 4;
+			$value->precision = 2;
 
 			return $value;
 		}

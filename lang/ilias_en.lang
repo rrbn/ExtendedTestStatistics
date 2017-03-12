@@ -104,3 +104,10 @@ max_points_description#:#Maximum points reachable for this question
 export_written#:#The <a href="%s">export file</a> is written and can also be downloaded on the 'Export' tab.
 export_not_found#:#The export file was not found!
 any_question_type#:#Any Question Type
+legend_symbol_format#:#Symbol/Format
+legend_alert_good#:#The value indicates a good quality
+legend_alert_medium#:#The value indicates a medium quality
+legend_alert_bad#:#he value indicates a bad quality
+legend_alert_unknown#:#The value is not defined or doesn't allow an interpretation
+legend_uncertain#:#A value in italics is uncertain due to a small or unfitting data set
+legend_comment#:#This symbol indicates the presence of a comment (tooltip)
