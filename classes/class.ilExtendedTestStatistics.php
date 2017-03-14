@@ -53,8 +53,7 @@ class ilExtendedTestStatistics
 		$this->object = $a_test_obj;
 
 		//Set the config object
-		$this->plugin->includeClass("class.ilExtendedTestStatisticsConfig.php");
-		$this->config = new ilExtendedTestStatisticsConfig($this->plugin);
+		$this->config = $this->plugin->getConfig();
 	}
 
 	/**

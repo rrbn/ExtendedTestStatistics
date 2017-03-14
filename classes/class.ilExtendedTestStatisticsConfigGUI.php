@@ -24,8 +24,7 @@ class ilExtendedTestStatisticsConfigGUI extends ilPluginConfigGUI
 		$this->plugin = $this->getPluginObject();
 
 		//Set config object
-		$this->plugin->includeClass("class.ilExtendedTestStatisticsConfig.php");
-		$this->config = new ilExtendedTestStatisticsConfig($this->plugin);
+		$this->config = $this->plugin->getConfig();
 
 		switch ($cmd)
 		{
@@ -148,12 +147,10 @@ class ilExtendedTestStatisticsConfigGUI extends ilPluginConfigGUI
 					$evaluation = new $class($this->plugin);
 					foreach ($evaluation->getParams() as $name => $param)
 					{
-						$postvar = get_class($evaluation).'_'.$name;
-						$evaluation->setParam($name, $form->getInput($postvar));
+						$postvar = $class.'_'.$name;
+						$this->config->writeParameter($class, $name, $form->getInput($postvar));
 					}
-
 				}
-
 			}
 			ilUtil::sendSuccess($this->plugin->txt($a_type == 'test' ? "test_settings_saved" : "question_settings_saved"), true);
 			$ilCtrl->redirect($this, $a_type == 'test' ? "showTestEvaluations" : "showQuestionEvaluations");

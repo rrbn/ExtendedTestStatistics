@@ -8,27 +8,27 @@ class ilExteEvalTestMean extends ilExteEvalTest
 	/**
 	 * @var bool    evaluation provides a single value for the overview level
 	 */
-	protected static $provides_value = true;
+	protected $provides_value = true;
 
 	/**
 	 * @var bool    evaluation provides data for a details screen
 	 */
-	protected static $provides_details = false;
+	protected $provides_details = false;
 
 	/**
 	 * @var array list of allowed test types, e.g. array(self::TEST_TYPE_FIXED)
 	 */
-	protected static $allowed_test_types = array();
+	protected $allowed_test_types = array();
 
 	/**
 	 * @var array    list of question types, e.g. array('assSingleChoice', 'assMultipleChoice', ...)
 	 */
-	protected static $allowed_question_types = array();
+	protected $allowed_question_types = array();
 
 	/**
 	 * @var string	specific prefix of language variables (lowercase classname is default)
 	 */
-	protected static $lang_prefix = 'tst_mean';
+	protected $lang_prefix = 'tst_mean';
 
 
 	/**
@@ -39,6 +39,7 @@ class ilExteEvalTestMean extends ilExteEvalTest
 	 */
 	public function calculateValue()
 	{
-		return $this->getMeanOfReachedPoints();
+		$basic_test_values = $this->data->getBasicTestValues();
+		return $basic_test_values['tst_eval_mean_of_reached_points'];
 	}
 }

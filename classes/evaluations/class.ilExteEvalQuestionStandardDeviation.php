@@ -8,27 +8,27 @@ class ilExteEvalQuestionStandardDeviation extends ilExteEvalQuestion
 	/**
 	 * @var bool    evaluation provides a single value for the overview level
 	 */
-	protected static $provides_value = true;
+	protected $provides_value = true;
 
 	/**
 	 * @var bool    evaluation provides data for a details screen
 	 */
-	protected static $provides_details = false;
+	protected $provides_details = false;
 
 	/**
 	 * @var array   list of allowed test types, e.g. array(self::TEST_TYPE_FIXED)
 	 */
-	protected static $allowed_test_types = array();
+	protected $allowed_test_types = array();
 
 	/**
 	 * @var array    list of question types, e.g. array('assSingleChoice', 'assMultipleChoice', ...)
 	 */
-	protected static $allowed_question_types = array();
+	protected $allowed_question_types = array();
 
 	/**
 	 * @var string	specific prefix of language variables (lowercase classname is default)
 	 */
-	protected static $lang_prefix = 'qst_standarddeviation';
+	protected $lang_prefix = 'qst_standarddeviation';
 
 	/**
 	 * Calculate the Standard deviation for answers in this question

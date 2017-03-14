@@ -8,27 +8,27 @@ class ilExteEvalQuestionMultipleChoices extends ilExteEvalQuestion
 	/**
 	 * @var bool	evaluation provides a single value for the overview level
 	 */
-	protected static $provides_value = false;
+	protected $provides_value = false;
 
 	/**
 	 * @var bool	evaluation provides data for a details screen
 	 */
-	protected static $provides_details = true;
+	protected $provides_details = true;
 
 	/**
 	 * @var array   list of allowed test types, e.g. array(self::TEST_TYPE_FIXED)
 	 */
-	protected static $allowed_test_types = array();
+	protected $allowed_test_types = array();
 
 	/**
 	 * @var array	list of question types, e.g. array('assSingleChoice', 'assMultipleChoice', ...)
 	 */
-	protected static $allowed_question_types = array('assSingleChoice', 'assMultipleChoice');
+	protected $allowed_question_types = array('assSingleChoice', 'assMultipleChoice');
 
 	/**
 	 * @var string	specific prefix of language variables (lowercase classname is default)
 	 */
-	protected static $lang_prefix = 'qst_choices';
+	protected $lang_prefix = 'qst_choices';
 
 
     /**

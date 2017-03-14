@@ -5,7 +5,6 @@
  */
 class ilExteStatSourceData
 {
-	const PASS_ALL = 'all';
 	const PASS_BEST = 'best';
 	const PASS_LAST = 'last';
 	const PASS_SCORED = 'scored';
@@ -31,22 +30,23 @@ class ilExteStatSourceData
 	protected $pass_selection = self::PASS_SCORED;
 
 	/**
-	 * @var array    question_id => ilExteStatSourceQuestion
-	 */
-	protected $questions = array();
-
-	/**
 	 * @var array   class => title
 	 */
 	protected $question_types = array();
 
+
 	/**
-	 * @var array    active_id => ilExteStatSourceParticipant
+	 * @var ilExteStatSourceQuestion[]    	$questions 		(indexed by question_id)
+	 */
+	protected $questions = array();
+
+	/**
+	 * @var ilExteStatSourceParticipant[]	$participants	(indexed by active_id)
 	 */
 	protected $participants = array();
 
 	/**
-	 * @var array    list of ilExteStatSourceAnswer
+	 * @var ilExteStatSourceAnswer[]    	$answers
 	 */
 	protected $answers = array();
 
@@ -69,11 +69,6 @@ class ilExteStatSourceData
 	 * @var array    question_id => value_id => ilExteStatValue
 	 */
 	protected $basic_question_values = array();
-
-	/*
-	 * @var array	value_id => ilExteStatValue
-	 */
-	protected $cached_data = array();
 
 
 	/**
@@ -147,65 +142,71 @@ class ilExteStatSourceData
 		$question_titles = $this->eval->getQuestionTitles();
 
 		/** @var ilTestEvaluationUserData[] $participants */
-		$participants =& $this->eval->getParticipants();
-		foreach ($participants as $active_id => $userdata) {
+		$participants = $this->eval->getParticipants();
+		foreach ($participants as $active_id => $userdata)
+		{
 			$participant = $this->getParticipant($active_id, true);
 			$participant->best_pass = $userdata->getBestPass();
 			$participant->last_pass = $userdata->getLastPass();
 			$participant->scored_pass = $userdata->getScoredPass();
 
-			switch ($this->pass_selection) {
+			switch ($this->pass_selection)
+			{
 				case self::PASS_SCORED:
-					$passes = array($userdata->getScoredPassObject());
+					$pass = $userdata->getScoredPassObject();
 					break;
 				case self::PASS_BEST:
-					$passes = array($userdata->getBestPassObject());
+					$pass = $userdata->getBestPassObject();
 					break;
 				case self::PASS_LAST:
-					$passes = array($userdata->getLastPassObject());
-					break;
-				case self::PASS_ALL:
-					$passes = $userdata->getPasses();
+					$pass = $userdata->getLastPassObject();
 					break;
 				default:
-					$passes = array();
+					$pass = null;
 			}
 
-			foreach ($passes as $pass) {
-				if ($pass instanceof ilTestEvaluationPassData) {
-					// all quetions for a participant in the test pass
-					$pass_questions = $userdata->getQuestions($pass->getPass());
+			if ($pass instanceof ilTestEvaluationPassData)
+			{
+				// all quetions for a participant in the test pass
+				$pass_questions = $userdata->getQuestions($pass->getPass());
 
-					if (is_array($pass_questions)) {
-						foreach ($pass_questions as $pass_question) {
-							$question = $this->getQuestion($pass_question['id'], true);
-							$question->original_id = $pass_question['o_id'];
-							$question->maximum_points = $pass_question['points'];
-							$question->question_title = $question_titles[$pass_question['id']];
-
-							$answer = $this->getAnswer($pass_question['id'], $active_id, $pass->getPass(), true);
-							$answer->sequence = $pass_question['sequence'];
-						}
-					}
-
-					// questions answered by a participant in the test pass
-					$current_reached_points = 0.0;
-					$pass_answers = $pass->getAnsweredQuestions();
+				if (is_array($pass_questions))
+				{
+					foreach ($pass_questions as $pass_question)
 					{
-						if (is_array($pass_answers)) {
-							foreach ($pass_answers as $pass_answer) {
-								$answer = $this->getAnswer($pass_answer['id'], $active_id, $pass->getPass(), true);
-								$answer->reached_points = $pass_answer['reached'];
-								$current_reached_points += $pass_answer['reached'];
-								$answer->answered = (bool)$pass_answer['isAnswered'];
-								$answer->manual_scored = (bool)$pass_answer['manual'];
-							}
+						$question = $this->getQuestion($pass_question['id'], true);
+						$question->original_id = $pass_question['o_id'];
+						$question->maximum_points = $pass_question['points'];
+						$question->question_title = $question_titles[$pass_question['id']];
+
+						$answer = $this->getAnswer($pass_question['id'], $active_id, $pass->getPass(), true);
+						$answer->sequence = $pass_question['sequence'];
+					}
+				}
+
+				// questions answered by a participant in the test pass
+				$current_reached_points = 0.0;
+				$pass_answers = $pass->getAnsweredQuestions();
+				{
+					if (is_array($pass_answers))
+					{
+						foreach ($pass_answers as $pass_answer)
+						{
+							$answer = $this->getAnswer($pass_answer['id'], $active_id, $pass->getPass(), true);
+							$answer->reached_points = $pass_answer['reached'];
+							$answer->answered = (bool)$pass_answer['isAnswered'];
+							$answer->manual_scored = (bool)$pass_answer['manual'];
+
+							$current_reached_points += (float) $pass_answer['reached'];
 						}
 					}
-					$participant->current_reached_points = (String)$current_reached_points;
 				}
+
+				// sum of reached points for the selected pass
+				$participant->current_reached_points = $current_reached_points;
 			}
 		}
+
 		$this->loadQuestionTypes();
 		$this->calculateBasicTestValues();
 		$this->calculateBasicQuestionValues();
@@ -240,7 +241,7 @@ class ilExteStatSourceData
 	}
 
 	/**
-	 * Load the order of questions in a fixed test
+	 * Load the ordering data of questions in a fixed test
 	 */
 	protected function loadFixedTestQuestionData()
 	{
@@ -293,9 +294,13 @@ class ilExteStatSourceData
 		$total_passed_reached = 0;
 		$total_passed_max = 0;
 		$total_passed_time = 0;
-		$foundParticipants =& $this->eval->getParticipants();
-		foreach ($foundParticipants as $userdata) {
-			if ($userdata->getPassed()) {
+
+		/** @var ilTestEvaluationUserData[] $foundParticipants */
+		$foundParticipants = $this->eval->getParticipants();
+		foreach ($foundParticipants as $userdata)
+		{
+			if ($userdata->getPassed())
+			{
 				$total_passed++;
 				$total_passed_reached += $userdata->getReached();
 				$total_passed_max += $userdata->getMaxpoints();
@@ -332,6 +337,26 @@ class ilExteStatSourceData
 		$value->type = ilExteStatValue::TYPE_DURATION;
 		$value->value = (int) $average_passed_time;
 		$this->basic_test_values['tst_eval_total_passed_average_time'] = $value;
+
+		// Mean of reached points
+		$sum_of_points = 0.0;
+		foreach ($this->participants as $participant)
+		{
+			$sum_of_points += $participant->current_reached_points;
+		}
+		$value = new ilExteStatValue();
+		$value->type = ilExteStatValue::TYPE_NUMBER;
+		$value->precision = 2;
+		if (count($this->participants) > 0)
+		{
+			$value->value = $sum_of_points / count($this->participants);
+		}
+		else
+		{
+			$value->value = null;
+			$value->alert = ilExteStatValue::ALERT_UNKNOWN;
+		}
+		$this->basic_test_values['tst_eval_mean_of_reached_points'] = $value;
 	}
 
 
@@ -388,12 +413,14 @@ class ilExteStatSourceData
 	 */
 	protected function calculateBasicQuestionValues()
 	{
-		foreach ($this->getAllQuestions() as $question_id => $question) {
+		foreach ($this->getAllQuestions() as $question_id => $question)
+		{
 			$assigned = 0;
 			$answered = 0;
 			$reached = 0;
 
-			foreach ($this->getAnswersForQuestion($question_id) as $answer) {
+			foreach ($this->getAnswersForQuestion($question_id) as $answer)
+			{
 				$assigned++;
 				$answered += $answer->answered ? 1 : 0;
 				$reached += $answer->reached_points;
@@ -510,14 +537,19 @@ class ilExteStatSourceData
 	 */
 	public function getParticipant($a_active_id, $a_create = false)
 	{
-		if (isset($this->participants[$a_active_id])) {
+		if (isset($this->participants[$a_active_id]))
+		{
 			return $this->participants[$a_active_id];
-		} elseif ($a_create) {
+		}
+		elseif ($a_create)
+		{
 			$participant = new ilExteStatSourceParticipant;
 			$participant->active_id = $a_active_id;
 			$this->participants[$a_active_id] = $participant;
 			return $participant;
-		} else {
+		}
+		else
+		{
 			return null;
 		}
 	}
@@ -532,14 +564,19 @@ class ilExteStatSourceData
 	 */
 	public function getQuestion($a_question_id, $a_create = false)
 	{
-		if (isset($this->questions[$a_question_id])) {
+		if (isset($this->questions[$a_question_id]))
+		{
 			return $this->questions[$a_question_id];
-		} elseif ($a_create) {
+		}
+		elseif ($a_create)
+		{
 			$question = new ilExteStatSourceQuestion;
 			$question->question_id = $a_question_id;
 			$this->questions[$a_question_id] = $question;
 			return $question;
-		} else {
+		}
+		else
+		{
 			return null;
 		}
 	}
@@ -556,9 +593,12 @@ class ilExteStatSourceData
 	 */
 	public function getAnswer($a_question_id, $a_active_id, $a_pass, $a_create = false)
 	{
-		if (!empty($this->answers_by_question_id[$a_question_id][$a_active_id][$a_pass])) {
+		if (!empty($this->answers_by_question_id[$a_question_id][$a_active_id][$a_pass]))
+		{
 			return $this->answers_by_question_id[$a_question_id][$a_active_id][$a_pass];
-		} elseif ($a_create) {
+		}
+		elseif ($a_create)
+		{
 			$answer = new ilExteStatSourceAnswer;
 			$answer->question_id = $a_question_id;
 			$answer->active_id = $a_active_id;
@@ -569,7 +609,9 @@ class ilExteStatSourceData
 			$this->answers_by_active_id[$a_active_id][$a_pass][$a_question_id] = $answer;
 
 			return $answer;
-		} else {
+		}
+		else
+		{
 			return null;
 		}
 	}
@@ -620,11 +662,16 @@ class ilExteStatSourceData
 	public function getAnswersForQuestion($a_question_id, $a_only_answered = false)
 	{
 		$answers = array();
-		if (is_array($this->answers_by_question_id[$a_question_id])) {
-			foreach ($this->answers_by_question_id[$a_question_id] as $active_id => $pass_answers) {
-				if (is_array($pass_answers)) {
-					foreach ($pass_answers as $pass => $answer) {
-						if (!$a_only_answered or ($a_only_answered and $answer->answered)) {
+		if (is_array($this->answers_by_question_id[$a_question_id]))
+		{
+			foreach ($this->answers_by_question_id[$a_question_id] as $active_id => $pass_answers)
+			{
+				if (is_array($pass_answers))
+				{
+					foreach ($pass_answers as $pass => $answer)
+					{
+						if (!$a_only_answered or ($a_only_answered and $answer->answered))
+						{
 							$answers[] = $answer;
 						}
 					}
@@ -645,11 +692,16 @@ class ilExteStatSourceData
 	public function getAnswersForParticipant($a_active_id, $a_answered = false)
 	{
 		$answers = array();
-		if (is_array($this->answers_by_active_id[$a_active_id])) {
-			foreach ($this->answers_by_active_id[$a_active_id] as $pass => $pass_answers) {
-				if (is_array($pass_answers)) {
-					foreach ($pass_answers as $question_id => $answer) {
-						if (!$a_answered or ($a_answered and $answer->answered)) {
+		if (is_array($this->answers_by_active_id[$a_active_id]))
+		{
+			foreach ($this->answers_by_active_id[$a_active_id] as $pass => $pass_answers)
+			{
+				if (is_array($pass_answers))
+				{
+					foreach ($pass_answers as $question_id => $answer)
+					{
+						if (!$a_answered or ($a_answered and $answer->answered))
+						{
 							$answers[$question_id] = $answer;
 						}
 					}

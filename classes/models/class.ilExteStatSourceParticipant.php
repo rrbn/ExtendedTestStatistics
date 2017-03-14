@@ -26,7 +26,7 @@ class ilExteStatSourceParticipant
 	public $scored_pass;
 
 	/**
-	 * @var float		points currently reached by the participant.
+	 * @var float		points reached by the participant in the currently selected pass
 	 */
 	public $current_reached_points;
 }

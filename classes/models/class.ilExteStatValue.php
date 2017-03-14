@@ -114,7 +114,7 @@ class ilExteStatValue
 	 * Get a list of  demo values for testing purpose
 	 * @return ilExteStatValue[]
 	 */
-	public static function getTestValues()
+	public static function _getDemoValues()
 	{
 		return array(
 			self::_create('Hallo', self::TYPE_TEXT, 0, 'Text'),

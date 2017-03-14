@@ -20,6 +20,11 @@ class ilExtendedTestStatisticsConfig
 	const FOR_NONE = 'none';
 
 	/**
+	 * @var array	$params		evaluation parameters: 	class => parameter => value
+	 */
+	protected $params;
+
+	/**
 	 * ilExtendedTestStatisticsConfig constructor.
 	 * @param ilPlugin|string $a_plugin_object
 	 */
@@ -44,7 +49,7 @@ class ilExtendedTestStatisticsConfig
 	 * Read the availability settings from the database
 	 * @return array	classname => availability
 	 */
-	public function readAvailabilities()
+	protected function readAvailabilities()
 	{
 		global $ilDB;
 
@@ -153,4 +158,43 @@ class ilExtendedTestStatisticsConfig
 		return $class_names;
 	}
 
+
+	/**
+	 * Get all stored parameters for an evaluation class
+	 * @param string	$evaluation_name		class name of the evaluation
+	 * @return array							parameter_name => value
+	 */
+	public function getEvaluationParameters($evaluation_name)
+	{
+		global $ilDB;
+
+		if (!isset($this->params))
+		{
+			$this->params = array();
+			$query = "SELECT * FROM etstat_params";
+			$res = $ilDB->query($query);
+			while($row = $ilDB->fetchAssoc($res))
+			{
+				$this->params[$row['evaluation_name']][$row['parameter_name']] = $row['value'];
+			}
+		}
+
+		return (array) $this->params[$evaluation_name];
+	}
+
+	/**
+	 * Write a parameter value
+	 * @param string	$evaluation_name
+	 * @param string	$parameter_name
+	 * @param mixed		$value
+	 */
+	public function writeParameter($evaluation_name, $parameter_name, $value)
+	{
+		global $ilDB;
+		$ilDB->replace('etstat_params',
+			array('evaluation_name' => array('text', $evaluation_name),
+				'parameter_name '=> array('text', $parameter_name)),
+			array('value' => array('text', (string) $value))
+		);
+	}
 }

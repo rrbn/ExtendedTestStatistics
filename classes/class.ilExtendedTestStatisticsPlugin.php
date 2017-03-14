@@ -11,10 +11,29 @@ include_once("./Services/UIComponent/classes/class.ilUserInterfaceHookPlugin.php
  */
 class ilExtendedTestStatisticsPlugin extends ilUserInterfaceHookPlugin
 {
+	/**
+	 * @var ilExtendedTestStatisticsConfig $config
+	 */
+	protected $config;
+
 	public function getPluginName()
 	{
 		return "ExtendedTestStatistics";
 	}
+
+	/**
+	 * @return ilExtendedTestStatisticsConfig
+	 */
+	public function getConfig()
+	{
+		if (!isset($this->config))
+		{
+			$this->includeClass("class.ilExtendedTestStatisticsConfig.php");
+			$this->config = new ilExtendedTestStatisticsConfig($this);
+		}
+		return $this->config;
+	}
+
 
 	/**
 	 * Get debugging output of different value formats

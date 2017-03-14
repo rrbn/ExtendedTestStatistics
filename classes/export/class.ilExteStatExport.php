@@ -99,7 +99,7 @@ class ilExteStatExport
 	public function buildExportFile($path)
 	{
 		//Creating Files with Charts using PHPExcel
-		require_once $this->plugin->getDirectory(). '/classes/export/PHPExcel-1.8/Classes/PHPExcel.php';
+		require_once $this->plugin->getDirectory(). '/lib/PHPExcel-1.8/Classes/PHPExcel.php';
 		$excelObj = new PHPExcel();
 
 		if ($this->type == self::TYPE_CSV)
@@ -253,7 +253,7 @@ class ilExteStatExport
 		// Debug value formats
 		if ($this->plugin->debugFormats())
 		{
-			foreach (ilExteStatValue::getTestValues() as $value)
+			foreach (ilExteStatValue::_getDemoValues() as $value)
 			{
 				array_push($data,
 					array(
@@ -276,7 +276,7 @@ class ilExteStatExport
 			$cell->getStyle()->applyFromArray($this->headerStyle);
 			if (!empty($row['description']))
 			{
-				$comments['A'.$rownum] = ilExteStatValueExcel::createComment($row['description']);
+				$comments['A'.$rownum] = ilExteStatValueExcel::_createComment($row['description']);
 			}
 
 			/** @var ilExteStatValue $value */
@@ -333,7 +333,7 @@ class ilExteStatExport
 			$cell->getStyle()->applyFromArray($this->headerStyle);
 			if (!empty($def['description']))
 			{
-				$comments[$coordinate] = ilExteStatValueExcel::createComment($def['description']);
+				$comments[$coordinate] = ilExteStatValueExcel::_createComment($def['description']);
 			}
 		}
 
@@ -408,7 +408,7 @@ class ilExteStatExport
 			$cell->getStyle()->applyFromArray($this->headerStyle);
 			if (!empty($column->comment))
 			{
-				$comments[$coordinate] = ilExteStatValueExcel::createComment($column->comment);
+				$comments[$coordinate] = ilExteStatValueExcel::_createComment($column->comment);
 			}
 			$col++;
 		}
@@ -522,7 +522,7 @@ class ilExteStatExport
 			$cell->getStyle()->applyFromArray($this->headerStyle);
 			if (!empty($column->comment))
 			{
-				$comments[$coordinate] = ilExteStatValueExcel::createComment($column->comment);
+				$comments[$coordinate] = ilExteStatValueExcel::_createComment($column->comment);
 			}
 		}
 

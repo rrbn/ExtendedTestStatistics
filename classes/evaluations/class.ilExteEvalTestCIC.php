@@ -8,27 +8,27 @@ class ilExteEvalTestCIC extends ilExteEvalTest
 	/**
 	 * @var bool    evaluation provides a single value for the overview level
 	 */
-	protected static $provides_value = true;
+	protected $provides_value = true;
 
 	/**
 	 * @var bool    evaluation provides data for a details screen
 	 */
-	protected static $provides_details = false;
+	protected $provides_details = false;
 
 	/**
 	 * @var array list of allowed test types, e.g. array(self::TEST_TYPE_FIXED)
 	 */
-	protected static $allowed_test_types = array(self::TEST_TYPE_FIXED);
+	protected $allowed_test_types = array(self::TEST_TYPE_FIXED);
 
 	/**
 	 * @var array    list of question types, e.g. array('assSingleChoice', 'assMultipleChoice', ...)
 	 */
-	protected static $allowed_question_types = array();
+	protected $allowed_question_types = array();
 
 	/**
 	 * @var string	specific prefix of language variables (lowercase classname is default)
 	 */
-	protected static $lang_prefix = 'tst_cic';
+	protected $lang_prefix = 'tst_cic';
 
 
 	/**
@@ -43,7 +43,7 @@ class ilExteEvalTestCIC extends ilExteEvalTest
 	{
 		$cic = new ilExteStatValue;
         $cic->type = ilExteStatValue::TYPE_PERCENTAGE;
-        $cic->precision = 4;
+        $cic->precision = 2;
         $cic->value = null;
 
 		//Get the data we need.
@@ -86,7 +86,9 @@ class ilExteEvalTestCIC extends ilExteEvalTest
 
 		//PART2
 		$full_participants = $this->data->getAllParticipants();
-		$mean = $this->getMeanOfReachedPoints();
+		$basic_test_values = $this->data->getBasicTestValues();
+		$mean = $basic_test_values['tst_eval_mean_of_reached_points'];
+
 		$sum_of_mean = 0;
 
 		foreach ($full_participants as $active_id => $participant)

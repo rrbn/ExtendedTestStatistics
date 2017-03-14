@@ -137,7 +137,7 @@ class ilExteStatValueExcel
 	 */
 	public function getComment(ilExteStatValue $value)
 	{
-		return self::createComment((string) $value->comment);
+		return self::_createComment((string) $value->comment);
 	}
 
 	/**
@@ -145,7 +145,7 @@ class ilExteStatValueExcel
 	 * @param $text
 	 * @return	PHPExcel_Comment
 	 */
-	public static function createComment($text)
+	public static function _createComment($text)
 	{
 		$comment = new PHPExcel_Comment();
 		$richText = new PHPExcel_RichText();

@@ -19,27 +19,27 @@ abstract class ilExteEvalBase
 	/**
 	 * @var bool    evaluation provides a single value for the overview level
 	 */
-	protected static $provides_value = false;
+	protected $provides_value = false;
 
 	/**
 	 * @var bool    evaluation provides data for a details screen
 	 */
-	protected static $provides_details = false;
+	protected $provides_details = false;
 
 	/**
 	 * @var array 	list of allowed test types, e.g. array(self::TEST_TYPE_FIXED)
 	 */
-	protected static $allowed_test_types = array();
+	protected $allowed_test_types = array();
 
 	/**
 	 * @var array    list of question types, e.g. array('assSingleChoice', 'assMultipleChoice', ...)
 	 */
-	protected static $allowed_question_types = array();
+	protected $allowed_question_types = array();
 
 	/**
 	 * @var string	specific prefix of language variables (lowercase class name is used as default)
 	 */
-	protected static $lang_prefix = null;
+	protected $lang_prefix = null;
 
 
 	/**
@@ -75,38 +75,28 @@ abstract class ilExteEvalBase
 
 	protected function initParams()
 	{
-		global $ilDB;
-
-		// fetch parameter data for all evaluations once
-		static $data;
-		if (!isset($data))
-		{
-			$query = "SELECT * FROM etstat_params";
-			$res = $ilDB->query($query);
-			while($row = $ilDB->fetchAssoc($res))
-			{
-				$data[$row['evaluation_name']][$row['parameter_name']] = $row['value'];
-			}
-		}
+		// get all parameter data for the evaluation
+		$data = $this->plugin->getConfig()->getEvaluationParameters(get_class($this));
 
 		// initialize the parameters of the evaluation
 		foreach ($this->getAvailableParams() as $param)
 		{
 			// add the parameter
 			$this->params[$param->name] = $param;
-			// get stored data if it exists
-			if (isset($data[get_class($this)][$param->name]))
+
+			//set the stored data if it exists
+			if (isset($data[$param->name]))
 			{
 				switch ($param->type)
 				{
 					case ilExteStatParam::TYPE_INT:
-						$param->value = (int) $data[get_class($this)][$param->name];
+						$param->value = (int) $data[$param->name];
 						break;
 					case ilExteStatParam::TYPE_FLOAT:
-						$param->value = (float) $data[get_class($this)][$param->name];
+						$param->value = (float) $data[$param->name];
 						break;
 					case ilExteStatParam::TYPE_BOOLEAN:
-						$param->value = (bool) $data[get_class($this)][$param->name];
+						$param->value = (bool) $data[$param->name];
 						break;
 				}
 			}
@@ -135,7 +125,7 @@ abstract class ilExteEvalBase
 	 */
 	public function getLangPrefix()
 	{
-		return isset(static::$lang_prefix) ? static::$lang_prefix : strtolower(get_called_class());
+		return isset($this->lang_prefix) ? $this->lang_prefix : strtolower(get_called_class());
 	}
 
 
@@ -196,25 +186,11 @@ abstract class ilExteEvalBase
 	}
 
 	/**
-	 * Set and save the value of a parameter
-	 * @param $a_name
-	 */
-	public function setParam($a_name, $a_value)
-	{
-		global $ilDB;
-		$ilDB->replace('etstat_params',
-			array('evaluation_name' => array('text', get_class($this)),
-				'parameter_name '=> array('text', $a_name)),
-			array('value' => array('text', (string) $a_value))
-		);
-	}
-
-	/**
 	 * @return bool
 	 */
 	public function isTestTypeAllowed()
 	{
-		return empty(static::$allowed_test_types) || in_array($this->data->getTestType(), static::$allowed_test_types);
+		return empty($this->allowed_test_types) || in_array($this->data->getTestType(), $this->allowed_test_types);
 	}
 
 	/**
@@ -222,7 +198,7 @@ abstract class ilExteEvalBase
 	 */
 	final public function isQuestionTypeAllowed($a_type)
 	{
-		return empty(static::$allowed_question_types) || in_array($a_type, static::$allowed_question_types);
+		return empty($this->allowed_question_types) || in_array($a_type, $this->allowed_question_types);
 	}
 
 	/**
@@ -230,7 +206,7 @@ abstract class ilExteEvalBase
 	 */
 	public function providesValue()
 	{
-		return static::$provides_value;
+		return $this->provides_value;
 	}
 
 	/**
@@ -238,7 +214,7 @@ abstract class ilExteEvalBase
 	 */
 	public function providesDetails()
 	{
-		return static::$provides_details;
+		return $this->provides_details;
 	}
 
 	/**

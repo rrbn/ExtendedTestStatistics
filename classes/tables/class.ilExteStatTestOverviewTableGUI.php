@@ -75,7 +75,7 @@ class ilExteStatTestOverviewTableGUI extends ilExteStatTableGUI
 		// Debug value formats
 		if ($this->plugin->debugFormats())
 		{
-			foreach (ilExteStatValue::getTestValues() as $value)
+			foreach (ilExteStatValue::_getDemoValues() as $value)
 			{
 				array_push($data,
 					array(
