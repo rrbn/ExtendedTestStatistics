@@ -236,7 +236,8 @@ class ilExteStatSourceData
 	{
 		global $ilDB;
 
-		$type_translations = $this->object->getQuestionTypeTranslations();
+		require_once('Modules/TestQuestionPool/classes/class.ilObjQuestionPool.php');
+		$type_translations = ilObjQuestionPool::getQuestionTypeTranslations();
 		$this->question_types = array();
 
 		if (!empty($this->questions))
