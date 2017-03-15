@@ -186,16 +186,90 @@ class ilExteStatExport
 	{
 		global $lng;
 
-		$cell = $worksheet->getCell('A1');
+		$comments = array();
+
+		$row = 1;
+
+		// title
+		$cell = $worksheet->getCell('A'.$row);
+		$cell->setValue($lng->txt('title'));
+		$cell->getStyle()->applyFromArray($this->headerStyle);
+		$cell = $worksheet->getCell('B'.$row);
+		$cell->setValue($this->statObj->getSourceData()->getTestTitle());
+		$row++;
+
+		// type
+		switch ($this->statObj->getSourceData()->getTestType())
+		{
+			case ilExteEvalBase::TEST_TYPE_FIXED:
+				$type = $lng->txt('tst_question_set_type_fixed');
+				$desc = $lng->txt('tst_question_set_type_fixed_desc');
+				break;
+			case ilExteEvalBase::TEST_TYPE_RANDOM:
+				$type = $lng->txt('tst_question_set_type_random');
+				$desc = $lng->txt('tst_question_set_type_random_desc');
+				break;
+			case ilExteEvalBase::TEST_TYPE_DYNAMIC:
+				$type = $lng->txt('tst_question_set_type_dynamic');
+				$desc = $lng->txt('tst_question_set_type_dynamic_desc');
+				break;
+			default:
+				$type = '';
+				$desc = '';
+		}
+		$cell = $worksheet->getCell('A'.$row);
+		$cell->setValue($lng->txt('type'));
+		$cell->getStyle()->applyFromArray($this->headerStyle);
+		$cell = $worksheet->getCell('B'.$row);
+		$cell->setValue($type);
+		$comments['B'.$row] = ilExteStatValueExcel::_createComment($desc);
+		$row++;
+
+		// evaluated pass
+		switch($this->statObj->getSourceData()->getPassSelection())
+		{
+			case ilExteStatSourceData::PASS_SCORED:
+				$pass = $this->plugin->txt('pass_scored');
+				break;
+			case ilExteStatSourceData::PASS_BEST:
+				$pass = $this->plugin->txt('pass_best');
+				break;
+			case ilExteStatSourceData::PASS_LAST:
+				$pass = $this->plugin->txt('pass_last');
+				break;
+			default:
+				$pass = '';
+		}
+		$cell = $worksheet->getCell('A'.$row);
+		$cell->setValue($this->plugin->txt('evaluated_pass'));
+		$cell->getStyle()->applyFromArray($this->headerStyle);
+		$cell = $worksheet->getCell('B'.$row);
+		$cell->setValue($pass);
+		$row++;
+
+		// export date
+		$cell = $worksheet->getCell('A'.$row);
+		$cell->setValue($lng->txt('export'));
+		$cell->getStyle()->applyFromArray($this->headerStyle);
+		$cell = $worksheet->getCell('B'.$row);
+
+		ilDatePresentation::setUseRelativeDates(false);
+		$cell->setValue(ilDatePresentation::formatDate(new ilDateTime(time(), IL_CAL_UNIX)));
+		$row++;
+
+
+
+		// legend header
+		$row++;
+		$cell = $worksheet->getCell('A'.$row);
 		$cell->setValueExplicit($this->plugin->txt('legend_symbol_format'), PHPExcel_Cell_DataType::TYPE_STRING);
 		$cell->getStyle()->applyFromArray($this->headerStyle);
-
-		$cell = $worksheet->getCell('B1');
+		$cell = $worksheet->getCell('B'.$row);
 		$cell->setValueExplicit($lng->txt('description'), PHPExcel_Cell_DataType::TYPE_STRING);
 		$cell->getStyle()->applyFromArray($this->headerStyle);
+		$row++;
 
-		$row = 2;
-		$comments = array();
+		//legend
 		foreach($this->valView->getLegendData() as $data)
 		{
 			$value = $data['value'];

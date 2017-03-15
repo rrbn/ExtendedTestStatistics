@@ -89,6 +89,15 @@ class ilExteStatSourceData
 	}
 
 	/**
+	 * Get the test title
+	 * @return string
+	 */
+	public function getTestTitle()
+	{
+		return $this->object->getTitle();
+	}
+
+	/**
 	 * Get the test type (fixed, random, dynamic)
 	 * @return string
 	 */
@@ -119,6 +128,15 @@ class ilExteStatSourceData
 	public function getQuestionTypes()
 	{
 		return $this->question_types;
+	}
+
+	/**
+	 * Get the selection of the evaluated pass
+	 * @return string
+	 */
+	public function getPassSelection()
+	{
+		return $this->pass_selection;
 	}
 
 	/**
@@ -159,10 +177,9 @@ class ilExteStatSourceData
 					$pass = $userdata->getBestPassObject();
 					break;
 				case self::PASS_SCORED:
+				default:
 					$pass = $userdata->getScoredPassObject();
 					break;
-				default:
-					$pass = null;
 			}
 
 			if ($pass instanceof ilTestEvaluationPassData)
@@ -368,43 +385,51 @@ class ilExteStatSourceData
 	{
 		global $lng;
 
-		return array(
-			array(
-				'id' => 'tst_eval_total_persons',
-				'title' => $lng->txt('tst_eval_total_persons'),
-				'description' => '',
-			),
-			array(
-				'id' => 'tst_eval_total_finished',
-				'title' => $lng->txt('tst_eval_total_finished'),
-				'description' => '',
-			),
-			array(
-				'id' => 'tst_eval_total_passed',
-				'title' => $lng->txt('tst_eval_total_passed'),
-				'description' => '',
-			),
-			array(
-				'id' => 'tst_eval_total_passed_average_max_points',
-				'title' => $this->plugin->txt('tst_passed_average_max_points'),
-				'description' => '',
-			),
-			array(
-				'id' => 'tst_eval_total_passed_average_points',
-				'title' => $lng->txt('tst_eval_total_passed_average_points'),
-				'description' => '',
-			),
-			array(
-				'id' => 'tst_eval_total_finished_average_time',
-				'title' => $lng->txt('tst_eval_total_finished_average_time'),
-				'description' => '',
-			),
-			array(
-				'id' => 'tst_eval_total_passed_average_time',
-				'title' => $lng->txt('tst_eval_total_passed_average_time'),
-				'description' => '',
-			)
+		$list = array(
 		);
+
+		if ($this->pass_selection == self::PASS_SCORED)
+		{
+			$list = array_merge($list, array(
+				array(
+					'id' => 'tst_eval_total_persons',
+					'title' => $lng->txt('tst_eval_total_persons'),
+					'description' => '',
+				),
+				array(
+					'id' => 'tst_eval_total_finished',
+					'title' => $lng->txt('tst_eval_total_finished'),
+					'description' => '',
+				),
+				array(
+					'id' => 'tst_eval_total_passed',
+					'title' => $lng->txt('tst_eval_total_passed'),
+					'description' => '',
+				),
+				array(
+					'id' => 'tst_eval_total_passed_average_max_points',
+					'title' => $this->plugin->txt('tst_passed_average_max_points'),
+					'description' => '',
+				),
+				array(
+					'id' => 'tst_eval_total_passed_average_points',
+					'title' => $lng->txt('tst_eval_total_passed_average_points'),
+					'description' => '',
+				),
+				array(
+					'id' => 'tst_eval_total_finished_average_time',
+					'title' => $lng->txt('tst_eval_total_finished_average_time'),
+					'description' => '',
+				),
+				array(
+					'id' => 'tst_eval_total_passed_average_time',
+					'title' => $lng->txt('tst_eval_total_passed_average_time'),
+					'description' => '',
+				)
+			));
+		}
+
+		return $list;
 	}
 
 	/**

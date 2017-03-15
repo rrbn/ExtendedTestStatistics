@@ -111,3 +111,7 @@ legend_alert_bad#:#Der Wert deutet eine schlechte Qualität an
 legend_alert_unknown#:#Der Wert ist nicht definiert oder nicht interpretierbar
 legend_uncertain#:#Ein kursiv geschriebener Wert ist aufgrund ungenügender Datenbasis unsicher
 legend_comment#:#Das Symbol zeigt einen verfügbaren Kommentar an (Tooltip)
+evaluated_pass#:#Auswertung
+pass_scored#:#Bewerteter Durchlauf (Standard)
+pass_best#:#Bester Durchlauf
+pass_last#:#Letzter Durchlauf

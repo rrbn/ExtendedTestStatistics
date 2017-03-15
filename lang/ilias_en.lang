@@ -111,3 +111,7 @@ legend_alert_bad#:#he value indicates a bad quality
 legend_alert_unknown#:#The value is not defined or doesn't allow an interpretation
 legend_uncertain#:#A value in italics is uncertain due to a small or unfitting data set
 legend_comment#:#This symbol indicates the presence of a comment (tooltip)
+evaluated_pass#:#Evaluation
+pass_scored#:#Scored Pass (Standard)
+pass_best#:#Best Pass
+pass_last#:#Last Pass

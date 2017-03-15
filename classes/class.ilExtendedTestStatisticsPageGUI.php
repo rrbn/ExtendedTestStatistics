@@ -75,6 +75,7 @@ class ilExtendedTestStatisticsPageGUI
                 break;
 			case "exportEvaluations":
 			case "deliverExportFile":
+			case "selectEvaluatedPass":
 				$this->$cmd();
 				break;
 			case "applyFilter":
@@ -242,7 +243,7 @@ class ilExtendedTestStatisticsPageGUI
 		$ilToolbar->setFormAction($this->ctrl->getFormAction($this));
 
 		require_once 'Services/Form/classes/class.ilSelectInputGUI.php';
-		$export_type = new ilSelectInputGUI($lng->txt('exp_eval_data'), 'export_type');
+		$export_type = new ilSelectInputGUI($lng->txt('type'), 'export_type');
 		$options = array(
 			'excel_overview' => $this->plugin->txt('exp_type_excel_overviews'),
 			'excel_details' => $this->plugin->txt('exp_type_excel_details'),
@@ -250,14 +251,38 @@ class ilExtendedTestStatisticsPageGUI
 			'csv_questions' => $this->plugin->txt('exp_type_csv_questions'),
 		);
 		$export_type->setOptions($options);
-
+		$export_type->setValue($this->plugin->getUserPreference('export_type', 'excel_overview'));
 		$ilToolbar->addInputItem($export_type, true);
+
 		require_once 'Services/UIComponent/Button/classes/class.ilSubmitButton.php';
 		$button = ilSubmitButton::getInstance();
 		$button->setCommand('exportEvaluations');
 		$button->setCaption('export');
 		$button->getOmitPreventDoubleSubmission();
 		$ilToolbar->addButtonInstance($button);
+
+		$ilToolbar->addSeparator();
+
+		$this->plugin->includeClass('models/class.ilExteStatSourceData.php');
+		require_once 'Services/Form/classes/class.ilSelectInputGUI.php';
+		$pass_selection = new ilSelectInputGUI($this->plugin->txt('evaluated_pass'), 'evaluated_pass');
+		$options = array(
+			ilExteStatSourceData::PASS_SCORED => $this->plugin->txt('pass_scored'),
+			ilExteStatSourceData::PASS_BEST => $this->plugin->txt('pass_best'),
+			ilExteStatSourceData::PASS_LAST => $this->plugin->txt('pass_last'),
+		);
+		$pass_selection->setOptions($options);
+		$pass_selection->setValue($this->plugin->getUserPreference('evaluated_pass', ilExteStatSourceData::PASS_SCORED));
+		$ilToolbar->addInputItem($pass_selection, true);
+
+		require_once 'Services/UIComponent/Button/classes/class.ilSubmitButton.php';
+		$button = ilSubmitButton::getInstance();
+		$button->setCommand('selectEvaluatedPass');
+		$button->setCaption('select');
+		$button->getOmitPreventDoubleSubmission();
+		$ilToolbar->addButtonInstance($button);
+
+
 
 		require_once 'Services/Form/classes/class.ilHiddenInputGUI.php';
 		$levelField = new ilHiddenInputGUI('level');
@@ -293,6 +318,7 @@ class ilExtendedTestStatisticsPageGUI
 		$this->plugin->includeClass("export/class.ilExteStatExport.php");
 
 		// set the parameters based on the selection
+		$this->plugin->setUserPreference('export_type', ilUtil::secureString($_POST['export_type']));
 		switch ($_POST['export_type'])
 		{
 			case 'csv_test':
@@ -326,6 +352,18 @@ class ilExtendedTestStatisticsPageGUI
 				$type = ilExteStatExport::TYPE_EXCEL;
 				$level = '';
 				$details = false;
+				break;
+		}
+
+		// add a suffix for the pass selection
+		$this->plugin->includeClass('models/class.ilExteStatSourceData.php');
+		switch ($this->plugin->getUserPreference('evaluated_pass'))
+		{
+			case ilExteStatSourceData::PASS_LAST:
+				$name .= '_last_pass';
+				break;
+			case ilExteStatSourceData::PASS_BEST:
+				$name .= '_best_pass';
 				break;
 		}
 
@@ -378,6 +416,25 @@ class ilExtendedTestStatisticsPageGUI
 			ilUtil::sendFailure($this->plugin->txt('export_not_found'), true);
 			$this->ctrl->redirect($this);
 		}
+	}
+
+	/**
+	 * Set the evaluated pass
+	 */
+	protected function selectEvaluatedPass()
+	{
+		$this->plugin->setUserPreference('evaluated_pass', ilUtil::secureString($_POST['evaluated_pass']));
+
+		// show the screen from which the export was started
+		switch ($_GET['level'])
+		{
+			case ilExtendedTestStatistics::LEVEL_QUESTION:
+				$this->ctrl->redirect($this, 'showQuestionsOverview');
+				break;
+			default:
+				$this->ctrl->redirect($this, 'showTestOverview');
+		}
+
 	}
 }
 ?>

@@ -137,7 +137,7 @@ class ilExtendedTestStatistics
 		}
 		$this->plugin->includeClass('models/class.ilExteStatSourceData.php');
 		$this->data = new ilExteStatSourceData($this->object, $this->plugin);
-		$this->data->load();
+		$this->data->load($this->plugin->getUserPreference('evaluated_pass', ilExteStatSourceData::PASS_SCORED));
 	}
 
 	/**

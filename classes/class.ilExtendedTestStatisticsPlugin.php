@@ -16,6 +16,8 @@ class ilExtendedTestStatisticsPlugin extends ilUserInterfaceHookPlugin
 	 */
 	protected $config;
 
+
+
 	public function getPluginName()
 	{
 		return "ExtendedTestStatistics";
@@ -145,6 +147,38 @@ class ilExtendedTestStatisticsPlugin extends ilUserInterfaceHookPlugin
 			}
 		}
 		return $langs;
+	}
+
+	/**
+	 * Get a user preference
+	 * @param string	$name
+	 * @param mixed		$default
+	 * @return mixed
+	 */
+	public function getUserPreference($name, $default = false)
+	{
+		global $ilUser;
+		$value = $ilUser->getPref($this->getId().'_'.$name);
+		if ($value !== false)
+		{
+			return $value;
+		}
+		else
+		{
+			return $default;
+		}
+	}
+
+
+	/**
+	 * Set a user preference
+	 * @param string	$name
+	 * @param mixed		$value
+	 */
+	public function setUserPreference($name, $value)
+	{
+		global $ilUser;
+		$ilUser->writePref($this->getId().'_'.$name, $value);
 	}
 }
 
