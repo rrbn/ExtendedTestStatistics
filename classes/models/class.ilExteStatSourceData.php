@@ -5,8 +5,8 @@
  */
 class ilExteStatSourceData
 {
-	const PASS_BEST = 'best';
 	const PASS_LAST = 'last';
+	const PASS_BEST = 'best';
 	const PASS_SCORED = 'scored';
 
 	/**
@@ -46,7 +46,7 @@ class ilExteStatSourceData
 	protected $participants = array();
 
 	/**
-	 * @var ilExteStatSourceAnswer[]    	$answers
+	 * @var ilExteStatSourceAnswer[]    	$answers		(flat list)
 	 */
 	protected $answers = array();
 
@@ -125,7 +125,7 @@ class ilExteStatSourceData
 	 * Load the source data from the test
 	 *
 	 * @param    string    $a_pass_selection	pass selection, e.g. self::PASS_SCORED
-	 * @see ilTestEvaluationGUI::eval_a()
+	 * @see ilObjTest::getUnfilteredEvaluationData()
 	 */
 	public function load($a_pass_selection = self::PASS_SCORED)
 	{
@@ -152,14 +152,14 @@ class ilExteStatSourceData
 
 			switch ($this->pass_selection)
 			{
-				case self::PASS_SCORED:
-					$pass = $userdata->getScoredPassObject();
+				case self::PASS_LAST:
+					$pass = $userdata->getLastPassObject();
 					break;
 				case self::PASS_BEST:
 					$pass = $userdata->getBestPassObject();
 					break;
-				case self::PASS_LAST:
-					$pass = $userdata->getLastPassObject();
+				case self::PASS_SCORED:
+					$pass = $userdata->getScoredPassObject();
 					break;
 				default:
 					$pass = null;
@@ -267,8 +267,6 @@ class ilExteStatSourceData
 	 */
 	protected function calculateBasicTestValues()
 	{
-		global $lng;
-
 		// Total number of people who started the test
 		$value = new ilExteStatValue();
 		$value->type = ilExteStatValue::TYPE_NUMBER;
@@ -362,6 +360,8 @@ class ilExteStatSourceData
 
 	/**
 	 * Get a list of id, title and description of the basic question values
+	 * The list includes only values that are intended to be displayed
+	 * getBasicTestValues() may provide more values
 	 * @return array	[['id' => string, 'title' => string, 'description' => string], ...]
 	 */
 	public function getBasicTestValuesList()
@@ -450,6 +450,8 @@ class ilExteStatSourceData
 
 	/**
 	 * Get a list of id, title and description of the basic question values
+	 * The list includes only values that are intended to be displayed
+	 * getBasicQuestionValues() may provide more values
 	 * @return array	[['id' => string, 'title' => string, 'description' => string], ...]
 	 */
 	public function getBasicQuestionValuesList()
@@ -641,8 +643,8 @@ class ilExteStatSourceData
 
 	/**
 	 * Get all answers in the test
-	 * Note:    the answers don't have to be sent by a participant
-	 *            check the 'answered' property of the answer object
+	 * The answser objects provides information abount questions being displayed to the participants
+	 * The 'answered' property indicates if an answer was saved by the participant
 	 *
 	 * @return ilExteStatSourceAnswer[]
 	 */
