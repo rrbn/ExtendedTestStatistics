@@ -38,7 +38,10 @@ class ilExteEvalQuestionDiscriminationIndex extends ilExteEvalQuestion
 	public function getAvailableParams()
 	{
 		return array(
-			ilExteStatParam::_create('min_qst', ilExteStatParam::TYPE_INT, 0)
+			ilExteStatParam::_create('min_qst', ilExteStatParam::TYPE_INT, 0),
+			ilExteStatParam::_create('min_ans', ilExteStatParam::TYPE_INT, 2),
+			ilExteStatParam::_create('min_good', ilExteStatParam::TYPE_FLOAT, 0.3),
+			ilExteStatParam::_create('min_medium', ilExteStatParam::TYPE_FLOAT, 0.1)
 		);
 	}
 
@@ -51,17 +54,29 @@ class ilExteEvalQuestionDiscriminationIndex extends ilExteEvalQuestion
 	{
         // Prepare the return value
         $value = new ilExteStatValue;
-        $value->type = ilExteStatValue::TYPE_PERCENTAGE;
+        $value->type = ilExteStatValue::TYPE_NUMBER;
         $value->precision = 2;
         $value->value = null;
+
+		// check minimum number of questions
+		if (count($this->data->getAllQuestions()) < $this->getParam('min_qst'))
+		{
+			$value->alert = ilExteStatValue::ALERT_UNKNOWN;
+			$value->comment = sprintf($this->txt('min_qst_alert'), $this->getParam('min_qst'));
+			return $value;
+		}
+
+		// check minimum number of answers
+		if (count($this->data->getAnswersForQuestion($a_question_id)) < $this->getParam('min_ans'))
+		{
+			$value->alert = ilExteStatValue::ALERT_UNKNOWN;
+			$value->comment = sprintf($this->txt('min_ans_alert'), $this->getParam('min_ans'));
+			return $value;
+		}
 
         //Get needed data
 		$current_question_data = $this->data->getQuestion($a_question_id);
 		$current_question_average_points = $current_question_data->average_points;
-
-		//Global
-		$array_of_sum_of_points_by_questions = array();
-		$array_of_sum_of_points_participant = array();
 
 		//Current question Variance calculation
 		$current_lowest_score = $current_question_data->maximum_points;
@@ -103,14 +118,12 @@ class ilExteEvalQuestionDiscriminationIndex extends ilExteEvalQuestion
         {
             $value->alert = ilExteStatValue::ALERT_UNKNOWN;
             $value->comment = $this->txt('zero_variance_of_question');
-            $value->value = null;
             return $value;
         }
 
 
 		//Other
 		$all_questions_array = $this->data->getAllQuestions();
-		//unset($all_questions_array[$a_question_id]);
 		$other_questions_array = $all_questions_array;
 
 		//Other question Variance calculation
@@ -179,7 +192,6 @@ class ilExteEvalQuestionDiscriminationIndex extends ilExteEvalQuestion
 				$current_sum_power_diff[$other_answer->question_id] += pow((float)$other_answer->reached_points - $current_question_average_points, 2);
 				$other_sum_power_diff[$other_answer->question_id] += pow($other_points_difference, 2);
 				$covariance_sum[$other_answer->question_id] += ((float)$other_answer->reached_points - $current_question_average_points) * $other_points_difference;
-
 			}
 		}
 
@@ -189,15 +201,36 @@ class ilExteEvalQuestionDiscriminationIndex extends ilExteEvalQuestion
         {
             $value->alert = ilExteStatValue::ALERT_UNKNOWN;
             $value->comment = $this->txt('zero_variance_of_other_questions');
-            $value->value = null;
             return $value;
         }
 
 		//Final calculations
 		$covariance_final = (1 / ($number_of_participants_of_current_question - 1)) * $covariance_sum[$a_question_id];
-		$discrimination_index = 100 * $covariance_final / sqrt($current_question_variance_final * $other_questions_variance_final);
+		$discrimination_index = $covariance_final / sqrt($current_question_variance_final * $other_questions_variance_final);
 
         $value->value = $discrimination_index;
+
+		// Alert quality
+		if ($discrimination_index < $this->getParam('min_medium'))
+		{
+			$value->alert = ilExteStatValue::ALERT_BAD;
+		}
+		elseif ($discrimination_index < $this->getParam('min_good'))
+		{
+			$value->alert = ilExteStatValue::ALERT_MEDIUM;
+		}
+		elseif ($this->getParam('min_good') >0)
+		{
+			$value->alert = ilExteStatValue::ALERT_GOOD;
+		}
+
+		// Note on random values
+		if ($this->data->getTestType() !== ilExteEvalBase::TEST_TYPE_FIXED)
+		{
+			$value->uncertain = true;
+			$value->comment = $this->txt('random_test');
+		}
+
 		return $value;
 	}
 }

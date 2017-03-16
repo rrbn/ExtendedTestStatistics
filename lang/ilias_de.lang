@@ -55,6 +55,10 @@ qst_discrimination_min_ans_title#:#Mindestanzahl Antworten
 qst_discrimination_min_ans_description#:#Minimale Anzahl Antworten zu dieser Frage, ab der eine Berechnung der Trennschärfe sinnvoll ist
 qst_discrimination_min_ans_alert#:#Die Trennschärfe ist erst ab %s Antworten zu dieser Frage ermittelbar
 qst_discrimination_random_test#:#Die Berechnung der Trennschärfe in einem Zufallstest ist nicht abgesichert.
+qst_discrimination_min_medium_title#:#Mindestwert "mäßig"
+qst_discrimination_min_medium_description#:#Mindestwert, der als als "mäßig" bewertet wird. 0, falls keine Bewertung erwünscht ist.
+qst_discrimination_min_good_title#:#Mindestwert "gut"
+qst_discrimination_min_good_description#:#Mindestwert, der als "gut" bewertet wird. 0, falls keine Bewertung erwünscht ist.
 show_test_evaluations#:#Testauswertungen
 show_question_evaluations#:#Fragenauswertungen
 evaluation_available_for_admins#:#Administratoren

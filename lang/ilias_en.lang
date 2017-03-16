@@ -8,7 +8,7 @@
 <!-- language file start -->
 alert_unknown#:#Unknown
 alert_good#:#Good
-alert_medium#:#Suboptimal
+alert_medium#:#Mediocre
 alert_bad#:#Bad
 test_results#:#Aggregated Test Results
 questions_results#:#Aggregated Questions Results
@@ -50,6 +50,10 @@ qst_discrimination_zero_variance_of_question#:#The variance of points is 0 for t
 qst_discrimination_zero_variance_of_other_question#:#The variance of points is 0 for the other questions
 qst_discrimination_min_qst_title#:#Minimum Questions
 qst_discrimination_min_qst_description#:#Minimum number of questions for a meaningful discrimination index
+qst_discrimination_min_medium_title#:#Minimum "mediocre"
+qst_discrimination_min_medium_description#:#Minimum value rated as 'mediocre'. 0 to suppress the rating.
+qst_discrimination_min_good_title#:#Minimum "good"
+qst_discrimination_min_good_description#:#Minimum value rated as 'good'. 0 to suppress the rating.
 show_test_evaluations#:#Show test evaluations
 show_question_evaluations#:#Show question evaluations
 evaluation_available_for_admins#:#Admins
@@ -106,7 +110,7 @@ export_not_found#:#The export file was not found!
 any_question_type#:#Any Question Type
 legend_symbol_format#:#Symbol/Format
 legend_alert_good#:#The value indicates a good quality
-legend_alert_medium#:#The value indicates a suboptimal quality
+legend_alert_medium#:#The value indicates a mediocre quality
 legend_alert_bad#:#he value indicates a bad quality
 legend_alert_unknown#:#The value is not defined or doesn't allow an interpretation
 legend_uncertain#:#A value in italics is uncertain due to a small or unfitting data set
