@@ -1,12 +1,27 @@
-<!-- BEGIN alert -->
-<img src="{SRC_ALERT}" alt="{ALT_ALERT}" title="{ALT_ALERT}" />
-<!-- END alert -->
-<!-- BEGIN value -->
-{VALUE}
-<!-- END value -->
-<!-- BEGIN uncertain_value -->
-<i>{VALUE}</i>
-<!-- END uncertain_value -->
-<!-- BEGIN comment -->
-<span id="ilExteStatComment{COMMENT_ID}"><sup>&#9432;</sup></span>
-<!-- END comment -->
+<!-- BEGIN cell -->
+<div class="{CLASS}">
+    <!-- BEGIN value -->
+    <span>{CONTENT}</span>
+    <!-- END value -->
+
+    <!-- BEGIN uncertain_value -->
+    <i>{CONTENT}</i>
+    <!-- END uncertain_value -->
+
+    <!-- BEGIN comment -->
+    <sup><span id="ilExteStatComment{COMMENT_ID}">&#9432;</span></sup>
+    <!-- END comment -->
+    <!-- BEGIN good -->
+    <sup><span id="ilExteStatComment{COMMENT_ID}" class="text-success glyphicon glyphicon-ok"></span></sup>
+    <!-- END good  -->
+    <!-- BEGIN medium -->
+    <sup><span id="ilExteStatComment{COMMENT_ID}" class="text-warning glyphicon glyphicon-adjust"></span></sup>
+    <!-- END medium -->
+    <!-- BEGIN bad -->
+    <sup><span id="ilExteStatComment{COMMENT_ID}" class="text-danger glyphicon glyphicon-exclamation-sign"></span></sup>
+    <!-- END bad -->
+    <!-- BEGIN unknown -->
+    <sup><span id="ilExteStatComment{COMMENT_ID}" class="text-muted glyphicon glyphicon-question-sign"></span></sup>
+    <!-- END unknown -->
+</div>
+<!-- END cell -->

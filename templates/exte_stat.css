@@ -1,0 +1,22 @@
+.ilExteStatValueLeft {
+    float: left;
+    text-align: left;
+}
+
+.ilExteStatValueRight {
+    float: right;
+    text-align: right;
+}
+
+.ilExteStatSignLeft {
+    float: left;
+    padding-left: 5px;
+}
+
+.ilExteStatSignRight {
+    float: right;
+    padding-left: 5px;
+}
+
+
+

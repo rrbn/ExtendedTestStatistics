@@ -136,6 +136,7 @@ class ilExtendedTestStatisticsPageGUI
 		$this->tpl->setTitle($this->testObj->getPresentationTitle());
 		$this->tpl->setDescription($this->testObj->getLongDescription());
 		$this->tpl->setTitleIcon(ilObject::_getIcon('', 'big', 'tst'), $lng->txt('obj_tst'));
+		$this->tpl->addCss($this->plugin->getStyleSheetLocation('exte_stat.css'));
 	}
 
 	/**

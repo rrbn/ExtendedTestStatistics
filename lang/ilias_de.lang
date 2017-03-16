@@ -8,7 +8,7 @@
 <!-- language file start -->
 alert_unknown#:#Unbekannt
 alert_good#:#Gut
-alert_medium#:#Mittel
+alert_medium#:#Mäßig
 alert_bad#:#Schlecht
 test_results#:#Aggregierte Testergebnisse
 questions_results#:#Aggregierte Fragenergebnisse
@@ -40,7 +40,7 @@ qst_facility_title_long#:#Schwierigkeitsindex (Beantwortbarkeit) der Frage
 qst_facility_title_short#:#Schwierigkeitsindex
 qst_facility_description#:#Beim Schwierigkeitsindex p werden die Punkte, die bei dieser Frage von allen Testpersonen tatsächlich erreicht wurden, zusammengezählt und durch die maximal erreichbare Punktsumme aller Testpersonen bei diesem Item dividiert. Dieser Quotient wird mit 100 multipliziert. Eine Schwierigkeit von p=0 bedeutet, dass die Aufgabe von niemandem gelöst wurde und damit zu schwer war. Ganz einfach war sie, wenn p=100 ist. p sollte im Bereich 0,4 – 0,85 streuen.
 qst_facility_all_scores_identical#:#Bei dieser Frage haben alle Teilnehmer den gleichen Score eerreicht.
-qst_standarddeviation_title_long#:#Standardabweichung der erreichten Punkte für diese Frage
+qst_standarddeviation_title_long#:#Standardabweichung der erreichten Punkte für die Frage
 qst_standarddeviation_title_short#:#Standardabweichung
 qst_standarddeviation_description#:#Die Standardabweichung (s) ist die durchschnittliche Entfernung aller gemessenen Einzelwerte eines Merkmals vom Durchschnitt.
 qst_discrimination_title_short#:#Trennschärfe
@@ -49,7 +49,12 @@ qst_discrimination_description#:#Über die Trennschärfe lässt sich ermitteln, 
 qst_discrimination_zero_variance_of_question#:#Die Punktevarianz der Frage ist 0
 qst_discrimination_zero_variance_of_other_question#:#Die Punktevarianz der übrigen Fragen ist 0
 qst_discrimination_min_qst_title#:#Mindestanzahl Fragen
-qst_discrimination_min_qst_description#:#Minimale Anzahl Fragen, ab der eine Berechnung des der Trennschärfe sinnvoll ist
+qst_discrimination_min_qst_description#:#Minimale Anzahl Fragen im Test, ab der eine Berechnung der Trennschärfe sinnvoll ist
+qst_discrimination_min_qst_alert#:#Die Trennschärfe ist erst ab %s Fragen ermittelbar
+qst_discrimination_min_ans_title#:#Mindestanzahl Antworten
+qst_discrimination_min_ans_description#:#Minimale Anzahl Antworten zu dieser Frage, ab der eine Berechnung der Trennschärfe sinnvoll ist
+qst_discrimination_min_ans_alert#:#Die Trennschärfe ist erst ab %s Antworten zu dieser Frage ermittelbar
+qst_discrimination_random_test#:#Die Berechnung der Trennschärfe in einem Zufallstest ist nicht abgesichert.
 show_test_evaluations#:#Testauswertungen
 show_question_evaluations#:#Fragenauswertungen
 evaluation_available_for_admins#:#Administratoren
@@ -106,7 +111,7 @@ export_not_found#:#Die Export-Datei wurde nicht gefunden!
 any_question_type#:#Beliebiger Fragentyp
 legend_symbol_format#:#Symbol/Format
 legend_alert_good#:#Der Wert deutet eine gute Qualität an
-legend_alert_medium#:#Der Wert deutet eine mittlere Qualität an
+legend_alert_medium#:#Der Wert deutet eine mäßige Qualität an
 legend_alert_bad#:#Der Wert deutet eine schlechte Qualität an
 legend_alert_unknown#:#Der Wert ist nicht definiert oder nicht interpretierbar
 legend_uncertain#:#Ein kursiv geschriebener Wert ist aufgrund ungenügender Datenbasis unsicher

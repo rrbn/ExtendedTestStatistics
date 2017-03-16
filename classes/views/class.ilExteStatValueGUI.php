@@ -45,36 +45,29 @@ class ilExteStatValueGUI
 
 		$template = $this->plugin->getTemplate('tpl.il_exte_stat_value.html');
 
-		// alert
-		if ($value->alert != ilExteStatValue::ALERT_NONE)
-		{
-			$template->setVariable('SRC_ALERT', $this->plugin->getImagePath('alert_'.$value->alert.'.svg'));
-			if (isset($value->value) and $value->type == ilExteStatValue::TYPE_ALERT)
-			{
-				$template->setVariable('ALT_ALERT', ilUtil::prepareFormOutput($value->value));
-			}
-			else
-			{
-				$template->setVariable('ALT_ALERT', $this->plugin->txt('alert_'.$value->alert));
-			}
-		}
+		// value
+		$content = null;
+		$comment = null;
+		$sign = null;
+		$align = 'left';
 
 		// value
-		if (isset($value->value))
-		{
-			$template->setCurrentBlock($value->uncertain ? 'uncertain_value' : 'value');
 			switch ($value->type)
 			{
 				case ilExteStatValue::TYPE_ALERT:
-					// alert is already set
+					// alert is separately set
+					$content = '';
+					$align = 'left';
 					break;
 
 				case ilExteStatValue::TYPE_TEXT:
-					$template->setVariable('VALUE', $this->textDisplay($value->value), true);
+					$content =  $this->textDisplay($value->value);
+					$align = 'left';
 					break;
 
 				case ilExteStatValue::TYPE_NUMBER:
-					$template->setVariable('VALUE', round($value->value, $value->precision));
+					$content = sprintf('%01.'.$value->precision.'f', round($value->value, $value->precision));
+					$align = 'right';
 					break;
 
 				case ilExteStatValue::TYPE_DURATION:
@@ -83,36 +76,111 @@ class ilExteStatValueGUI
 					$diff_seconds -= $diff_hours   * 3600;
 					$diff_minutes  = floor($diff_seconds/60);
 					$diff_seconds -= $diff_minutes * 60;
-					$template->setVariable('VALUE', sprintf("%02d:%02d:%02d", $diff_hours, $diff_minutes, $diff_seconds));
+
+					$content = sprintf("%02d:%02d:%02d", $diff_hours, $diff_minutes, $diff_seconds);
+					$align = 'right';
 					break;
 
 				case ilExteStatValue::TYPE_DATETIME:
 					if ($value->value instanceof ilDateTime)
 					{
-						$template->setVariable('VALUE', ilDatePresentation::formatDate($value->value));
+						$content = ilDatePresentation::formatDate($value->value);
+						$align = 'right';
 					}
 					break;
+
 				case ilExteStatValue::TYPE_PERCENTAGE:
-					$template->setVariable('VALUE', round($value->value, $value->precision). '%');
+					$content = sprintf('%01.'.$value->precision.'f', round($value->value, $value->precision)). '%';
+					$align = 'right';
 					break;
 
 				case ilExteStatValue::TYPE_BOOLEAN:
-					$template->setVariable('VALUE', $value->value ? $lng->txt('yes') : $lng->txt('no'));
+					$content = ($value->value ? $lng->txt('yes') : $lng->txt('no'));
+					$align = 'left';
 					break;
+
+				default:
+					$content = '';
+					$align = 'left';
 			}
-			$template->parseCurrentBlock();
+
+
+		// revert casting null to 0 etc.
+		if (!isset($value->value))
+		{
+			$content = '';
 		}
 
-		// comment
+		// alert and comment
+		if ($value->alert != ilExteStatValue::ALERT_NONE)
+		{
+			$sign = $value->alert;
+			$comment = $this->plugin->txt('alert_'.$value->alert);
+		}
 		if ($this->show_comment && !empty($value->comment))
 		{
-			$comment_id = rand(100000,999999);
-			require_once("Services/UIComponent/Tooltip/classes/class.ilTooltipGUI.php");
-			ilTooltipGUI::addTooltip('ilExteStatComment'.$comment_id, $value->comment);
-			$template->setVariable('COMMENT_ID', $comment_id);
+			$sign = !empty($sign) ? $sign : 'comment';
+			$comment = $value->comment;
+		}
+
+		// render cell
+		switch ($align)
+		{
+			case 'right':
+				$this->renderSign($template, $sign, 'ilExteStatSignRight', $comment);
+				$this->renderContent($template, $content, 'ilExteStatValueRight', $value->uncertain);
+				break;
+			case 'left':
+			default:
+				$this->renderContent($template, $content, 'ilExteStatValueLeft', $value->uncertain);
+				$this->renderSign($template, $sign, 'ilExteStatSignLeft', $comment);
+				break;
 		}
 
 		return $template->get();
+	}
+
+	/**
+	 * Render the value content
+	 * @param ilTemplate	$template
+	 * @param string		$content
+	 * @param string		$class
+	 * @param bool			$uncertain
+	 */
+	protected function renderContent($template, $content, $class, $uncertain = false)
+	{
+		$template->setCurrentBlock($uncertain ? 'uncertain_value' : 'value');
+		$template->setVariable('CONTENT', $content);
+		$template->parseCurrentBlock();
+
+		$template->setCurrentBlock('cell');
+		$template->setVariable('CLASS', $class);
+		$template->parseCurrentBlock();
+	}
+
+	/**
+	 * Render an alert sign or comment
+	 * @param ilTemplate $template
+	 * @param string	$sign
+	 * @param string	$class
+	 * @param string 	$comment
+	 */
+	protected function renderSign($template, $sign, $class, $comment = "")
+	{
+		if (!empty($sign) && !empty($comment))
+		{
+			$comment_id = rand(100000,999999);
+			require_once("Services/UIComponent/Tooltip/classes/class.ilTooltipGUI.php");
+			ilTooltipGUI::addTooltip('ilExteStatComment'.$comment_id, $comment);
+
+			$template->setCurrentBlock($sign);
+			$template->setVariable('COMMENT_ID', $comment_id);
+			$template->parseCurrentBlock();
+		}
+
+		$template->setCurrentBlock('cell');
+		$template->setVariable('CLASS', $class);
+		$template->parseCurrentBlock();
 	}
 
 	/**
@@ -125,19 +193,19 @@ class ilExteStatValueGUI
 
 		$data = array (
 			array(
-				'value' => ilExteStatValue::_create('', ilExteStatValue::TYPE_ALERT, 0, '', ilExteStatValue::ALERT_GOOD),
+				'value' => ilExteStatValue::_create('', ilExteStatValue::TYPE_TEXT, 0, '', ilExteStatValue::ALERT_GOOD),
 				'description' => $this->plugin->txt('legend_alert_good')
 			),
 			array(
-				'value' => ilExteStatValue::_create('', ilExteStatValue::TYPE_ALERT, 0, '', ilExteStatValue::ALERT_MEDIUM),
+				'value' => ilExteStatValue::_create('', ilExteStatValue::TYPE_TEXT, 0, '', ilExteStatValue::ALERT_MEDIUM),
 				'description' => $this->plugin->txt('legend_alert_medium')
 			),
 			array(
-				'value' => ilExteStatValue::_create('', ilExteStatValue::TYPE_ALERT, 0, '', ilExteStatValue::ALERT_BAD),
+				'value' => ilExteStatValue::_create('', ilExteStatValue::TYPE_TEXT, 0, '', ilExteStatValue::ALERT_BAD),
 				'description' => $this->plugin->txt('legend_alert_bad')
 			),
 			array(
-				'value' => ilExteStatValue::_create('', ilExteStatValue::TYPE_ALERT, 0, '', ilExteStatValue::ALERT_UNKNOWN),
+				'value' => ilExteStatValue::_create('', ilExteStatValue::TYPE_TEXT, 0, '', ilExteStatValue::ALERT_UNKNOWN),
 				'description' => $this->plugin->txt('legend_alert_unknown')
 			),
 			array(
