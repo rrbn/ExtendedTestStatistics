@@ -27,32 +27,43 @@ tst_median_title_short#:#Median
 tst_median_description#:#Der Median wird für Daten genutzt, die eine „natürliche“ Reihenfolge bilden und mit Zahlenwerten versehen werden können. Die Mitte dieser geordneten Datenreihe ist der Median. Anders als der Mittelwert ist der Media unempfindlich gegenüber Extremwerten.
 tst_mean_title_long#:#Mittelwert der erreichten Punkte
 tst_mean_title_short#:#Mittelwert
-tst_mean_description#:#Der Mittelwert errechnet sich durch die Summe der Werte x 1 , x 2 , …, x n, dividiert duch die Anzahl n. Er ist empfindlich gegenüber Extremwerten.
+tst_mean_description#:#Der Mittelwert errechnet sich durch die Summe der erreichten Punkte, dividiert duch die Anzahl der Teilnehmer. Er ist empfindlich gegenüber Extremwerten.
 tst_standarddeviation_title_long#:#Standardabweichung der erreichten Punkte im Test
 tst_standarddeviation_title_short#:#Standardabweichung
-tst_standarddeviation_description#:#Die Standardabweichung (s) ist die durchschnittliche Entfernung aller gemessenen Einzelwerte eines Merkmals vom Durchschnitt.
-tst_standarddeviation_only_one_participant#:#Die Standardabweichung ist trivial, wenn der Test nur einmal durchgeführt wurde.
+tst_standarddeviation_description#:#Die Standardabweichung misst die durchschnittliche Entfernung aller erreichten Punkte vom Mittelwert der erreichten Punkte.
+tst_standarddeviation_only_one_participant#:#Die Standardabweichung ist trivial, wenn der Test nur von einem Teilnehmer durchgeführt wurde.
 tst_cic_title_long#:#Koeffizient interner Konsistenz (Cronbach's alpha)
-tst_cic_title_short#:#Chronbach’s Alpha
+tst_cic_title_short#:#Chronbach’s alpha
+tst_cic_description#:#Chronbach’s alpha bezeichnet das Ausmaß, in dem alle Fragen das Gleiche messen. Der Koeffizient steigt mit zunehmendem Zusammenhang zwischen den Fragen und kann Werte zwischen minus unendlich und 1 annehmen. Werte für einen Test sollten höher als 0.7 sein.
 tst_cic_sum_of_mean_is_zero#:#Die Mittelwertsumme ist 0
-tst_cic_description#:#Chronbach’s alpha bezeichnet das Ausmaß, in dem alle Aufgaben das Gleiche messen. Der Koeffizient steigt mit zunehmendem Zusammenhang zwischen den Items. Der maximale Wert ist 1. Als Daumenregel wird ein Alpha von 0.7 und mehr gefordert.
 qst_facility_title_long#:#Schwierigkeitsindex (Beantwortbarkeit) der Frage
 qst_facility_title_short#:#Schwierigkeitsindex
-qst_facility_description#:#Beim Schwierigkeitsindex p werden die Punkte, die bei dieser Frage von allen Testpersonen tatsächlich erreicht wurden, zusammengezählt und durch die maximal erreichbare Punktsumme aller Testpersonen bei diesem Item dividiert. Dieser Quotient wird mit 100 multipliziert. Eine Schwierigkeit von p=0 bedeutet, dass die Aufgabe von niemandem gelöst wurde und damit zu schwer war. Ganz einfach war sie, wenn p=100 ist. p sollte im Bereich 0,4 – 0,85 streuen.
-qst_facility_all_scores_identical#:#Bei dieser Frage haben alle Teilnehmer den gleichen Score eerreicht.
+qst_facility_description#:#Der Schwierigkeitsindex wird als Verhältnis der Abstände zwischen mittlerer und minimaler und zwischen maximaler und minimaler der erreichten Punktzahlen berechnet und in Prozent ausgegeben. Bei 0% wurde die Frage von niemandem richtig beantwortet und bei 100% von allen. Der Schwierigkeitsindex sollte im Bereich 20% – 80% liegen.
+qst_facility_all_scores_identical#:#Bei dieser Frage haben alle Teilnehmer die gleiche Punktzahl erreicht.
+qst_facility_min_ans_title#:#Mindestanzahl Antworten
+qst_facility_min_ans_description#:#Minimale Anzahl Antworten zu einer Frage, ab der ihre Schwierigkeit berechnet wird
+qst_facility_min_ans_alert#:#Die Schwierigkeit ist erst ab %s Antworten zu dieser Frage ermittelbar
+qst_facility_min_medium_title#:#Mindestwert "mäßig"
+qst_facility_min_medium_description#:#Mindestwert, der als "mäßig" bewertet wird. 0, falls keine Bewertung erwünscht ist.
+qst_facility_min_good_title#:#Mindestwert "gut"
+qst_facility_min_good_description#:#Mindestwert, der als "gut" bewertet wird. 0, falls keine Bewertung erwünscht ist.
+qst_facility_max_good_title#:#Maximalwert "gut"
+qst_facility_max_good_description#:#Maximalwert, der als "gut" bewertet wird. 0, falls keine Bewertung erwünscht ist.
+qst_facility_max_medium_title#:#Maximalwert "mäßig"
+qst_facility_max_medium_description#:#Maximalwert, der als "mäßig" bewertet wird. 0, falls keine Bewertung erwünscht ist.
 qst_standarddeviation_title_long#:#Standardabweichung der erreichten Punkte für die Frage
 qst_standarddeviation_title_short#:#Standardabweichung
-qst_standarddeviation_description#:#Die Standardabweichung (s) ist die durchschnittliche Entfernung aller gemessenen Einzelwerte eines Merkmals vom Durchschnitt.
+qst_standarddeviation_description#:#Die Standardabweichung misst die durchschnittliche Entfernung aller erreichten Punkte dieser Frage vom Mittelwert der erreichten Punkte.
 qst_discrimination_title_short#:#Trennschärfe
 qst_discrimination_title_long#:#Trennschärfe der Frage im Test
-qst_discrimination_description#:#Über die Trennschärfe lässt sich ermitteln, wie gut eine Frage zwischen Personen mit niedriger und hoher Merkmalsausprägung trennt. Das Maß erfasst den Zusammenhang der einzelnen Testwerte mit dem endgültigen Testwert. Angestrebt werden Trennschärfen von  0,4 bis 0,7. Bei einer Trennschärfe < 0 wird die Frage von „schlechten“ Testpersonen gelöst und von „guten“ Testpersonen nicht.
+qst_discrimination_description#:#Über die Trennschärfe lässt sich ermitteln, wie gut eine Frage zwischen "guten" und "schlechten" Teilnehmern unterscheidet. Sie erfasst den Zusammenhang der einzelnen Testwerte mit dem endgültigen Testwert. Angestrebt werden Trennschärfen von  0,4 bis 0,7. Bei einer Trennschärfe < 0 wird die Frage von „schlechten“ Testpersonen gelöst und von „guten“ Testpersonen nicht.
 qst_discrimination_zero_variance_of_question#:#Die Punktevarianz der Frage ist 0
 qst_discrimination_zero_variance_of_other_question#:#Die Punktevarianz der übrigen Fragen ist 0
 qst_discrimination_min_qst_title#:#Mindestanzahl Fragen
-qst_discrimination_min_qst_description#:#Minimale Anzahl Fragen im Test, ab der eine Berechnung der Trennschärfe sinnvoll ist
+qst_discrimination_min_qst_description#:#Minimale Anzahl Fragen im Test, ab der die Trennschärfe berechnet wird
 qst_discrimination_min_qst_alert#:#Die Trennschärfe ist erst ab %s Fragen ermittelbar
 qst_discrimination_min_ans_title#:#Mindestanzahl Antworten
-qst_discrimination_min_ans_description#:#Minimale Anzahl Antworten zu dieser Frage, ab der eine Berechnung der Trennschärfe sinnvoll ist
+qst_discrimination_min_ans_description#:#Minimale Anzahl Antworten zu einer Frage, ab der ihre Trennschärfe berechnet wird
 qst_discrimination_min_ans_alert#:#Die Trennschärfe ist erst ab %s Antworten zu dieser Frage ermittelbar
 qst_discrimination_random_test#:#Die Berechnung der Trennschärfe in einem Zufallstest ist nicht abgesichert.
 qst_discrimination_min_medium_title#:#Mindestwert "mäßig"
@@ -118,7 +129,7 @@ legend_alert_good#:#Der Wert deutet eine gute Qualität an
 legend_alert_medium#:#Der Wert deutet eine mäßige Qualität an
 legend_alert_bad#:#Der Wert deutet eine schlechte Qualität an
 legend_alert_unknown#:#Der Wert ist nicht definiert oder nicht interpretierbar
-legend_uncertain#:#Ein kursiv geschriebener Wert ist aufgrund ungenügender Datenbasis unsicher
+legend_uncertain#:#Der Wert ist aufgrund seiner Datenbasis unsicher (siehe Tooltip)
 legend_comment#:#Das Symbol zeigt einen verfügbaren Kommentar an (Tooltip)
 evaluated_pass#:#Auswertung
 pass_scored#:#Bewerteter Durchlauf (Standard)

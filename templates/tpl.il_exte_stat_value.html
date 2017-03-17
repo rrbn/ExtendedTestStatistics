@@ -1,5 +1,5 @@
 <!-- BEGIN cell -->
-<div class="{CLASS}">
+<div id="{ID}" class="{CLASS}">
     <!-- BEGIN value -->
     <span>{CONTENT}</span>
     <!-- END value -->
@@ -9,19 +9,20 @@
     <!-- END uncertain_value -->
 
     <!-- BEGIN comment -->
-    <sup><span id="ilExteStatComment{COMMENT_ID}">&#9432;</span></sup>
+    <sup><span class="text-muted">&#9432;</span></sup>
     <!-- END comment -->
+
     <!-- BEGIN good -->
-    <sup><span id="ilExteStatComment{COMMENT_ID}" class="text-success glyphicon glyphicon-ok"></span></sup>
+    <sup><span class="text-success glyphicon glyphicon-ok"></span></sup>
     <!-- END good  -->
     <!-- BEGIN medium -->
-    <sup><span id="ilExteStatComment{COMMENT_ID}" class="text-warning glyphicon glyphicon-adjust"></span></sup>
+    <sup><span class="text-warning glyphicon glyphicon-adjust"></span></sup>
     <!-- END medium -->
     <!-- BEGIN bad -->
-    <sup><span id="ilExteStatComment{COMMENT_ID}" class="text-danger glyphicon glyphicon-exclamation-sign"></span></sup>
+    <sup><span class="text-danger glyphicon glyphicon-exclamation-sign"></span></sup>
     <!-- END bad -->
     <!-- BEGIN unknown -->
-    <sup><span id="ilExteStatComment{COMMENT_ID}" class="text-muted glyphicon glyphicon-question-sign"></span></sup>
+    <sup><span class="text-muted glyphicon glyphicon-question-sign"></span></sup>
     <!-- END unknown -->
 </div>
 <!-- END cell -->

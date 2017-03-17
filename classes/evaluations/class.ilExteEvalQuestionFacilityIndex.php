@@ -30,13 +30,28 @@ class ilExteEvalQuestionFacilityIndex extends ilExteEvalQuestion
 	 */
 	protected $lang_prefix = 'qst_facility';
 
+	/**
+	 * Get the available parameters for this evaluation
+	 * @return ilExteStatParam
+	 */
+	public function getAvailableParams()
+	{
+		return array(
+			ilExteStatParam::_create('min_ans', ilExteStatParam::TYPE_INT, 2),
+			ilExteStatParam::_create('min_medium', ilExteStatParam::TYPE_FLOAT, 10),
+			ilExteStatParam::_create('min_good', ilExteStatParam::TYPE_FLOAT, 20),
+			ilExteStatParam::_create('max_good', ilExteStatParam::TYPE_FLOAT, 80),
+			ilExteStatParam::_create('max_medium', ilExteStatParam::TYPE_FLOAT, 90),
+		);
+	}
+
 
 	/**
 	 * Calculate the single value for a question (to be overwritten)
 	 *
 	 * Note:
 	 * This function will be called for many questions in sequence
-	 * - Please avoid instanciation of question objects
+	 * - Please avoid instantiation of question objects
 	 * - Please try to cache question independent intermediate results
 	 *
 	 * @param integer $a_question_id
@@ -44,24 +59,24 @@ class ilExteEvalQuestionFacilityIndex extends ilExteEvalQuestion
 	 */
 	public function calculateValue($a_question_id)
 	{
-        //Get Data
+        // Get Data
 		$question_data = $this->data->getQuestion($a_question_id);
 		$average_points = $question_data->average_points;
 
-        //Get Lowest and highest score for this question
+        // Get the actual lowest and highest score for this question
 		$lowest_score = $question_data->maximum_points;
 		$highest_score = 0.0;
 		$count = 0;
 		foreach ($this->data->getAnswersForQuestion($a_question_id) as $answerObj)
         {
 			if ($answerObj->answered) {
-				if ((float)$answerObj->reached_points < (float)$lowest_score)
+				if ((float) $answerObj->reached_points < (float) $lowest_score)
                 {
-					$lowest_score = (float)$answerObj->reached_points;
+					$lowest_score = (float) $answerObj->reached_points;
 				}
-				if ((float)$answerObj->reached_points > (float)$highest_score)
+				if ((float) $answerObj->reached_points > (float) $highest_score)
                 {
-					$highest_score = (float)$answerObj->reached_points;
+					$highest_score = (float) $answerObj->reached_points;
 				}
 			}
 			$count++;
@@ -70,25 +85,42 @@ class ilExteEvalQuestionFacilityIndex extends ilExteEvalQuestion
         //Calculate facility index, if possible
         $value = new ilExteStatValue;
         $value->type = ilExteStatValue::TYPE_PERCENTAGE;
-        $value->precision = 2;
+        $value->precision = 0;
 
-        if ($count == 0)
+		// check minimum number of answers
+		if ($count < $this->getParam('min_ans'))
         {
             $value->alert = ilExteStatValue::ALERT_UNKNOWN;
-            $value->comment = $this->plugin->txt('not_enough_answers');
+			$value->comment = sprintf($this->txt('min_ans_alert'), $this->getParam('min_ans'));
             $value->value = null;
+			return $value;
         }
         elseif ($highest_score == $lowest_score)
         {
             $value->alert = ilExteStatValue::ALERT_UNKNOWN;
             $value->comment = $this->txt('all_scores_identical');
             $value->value = null;
+			return $value;
         }
         else
         {
-            $facility_index = (($average_points - $lowest_score) / ($highest_score - $lowest_score));
+            $facility_index = 100 * (($average_points - $lowest_score) / ($highest_score - $lowest_score));
             $value->value = $facility_index;
         }
+
+		// Alert quality
+		if ( $value->value < $this->getParam('min_medium') || ($value->value > $this->getParam('max_medium') && $this->getParam('max_medium') > 0))
+		{
+			$value->alert = ilExteStatValue::ALERT_BAD;
+		}
+		elseif ( $value->value < $this->getParam('min_good') || ($value->value > $this->getParam('max_good') && $this->getParam('max_good') > 0))
+		{
+			$value->alert = ilExteStatValue::ALERT_MEDIUM;
+		}
+		elseif ($this->getParam('min_good') > 0 || $this->getParam('max_good') > 0)
+		{
+			$value->alert = ilExteStatValue::ALERT_GOOD;
+		}
 
 		return $value;
 	}

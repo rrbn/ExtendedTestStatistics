@@ -70,8 +70,10 @@ class ilExtendedTestStatisticsPageGUI
             case "showTestDetails":
 			case "showQuestionsOverview":
             case "showQuestionDetails":
-                $this->prepareOutput();
-                $this->$cmd();
+				if ($this->prepareOutput())
+				{
+					$this->$cmd();
+				}
                 break;
 			case "exportEvaluations":
 			case "deliverExportFile":
@@ -80,8 +82,10 @@ class ilExtendedTestStatisticsPageGUI
 				break;
 			case "applyFilter":
 			case "resetFilter":
-				$this->prepareOutput();
-				$this->showQuestionsOverview();
+				if ($this->prepareOutput())
+				{
+					$this->showQuestionsOverview();
+				}
 				break;
 
 			default:
@@ -137,6 +141,15 @@ class ilExtendedTestStatisticsPageGUI
 		$this->tpl->setDescription($this->testObj->getLongDescription());
 		$this->tpl->setTitleIcon(ilObject::_getIcon('', 'big', 'tst'), $lng->txt('obj_tst'));
 		$this->tpl->addCss($this->plugin->getStyleSheetLocation('exte_stat.css'));
+
+		if ($this->statObj->getSourceData()->getTestType() == ilExteEvalBase::TEST_TYPE_DYNAMIC)
+		{
+			ilUtil::sendFailure($this->plugin->txt('not_for_dynamic_test'));
+			$this->tpl->show();
+			return false;
+		}
+
+		return true;
 	}
 
 	/**

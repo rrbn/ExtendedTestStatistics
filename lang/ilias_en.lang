@@ -24,43 +24,55 @@ average_percentage#:#Percent
 average_percentage_description#:#Average percentage of points reached by the user who git this question assigned
 tst_median_title_long#:#Median Score
 tst_median_title_short#:#Median
-tst_median_description#:#Sort the list of reached points on this test and take the middle value if the total attemps are odd or the average between the two middle ones if the total attemps are even.
+tst_median_description#:#The median score sorts the list of reached points on this test and takes the middle value if the total attemps are odd or the average between the two middle ones if the total attemps are even. The median score is not sensitive for extreme values.
 tst_mean_title_long#:#Mean Score
 tst_mean_title_short#:#Mean
-tst_mean_description#:#Gets the mean score for all current scored attemp of this test
-tst_standarddeviation_title_long#:#Standard deviation
-tst_standarddeviation_title_short#:#Standard deviation
-tst_standarddeviation_description#:#The standard deviation will quantify the amount of variation or dispersion of a all the users scores. A low standard deviation indicates that the test results tend to be close to the mean (also called the expected value) of the set, while a high standard deviation indicates that the test results are spread out over a wider range of values.
+tst_mean_description#:#The mean score is calculated as the the sum of scores divided by the number pf participants. It is sensitive for extreme values.
+tst_standarddeviation_title_long#:#Standard Deviation
+tst_standarddeviation_title_short#:#Standard Deviation
+tst_standarddeviation_description#:#The standard deviation measures the amount of variation of scores reached for the test. A low standard deviation indicates that the scores tend to be close to the mean, while a high standard deviation indicates that the scores results are spread out over a wider range of values.
 tst_standarddeviation_only_one_participant#:#Standard deviation is trivial when the test is taken only by one participant
 tst_cic_title_long#:#Coefficient of Internal Consistency (Cronbach's alpha)
-tst_cic_title_short#:#CIC
-tst_cic_description#:#Internal consistency is usually measured with Cronbach's alpha, a statistic calculated from the pairwise correlations between items. Internal consistency ranges between negative infinity and one. Coefficient alpha will be negative whenever there is greater within-subject variability than between-subject variability. If > 0.8 If a good value.
+tst_cic_title_short#:#Cronbach's alpha
+tst_cic_description#:#Internal consistency is usually measured with Cronbach's alpha, a statistic calculated from the pairwise correlations between items. Internal consistency ranges between negative infinity and one. Cronbach's alpha will be negative whenever there is greater within-subject variability than between-subject variability. Values for a test should be greater than 0.7.
 tst_cic_sum_of_mean_is_zero#:#The sum of mean is zero
 qst_facility_title_long#:#Facility Index
 qst_facility_title_short#:#Facility Index
-qst_facility_description#:#The percentage of students that answered the question correctly
+qst_facility_description#:#The facility index is calculated as the relation of the distances between average and minimum and between maximum and minimum of the reached scores, expressed as a percentage. The higher the facility index, the easier the question is. The index should be in a range between 20% and 80%.
+qst_facility_min_ans_title#:#Minimum Answers
+qst_facility_min_ans_description#:#Minimum number of answers to calculate a facility index index for a question.
+qst_facility_min_medium_title#:#Minimum 'mediocre'
+qst_facility_min_medium_description#:#Minimum value rated as 'mediocre'. 0 to suppress the rating.
+qst_facility_min_good_title#:#Minimum 'good'
+qst_facility_min_good_description#:#Minimum value rated as 'good'. 0 to suppress the rating.
+qst_facility_max_good_title#:#Maximum 'good'
+qst_facility_max_good_description#:#Maximum value rated as 'good'. 0 to suppress the rating.
+qst_facility_max_medium_title#:#Maximum 'mediocre'
+qst_facility_max_medium_description#:#Maximum value rated as 'mediocre'. 0 to suppress the rating.
 qst_facility_all_scores_identical#:#All students reached the same score for this question
-qst_standarddeviation_title_long#:#Standard deviation
-qst_standarddeviation_title_short#:#Standard deviation
-qst_standarddeviation_description#:#How much variation there was in the scores for this question
-qst_discrimination_title_long#:#Discrimination index
-qst_discrimination_title_short#:#Discrimination index
-qst_discrimination_description#:#this is the correlation between the score for this question and the score for the whole quiz. That is, for a good question, you hope that the students who score highly on this question are the same students who score highly on the whole test. Higher numbers are better
+qst_standarddeviation_title_long#:#Standard Deviation
+qst_standarddeviation_title_short#:#Standard Deviation
+qst_standarddeviation_description#:#The standard deviation measures the amount of variation of scores reached for the question. A low standard deviation indicates that the scores tend to be close to the mean, while a high standard deviation indicates that the scores are spread out over a wider range of values.
+qst_discrimination_title_long#:#Discrimination Index
+qst_discrimination_title_short#:#Discrimination Index
+qst_discrimination_description#:#The discrimination index evaluates if the question separates 'good' from 'weak' participants. It calculates the relationship of the question result to the final test result. A discrimination index of 0,4 bis 0,7 is desirable. if the index is lower than zero than weak participants solve the question instead of good ones.
 qst_discrimination_zero_variance_of_question#:#The variance of points is 0 for this question
 qst_discrimination_zero_variance_of_other_question#:#The variance of points is 0 for the other questions
 qst_discrimination_min_qst_title#:#Minimum Questions
-qst_discrimination_min_qst_description#:#Minimum number of questions for a meaningful discrimination index
-qst_discrimination_min_medium_title#:#Minimum "mediocre"
+qst_discrimination_min_qst_description#:#Minimum number of questions in a test to calculate a discrimination index.
+qst_discrimination_min_ans_title#:#Minimum Answers
+qst_discrimination_min_ans_description#:#Minimum number of answers to calculate a discrimination index for a question.
+qst_discrimination_min_medium_title#:#Minimum 'mediocre'
 qst_discrimination_min_medium_description#:#Minimum value rated as 'mediocre'. 0 to suppress the rating.
-qst_discrimination_min_good_title#:#Minimum "good"
+qst_discrimination_min_good_title#:#Minimum 'good'
 qst_discrimination_min_good_description#:#Minimum value rated as 'good'. 0 to suppress the rating.
-show_test_evaluations#:#Show test evaluations
-show_question_evaluations#:#Show question evaluations
+show_test_evaluations#:#Show Test Evaluations
+show_question_evaluations#:#Show Question Evaluations
 evaluation_available_for_admins#:#Admins
 evaluation_available_for_users#:#Users
 evaluation_available_for_none#:#Not available
-test_evaluation_settings#:#Test evaluations settings
-question_evaluation_settings#:#Question evaluations settings
+test_evaluation_settings#:#Test Evaluations Settings
+question_evaluation_settings#:#Question Evaluations Settings
 test_settings_saved#:#Test settings saved
 question_settings_saved#:#Question settings saved
 statisticsexport_format#:#Teststatistics (Excel)
@@ -113,7 +125,7 @@ legend_alert_good#:#The value indicates a good quality
 legend_alert_medium#:#The value indicates a mediocre quality
 legend_alert_bad#:#he value indicates a bad quality
 legend_alert_unknown#:#The value is not defined or doesn't allow an interpretation
-legend_uncertain#:#A value in italics is uncertain due to a small or unfitting data set
+legend_uncertain#:#The value is uncertain due to its data base (see tooltip)
 legend_comment#:#This symbol indicates the presence of a comment (tooltip)
 evaluated_pass#:#Evaluation
 pass_scored#:#Scored Pass (Standard)

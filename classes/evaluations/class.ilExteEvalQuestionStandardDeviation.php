@@ -43,7 +43,7 @@ class ilExteEvalQuestionStandardDeviation extends ilExteEvalQuestion
 
 		//Prepare variables
 		$value = new ilExteStatValue;
-        $value->type = ilExteStatValue::TYPE_PERCENTAGE;
+        $value->type = ilExteStatValue::TYPE_NUMBER;
         $value->precision = 2;
         $value->value = null;
 
@@ -89,7 +89,7 @@ class ilExteEvalQuestionStandardDeviation extends ilExteEvalQuestion
             $variance = (1 / ($count - 1)) * $sum_power_diff;
 
             //Calculate Standard deviation
-			$standard_deviation = 100 * (sqrt($variance) / ($highest_score - $lowest_score));
+			$standard_deviation = (sqrt($variance) / ($highest_score - $lowest_score));
 		}
 
 		$value->value = $standard_deviation;

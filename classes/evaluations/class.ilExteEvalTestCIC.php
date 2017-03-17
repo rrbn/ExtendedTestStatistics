@@ -42,7 +42,7 @@ class ilExteEvalTestCIC extends ilExteEvalTest
 	public function calculateValue()
 	{
 		$cic = new ilExteStatValue;
-        $cic->type = ilExteStatValue::TYPE_PERCENTAGE;
+        $cic->type = ilExteStatValue::TYPE_NUMBER;
         $cic->precision = 2;
         $cic->value = null;
 
@@ -108,7 +108,7 @@ class ilExteEvalTestCIC extends ilExteEvalTest
 		$k2 = $number_of_users * $m2 / ($number_of_users - 1);
 
 		//GET VALUE
-		$cic->value = (100 * $number_of_questions / ($number_of_questions - 1)) * (1 - ($sumofmarkvariance / $k2));;
+		$cic->value = ($number_of_questions / ($number_of_questions - 1)) * (1 - ($sumofmarkvariance / $k2));;
 
 		return $cic;
 	}
