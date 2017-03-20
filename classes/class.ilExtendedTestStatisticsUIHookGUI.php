@@ -1,6 +1,6 @@
 <?php
+// Copyright (c) 2017 Institut fuer Lern-Innovation, Friedrich-Alexander-Universitaet Erlangen-Nuernberg, GPLv3, see LICENSE
 
-/* Copyright (c) 2016 Institut fuer Lern-Innovation, GPLv3, see docs/LICENSE */
 
 include_once("./Services/UIComponent/classes/class.ilUIHookPluginGUI.php");
 

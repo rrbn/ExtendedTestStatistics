@@ -1,9 +1,11 @@
 ILIAS Extended Test Statistics plugin
 =====================================
 
-Copyright (c) 2017 Institut fuer Lern-Innovation, Friedrich-Alexander-Universitaet Erlangen-Nuernberg, GPLv2, see LICENSE
+Copyright (c) 2017 Institut fuer Lern-Innovation, Friedrich-Alexander-Universitaet Erlangen-Nuernberg, GPLv3, see LICENSE
 
 - Authors:   Fred Neumann <fred.neumann@ili.fau.de>, Jesus Copado <jesus.copado@ili.fau.de>
+
+This plugin includes the PHPExcel library, see lib/PHPExcel/license.md
 
 
 Installation
@@ -24,7 +26,7 @@ Configuration
 5. Choose action "Configure" 
 6. Select which evaluations should be presented to all users with access to the test statistics,
    which should only be shown to platform admins and which should be hidden at all.
-7. 
+7. Set the calculation parameters and quality thresholds for single evaluations.
 
 Usage
 -----
@@ -44,8 +46,8 @@ Additional test evaluations:
 Additional question evaluations:
 * Discrimination index
 * Facility Index
-* List of chosen options for single and multiple choice
 * Standard deviation
+* List of chosen options for single and multiple choice
 
 The evaluation titles have tooltips with further explanations. Some values have read/yellow/green signs to indicate their quality. 
 Values displayed in italics are considered as 'uncertain' because they are calculated in a random test. Nevertheless they 
@@ -71,6 +73,10 @@ Known Issues
   page only for the questions that are shown. But the basic values from ILIAS are calculated for all, which takes time for large tests.
   In this case it's better to create an MS Excel export that is stored on the 'export' tab. 
 
+Extension
+---------
+You may extend the plugin with your own evaluations. See the following add-on as an example:
+https://github.com/ilifau/ExampleEvaluations
 
 Version History
 ===============
@@ -83,8 +89,3 @@ Version 1.0.0 (2017-03-20)
 - Configuration parameters for evaluations
 - Selection of evaluated pass (scored, last, best)
 - Added 'uncertain' status for calculations in random tests
-
-
-Version 0.9.0
--------------
-First beta version for community testing.
