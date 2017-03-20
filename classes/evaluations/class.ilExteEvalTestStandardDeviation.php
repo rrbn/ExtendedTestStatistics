@@ -34,14 +34,17 @@ class ilExteEvalTestStandardDeviation extends ilExteEvalTest
 	/**
 	 * Calculate and get the single value for a test
 	 * It sorts the list of currently results and returns the middle value
-	 * if the number of attemps are odd, or return the average between the
+	 * if the number of attempts are odd, or return the average between the
 	 * two middle values if the list number of attemps are even.
 	 *
 	 * @return ilExteStatValue
 	 */
 	public function calculateValue()
 	{
-		$standard_deviation = new ilExteStatValue;
+		$value = new ilExteStatValue;
+		$value->type = ilExteStatValue::TYPE_NUMBER;
+		$value->precision = 2;
+		$value->value = null;
 
 		//Needed values
 		$participants_data = $this->data->getAllParticipants();
@@ -49,30 +52,27 @@ class ilExteEvalTestStandardDeviation extends ilExteEvalTest
 		$mean = $basic_test_values['tst_eval_mean_of_reached_points'];
 
 		$value_data = array();
-		foreach($participants_data as $participant){
+		foreach($participants_data as $participant)
+		{
 			$value_data[$participant->active_id] = $participant->current_reached_points;
 		}
 
 		//If more than one participant, then calculate.
-		if (count($value_data) > 1) {
+		if (count($value_data) > 1)
+		{
 			//Fetch the sum of squared differences between total score and it's mean
 			$sum_sq_diff = $this->sumOfPowersOfDifferenceToMean($value_data, $mean->value, 2);
+
 			//Calculate Standard deviation
-			$std_deviation = sqrt($sum_sq_diff / (count($value_data) - 1));
-
-			$standard_deviation->type = ilExteStatValue::TYPE_NUMBER;
-			$standard_deviation->value = $std_deviation;
-			$standard_deviation->precision = 2;
-
-		} else {
-			$std_deviation = $this->txt("only_one_participant");
-
-			$standard_deviation->type = ilExteStatValue::TYPE_TEXT;
-			$standard_deviation->comment = $std_deviation;
-			$standard_deviation->alert = ilExteStatValue::ALERT_MEDIUM;
+			$value->value = sqrt($sum_sq_diff / (count($value_data) - 1));
+		} 
+		else 
+		{
+			$value->comment = $this->txt("only_one_participant");
+			$value->alert = ilExteStatValue::ALERT_MEDIUM;
 		}
 
-		return $standard_deviation;
+		return $value;
 	}
 
 

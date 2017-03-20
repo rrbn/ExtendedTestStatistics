@@ -18,7 +18,7 @@ assigned_count#:#Assigned
 assigned_count_description#:#Number of users who got this question assigned
 answers_count#:#Answered
 answers_count_description#:#Number of users who answered this question
-average_points#:#Points
+average_points#:#Ø Points
 average_points_description#:#Average points reached by the user who git this question assigned
 average_percentage#:#Percent
 average_percentage_description#:#Average percentage of points reached by the user who git this question assigned
@@ -31,7 +31,7 @@ tst_mean_description#:#The mean score is calculated as the the sum of scores div
 tst_standarddeviation_title_long#:#Standard Deviation
 tst_standarddeviation_title_short#:#Standard Deviation
 tst_standarddeviation_description#:#The standard deviation measures the amount of variation of scores reached for the test. A low standard deviation indicates that the scores tend to be close to the mean, while a high standard deviation indicates that the scores results are spread out over a wider range of values.
-tst_standarddeviation_only_one_participant#:#Standard deviation is trivial when the test is taken only by one participant
+tst_standarddeviation_only_one_participant#:#The standard deviation is trivial when the test is taken only by one participant.
 tst_cic_title_long#:#Coefficient of Internal Consistency (Cronbach's alpha)
 tst_cic_title_short#:#Cronbach's alpha
 tst_cic_description#:#Internal consistency is usually measured with Cronbach's alpha, a statistic calculated from the pairwise correlations between items. Internal consistency ranges between negative infinity and one. Cronbach's alpha will be negative whenever there is greater within-subject variability than between-subject variability. Values for a test should be greater than 0.7.

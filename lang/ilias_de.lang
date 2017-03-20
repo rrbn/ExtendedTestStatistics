@@ -18,7 +18,7 @@ assigned_count#:#Zugeteilt
 assigned_count_description#:#Anzahl Nutzer, die diese Frage zugeteilt bekamen
 answers_count#:#Beantwortet
 answers_count_description#:#Anzahl Nutzer, die diese Frage beantwortet haben
-average_points#:#Punkte
+average_points#:#Ø Punkte
 average_points_description#:#Mittlere erreichte Punktzahl aller Nutzer, die diese Frage zugeteilt bekamen
 average_percentage#:#Prozent
 average_percentage_description#:#Mittlere Prozent der maximalen Punkte, die von Nutzern erreicht wurden, welche diese Frage zugeteilt bekamen

@@ -447,8 +447,8 @@ class ilExteStatExport
 
 		$worksheet->setTitle($this->plugin->txt('questions_results'));
 		$worksheet->setComments($comments);
-		$this->adjustSizes($worksheet, range('A', 'C'));
 		$worksheet->freezePane('A2');
+		$this->adjustSizes($worksheet, range('A', 'C'));
 	}
 
 
@@ -508,6 +508,7 @@ class ilExteStatExport
 		}
 
 		$worksheet->setComments($comments);
+		$worksheet->freezePane('A2');
 		$this->adjustSizes($worksheet);
 	}
 
@@ -601,6 +602,7 @@ class ilExteStatExport
 		}
 
 		$worksheet->setComments($comments);
+		$worksheet->freezePane('A2');
 		$this->adjustSizes($worksheet);
 	}
 
