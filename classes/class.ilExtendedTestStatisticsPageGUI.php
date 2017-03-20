@@ -396,7 +396,7 @@ class ilExtendedTestStatisticsPageGUI
 		$this->ctrl->clearParameters($this);
 
 		// show the screen from which the export was started
-		switch ($_GET['level'])
+		switch ($_POST['level'])
 		{
 			case ilExtendedTestStatistics::LEVEL_QUESTION:
 				$this->ctrl->redirect($this, 'showQuestionsOverview');
@@ -440,7 +440,7 @@ class ilExtendedTestStatisticsPageGUI
 		$this->plugin->setUserPreference('evaluated_pass', ilUtil::secureString($_POST['evaluated_pass']));
 
 		// show the screen from which the export was started
-		switch ($_GET['level'])
+		switch ($_POST['level'])
 		{
 			case ilExtendedTestStatistics::LEVEL_QUESTION:
 				$this->ctrl->redirect($this, 'showQuestionsOverview');

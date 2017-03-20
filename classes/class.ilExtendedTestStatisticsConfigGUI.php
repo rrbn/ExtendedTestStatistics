@@ -87,7 +87,8 @@ class ilExtendedTestStatisticsConfigGUI extends ilPluginConfigGUI
 			$select_input = new ilSelectInputGUI($this->plugin->txt($prefix . "_title_long"), $class);
 			$select_input->setOptions($this->config->getAvailabilityOptions());
 			$select_input->setValue($availability);
-			$select_input->setInfo($this->plugin->txt($prefix . "_description").'<br /><em>'.$class.'</em>');
+			$select_input->setInfo($this->plugin->txt($prefix . "_description")
+				.'<br /><em>'.sprintf($this->plugin->txt('evaluation_info_id'), $class).'</em>');
 			$form->addItem($select_input);
 
 			foreach ($evaluation->getParams() as $name => $param)

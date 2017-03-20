@@ -30,6 +30,15 @@ class ilExteEvalTestCIC extends ilExteEvalTest
 	 */
 	protected $lang_prefix = 'tst_cic';
 
+	public function getAvailableParams()
+	{
+		return array(
+			ilExteStatParam::_create('min_qst', ilExteStatParam::TYPE_INT, 2),
+			ilExteStatParam::_create('min_part', ilExteStatParam::TYPE_INT, 2),
+			ilExteStatParam::_create('min_medium', ilExteStatParam::TYPE_FLOAT, 0.7),
+			ilExteStatParam::_create('min_good', ilExteStatParam::TYPE_FLOAT, 0.8),
+		);
+	}
 
 	/**
 	 * Calculate and get the single value for a test
@@ -41,21 +50,36 @@ class ilExteEvalTestCIC extends ilExteEvalTest
 	 */
 	public function calculateValue()
 	{
-		$cic = new ilExteStatValue;
-        $cic->type = ilExteStatValue::TYPE_NUMBER;
-        $cic->precision = 2;
-        $cic->value = null;
+		$value = new ilExteStatValue;
+        $value->type = ilExteStatValue::TYPE_NUMBER;
+        $value->precision = 2;
+        $value->value = null;
 
 		//Get the data we need.
 		$data = array();
 		$number_of_questions = count($this->data->getAllQuestions());
 		$number_of_users = count($this->data->getAllParticipants());
 
-        if ($number_of_users < 2)
+		// check minimum number of questions
+		if ($number_of_questions < $this->getParam('min_qst'))
+		{
+			$value->alert = ilExteStatValue::ALERT_UNKNOWN;
+			$value->comment = sprintf($this->txt('min_qst_alert'), $this->getParam('min_qst'));
+			return $value;
+		}
+
+		// check minimum number of users
+		if ($number_of_users < $this->getParam('min_part') && $this->getParam('min_part') > 2)
+		{
+			$value->alert = ilExteStatValue::ALERT_UNKNOWN;
+			$value->comment = sprintf($this->txt('min_part_alert'), $this->getParam('min_part'));
+			return $value;
+		}
+		elseif ($number_of_users < 2)
         {
-            $cic->alert = ilExteStatValue::ALERT_UNKNOWN;
-            $cic->comment = $this->plugin->txt('not_enough_test_results');
-            return $cic;
+            $value->alert = ilExteStatValue::ALERT_UNKNOWN;
+            $value->comment = sprintf($this->txt('min_part_alert'), 2);
+            return $value;
         }
 
 		//PART1
@@ -99,17 +123,48 @@ class ilExteEvalTestCIC extends ilExteEvalTest
 
         if ($sum_of_mean == 0)
         {
-            $cic->alert = ilExteStatValue::ALERT_UNKNOWN;
-            $cic->comment = $this->txt('sum_of_mean_is_zero');
-            return $cic;
+            $value->alert = ilExteStatValue::ALERT_UNKNOWN;
+            $value->comment = $this->txt('sum_of_mean_is_zero');
+            return $value;
         }
 
 		$m2 = $sum_of_mean / $number_of_users;
 		$k2 = $number_of_users * $m2 / ($number_of_users - 1);
 
 		//GET VALUE
-		$cic->value = ($number_of_questions / ($number_of_questions - 1)) * (1 - ($sumofmarkvariance / $k2));;
+		$value->value = ($number_of_questions / ($number_of_questions - 1)) * (1 - ($sumofmarkvariance / $k2));;
 
-		return $cic;
+
+
+		// Alert good quality
+		if ( $this->getParam('min_good') > 0)
+		{
+			if ($value->value >= $this->getParam('min_good'))
+			{
+				$value->alert = ilExteStatValue::ALERT_GOOD;
+				return $value;
+			}
+			else
+			{
+				$value->alert = ilExteStatValue::ALERT_BAD;
+			}
+		}
+
+		// Alert medium quality
+		if ( $this->getParam('min_medium') > 0)
+		{
+			if ($value->value >= $this->getParam('min_medium'))
+			{
+				$value->alert = ilExteStatValue::ALERT_MEDIUM;
+				return $value;
+			}
+			else
+			{
+				$value->alert = ilExteStatValue::ALERT_BAD;
+			}
+		}
+
+		// return value with 'bad' or no alert
+		return $value;
 	}
 }

@@ -35,12 +35,23 @@ tst_standarddeviation_only_one_participant#:#Standard deviation is trivial when 
 tst_cic_title_long#:#Coefficient of Internal Consistency (Cronbach's alpha)
 tst_cic_title_short#:#Cronbach's alpha
 tst_cic_description#:#Internal consistency is usually measured with Cronbach's alpha, a statistic calculated from the pairwise correlations between items. Internal consistency ranges between negative infinity and one. Cronbach's alpha will be negative whenever there is greater within-subject variability than between-subject variability. Values for a test should be greater than 0.7.
+tst_cic_min_qst_title#:#Minimum Questions
+tst_cic_min_qst_description#:#Minimum number of questions in a test to calculate the cronbach's alpha.
+tst_cic_min_qst_alert#:#The test must have minimum %s questions to calculate the cronbach's alpha.
+tst_cic_min_part_title#:#Minimum Participants
+tst_cic_min_part_description#:#Minimum participants of the test to to calculate the cronbach's alpha.
+tst_cic_min_part_alert#:#The test must have minimum %s participants to calculate the cronbach's alpha.
+tst_cic_min_medium_title#:#Minimum 'mediocre'
+tst_cic_min_medium_description#:#Minimum value rated as 'mediocre'. 0 to suppress the rating.
+tst_cic_min_good_title#:#Minimum 'good'
+tst_cic_min_good_description#:#Minimum value rated as 'good'. 0 to suppress the rating.
 tst_cic_sum_of_mean_is_zero#:#The sum of mean is zero
 qst_facility_title_long#:#Facility Index
 qst_facility_title_short#:#Facility Index
 qst_facility_description#:#The facility index is calculated as the relation of the distances between average and minimum and between maximum and minimum of the reached scores, expressed as a percentage. The higher the facility index, the easier the question is. The index should be in a range between 20% and 80%.
 qst_facility_min_ans_title#:#Minimum Answers
 qst_facility_min_ans_description#:#Minimum number of answers to calculate a facility index index for a question.
+qst_facility_min_ans_alert#:#The question must have minimum %s answers to calculate its facility index.
 qst_facility_min_medium_title#:#Minimum 'mediocre'
 qst_facility_min_medium_description#:#Minimum value rated as 'mediocre'. 0 to suppress the rating.
 qst_facility_min_good_title#:#Minimum 'good'
@@ -60,12 +71,15 @@ qst_discrimination_zero_variance_of_question#:#The variance of points is 0 for t
 qst_discrimination_zero_variance_of_other_question#:#The variance of points is 0 for the other questions
 qst_discrimination_min_qst_title#:#Minimum Questions
 qst_discrimination_min_qst_description#:#Minimum number of questions in a test to calculate a discrimination index.
+qst_discrimination_min_qst_alert#:#The test must have minimum %s questions to calculate the discrimination index of a question.
 qst_discrimination_min_ans_title#:#Minimum Answers
 qst_discrimination_min_ans_description#:#Minimum number of answers to calculate a discrimination index for a question.
+qst_discrimination_min_ans_alert#:#The question must have minimum %s answers to calculate its discrimination index.
 qst_discrimination_min_medium_title#:#Minimum 'mediocre'
 qst_discrimination_min_medium_description#:#Minimum value rated as 'mediocre'. 0 to suppress the rating.
 qst_discrimination_min_good_title#:#Minimum 'good'
 qst_discrimination_min_good_description#:#Minimum value rated as 'good'. 0 to suppress the rating.
+qst_discrimination_random_test#:#The calculation of a discrimination index in a random test is uncertain.
 show_test_evaluations#:#Show Test Evaluations
 show_question_evaluations#:#Show Question Evaluations
 evaluation_available_for_admins#:#Admins
@@ -131,3 +145,4 @@ evaluated_pass#:#Evaluation
 pass_scored#:#Scored Pass (Standard)
 pass_best#:#Best Pass
 pass_last#:#Last Pass
+evaluation_info_id#:#(ID: %s)

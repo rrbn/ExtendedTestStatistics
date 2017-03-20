@@ -210,20 +210,6 @@ class ilExteEvalQuestionDiscriminationIndex extends ilExteEvalQuestion
 
         $value->value = $discrimination_index;
 
-		// Alert quality
-		if ($discrimination_index < $this->getParam('min_medium'))
-		{
-			$value->alert = ilExteStatValue::ALERT_BAD;
-		}
-		elseif ($discrimination_index < $this->getParam('min_good'))
-		{
-			$value->alert = ilExteStatValue::ALERT_MEDIUM;
-		}
-		elseif ($this->getParam('min_good') >0)
-		{
-			$value->alert = ilExteStatValue::ALERT_GOOD;
-		}
-
 		// Note on random values
 		if ($this->data->getTestType() !== ilExteEvalBase::TEST_TYPE_FIXED)
 		{
@@ -231,6 +217,36 @@ class ilExteEvalQuestionDiscriminationIndex extends ilExteEvalQuestion
 			$value->comment = $this->txt('random_test');
 		}
 
+
+		// Alert good quality
+		if ( $this->getParam('min_good') > 0)
+		{
+			if ($value->value >= $this->getParam('min_good'))
+			{
+				$value->alert = ilExteStatValue::ALERT_GOOD;
+				return $value;
+			}
+			else
+			{
+				$value->alert = ilExteStatValue::ALERT_BAD;
+			}
+		}
+
+		// Alert medium quality
+		if ( $this->getParam('min_medium') > 0)
+		{
+			if ($value->value >= $this->getParam('min_medium'))
+			{
+				$value->alert = ilExteStatValue::ALERT_MEDIUM;
+				return $value;
+			}
+			else
+			{
+				$value->alert = ilExteStatValue::ALERT_BAD;
+			}
+		}
+
+		// return value with 'bad' or no alert
 		return $value;
 	}
 }

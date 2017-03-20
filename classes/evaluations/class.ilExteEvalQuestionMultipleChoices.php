@@ -61,6 +61,10 @@ class ilExteEvalQuestionMultipleChoices extends ilExteEvalQuestion
         require_once('Modules/TestQuestionPool/classes/class.assQuestion.php');
         /** @var assMultipleChoice $question */
         $question = assQuestion::_instantiateQuestion($a_question_id);
+		if (!is_object($question))
+		{
+			return new ilExteStatDetails();
+		}
 
         /** @var ASS_AnswerMultipleResponse[] $options */
         $options = $question->getAvailableAnswerOptions();
@@ -91,7 +95,7 @@ class ilExteEvalQuestionMultipleChoices extends ilExteEvalQuestion
 
             while ($data = $ilDB->fetchAssoc($result))
             {
-                if (!empty($data["value1"]) && isset($options[$data["value1"]]))
+                if (isset($data["value1"]) && isset($options[$data["value1"]]))
                 {
                     $option_count[$data["value1"]]++;
                 }
@@ -102,8 +106,8 @@ class ilExteEvalQuestionMultipleChoices extends ilExteEvalQuestion
         {
            $details->rows[] = array(
                 'index' => ilExteStatValue::_create($option->getOrder(), ilExteStatValue::TYPE_NUMBER, 0),
-			   'points' => ilExteStatValue::_create($option->getPoints(), ilExteStatValue::TYPE_NUMBER, 2),
-			   'count' => ilExteStatValue::_create($option_count[$key], ilExteStatValue::TYPE_NUMBER, 0),
+			    'points' => ilExteStatValue::_create($option->getPoints(), ilExteStatValue::TYPE_NUMBER, 2),
+			    'count' => ilExteStatValue::_create($option_count[$key], ilExteStatValue::TYPE_NUMBER, 0),
                 'choice' => ilExteStatValue::_create($option->getAnswertext(), ilExteStatValue::TYPE_TEXT, 0)
             );
         }

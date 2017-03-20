@@ -108,20 +108,35 @@ class ilExteEvalQuestionFacilityIndex extends ilExteEvalQuestion
             $value->value = $facility_index;
         }
 
-		// Alert quality
-		if ( $value->value < $this->getParam('min_medium') || ($value->value > $this->getParam('max_medium') && $this->getParam('max_medium') > 0))
+		// Alert good quality
+		if ( $this->getParam('min_good') > 0 && $this->getParam('max_good') > 0)
 		{
-			$value->alert = ilExteStatValue::ALERT_BAD;
-		}
-		elseif ( $value->value < $this->getParam('min_good') || ($value->value > $this->getParam('max_good') && $this->getParam('max_good') > 0))
-		{
-			$value->alert = ilExteStatValue::ALERT_MEDIUM;
-		}
-		elseif ($this->getParam('min_good') > 0 || $this->getParam('max_good') > 0)
-		{
-			$value->alert = ilExteStatValue::ALERT_GOOD;
+			if ($value->value >= $this->getParam('min_good') && $value->value <= $this->getParam('max_good'))
+			{
+				$value->alert = ilExteStatValue::ALERT_GOOD;
+				return $value;
+			}
+			else
+			{
+				$value->alert = ilExteStatValue::ALERT_BAD;
+			}
 		}
 
+		// Alert medium quality
+		if ( $this->getParam('min_medium') > 0 && $this->getParam('max_medium') > 0)
+		{
+			if ($value->value >= $this->getParam('min_medium') && $value->value <= $this->getParam('max_medium'))
+			{
+				$value->alert = ilExteStatValue::ALERT_MEDIUM;
+				return $value;
+			}
+			else
+			{
+				$value->alert = ilExteStatValue::ALERT_BAD;
+			}
+		}
+
+		// return value with 'bad' or no alert
 		return $value;
 	}
 
