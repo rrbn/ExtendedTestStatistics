@@ -29,7 +29,7 @@ tst_mean_title_short#:#Mittelwert
 tst_mean_description#:#Der Mittelwert errechnet sich durch die Summe der erreichten Punkte, dividiert duch die Anzahl der Teilnehmer. Er ist empfindlich gegenüber Extremwerten.
 tst_standarddeviation_title_long#:#Standardabweichung der erreichten Punkte im Test
 tst_standarddeviation_title_short#:#Standardabweichung
-tst_standarddeviation_description#:#Die Standardabweichung misst die durchschnittliche Entfernung aller erreichten Punkte vom Mittelwert der erreichten Punkte.
+tst_standarddeviation_description#:#Die Standardabweichung misst die durchschnittliche Entfernung aller erreichten Punkte vom Mittelwert der erreichten Punkte. Sie wird mit Bessel-Korrektur berechnet, d.h. es wird durch die Anzahl der Teilnehmer minus 1 geteilt.
 tst_standarddeviation_only_one_participant#:#Die Standardabweichung ist trivial, wenn der Test nur von einem Teilnehmer durchgeführt wurde.
 tst_cic_title_long#:#Koeffizient interner Konsistenz (Cronbach's alpha)
 tst_cic_title_short#:#Chronbach’s alpha
@@ -62,7 +62,7 @@ qst_facility_max_medium_title#:#Maximalwert "mäßig"
 qst_facility_max_medium_description#:#Maximalwert, der als "mäßig" bewertet wird. 0, falls keine Bewertung erwünscht ist.
 qst_standarddeviation_title_long#:#Standardabweichung der erreichten Punkte für die Frage
 qst_standarddeviation_title_short#:#Standardabweichung
-qst_standarddeviation_description#:#Die Standardabweichung misst die durchschnittliche Entfernung aller erreichten Punkte dieser Frage vom Mittelwert der erreichten Punkte.
+qst_standarddeviation_description#:#Die Standardabweichung misst die durchschnittliche Entfernung aller erreichten Punkte dieser Frage vom Mittelwert der erreichten Punkte. Sie wird mit Bessel-Korrektur berechnet, d.h. es wird durch die Anzahl der Antworten minus 1 geteilt.
 qst_discrimination_title_short#:#Trennschärfe
 qst_discrimination_title_long#:#Trennschärfe der Frage im Test
 qst_discrimination_description#:#Über die Trennschärfe lässt sich ermitteln, wie gut eine Frage zwischen "guten" und "schlechten" Teilnehmern unterscheidet. Sie erfasst den Zusammenhang der einzelnen Testwerte mit dem endgültigen Testwert. Angestrebt werden Trennschärfen von  0,4 bis 0,7. Bei einer Trennschärfe < 0 wird die Frage von „schlechten“ Testpersonen gelöst und von „guten“ Testpersonen nicht.

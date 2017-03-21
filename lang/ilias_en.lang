@@ -29,8 +29,8 @@ tst_mean_title_short#:#Mean
 tst_mean_description#:#The mean score is calculated as the the sum of scores divided by the number pf participants. It is sensitive for extreme values.
 tst_standarddeviation_title_long#:#Standard Deviation
 tst_standarddeviation_title_short#:#Standard Deviation
-tst_standarddeviation_description#:#The standard deviation measures the amount of variation of scores reached for the test. A low standard deviation indicates that the scores tend to be close to the mean, while a high standard deviation indicates that the scores results are spread out over a wider range of values.
-tst_standarddeviation_only_one_participant#:#The standard deviation is trivial when the test is taken only by one participant.
+tst_standarddeviation_description#:#The standard deviation measures the amount of variation of scores reached for the test. A low standard deviation indicates that the scores tend to be close to the mean, while a high standard deviation indicates that the scores results are spread out over a wider range of values. It is calculated with Bessel's correction, i.e. the denominator uses the number of paricipants minus one.
+tst_standarddeviation_only_one_participant#:#The standard deviation is trivial when the test is taken only by one participant
 tst_cic_title_long#:#Coefficient of Internal Consistency (Cronbach's alpha)
 tst_cic_title_short#:#Cronbach's alpha
 tst_cic_description#:#Internal consistency is usually measured with Cronbach's alpha, a statistic calculated from the pairwise correlations between items. Internal consistency ranges between negative infinity and one. Cronbach's alpha will be negative whenever there is greater within-subject variability than between-subject variability. Values for a test should be greater than 0.7.
@@ -62,7 +62,7 @@ qst_facility_max_medium_description#:#Maximum value rated as 'mediocre'. 0 to su
 qst_facility_all_scores_identical#:#All students reached the same score for this question
 qst_standarddeviation_title_long#:#Standard Deviation
 qst_standarddeviation_title_short#:#Standard Deviation
-qst_standarddeviation_description#:#The standard deviation measures the amount of variation of scores reached for the question. A low standard deviation indicates that the scores tend to be close to the mean, while a high standard deviation indicates that the scores are spread out over a wider range of values.
+qst_standarddeviation_description#:#The standard deviation measures the amount of variation of scores reached for the question. A low standard deviation indicates that the scores tend to be close to the mean, while a high standard deviation indicates that the scores are spread out over a wider range of values. It is calculated with Bessel's correction, i.e. the denominator uses the number of answers minus one.
 qst_discrimination_title_long#:#Discrimination Index
 qst_discrimination_title_short#:#Discrimination Index
 qst_discrimination_description#:#The discrimination index evaluates if the question separates 'good' from 'weak' participants. It calculates the relationship of the question result to the final test result. A discrimination index of 0,4 bis 0,7 is desirable. if the index is lower than zero than weak participants solve the question instead of good ones.
