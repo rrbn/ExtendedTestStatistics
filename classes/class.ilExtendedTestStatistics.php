@@ -148,6 +148,7 @@ class ilExtendedTestStatistics
 	{
 		$isAdmin = $this->isAdmin();
 
+		$this->evaluations = array();
 		foreach ($this->config->getEvaluationClasses() as $class => $availability)
 		{
 			// check configured availability
