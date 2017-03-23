@@ -4,8 +4,10 @@ ILIAS Extended Test Statistics plugin
 Copyright (c) 2017 Institut fuer Lern-Innovation, Friedrich-Alexander-Universitaet Erlangen-Nuernberg, GPLv3, see LICENSE
 
 - Authors:   Fred Neumann <fred.neumann@ili.fau.de>, Jesus Copado <jesus.copado@ili.fau.de>
+- Forum: http://www.ilias.de/docu/goto_docu_frm_3474_4315.html
+- Bug Reports: http://www.ilias.de/mantis (Choose project "ILIAS plugins" and filter by category "ExtendedTestStatistics")
 
-This plugin includes the PHPExcel library, see lib/PHPExcel/license.md
+This plugin includes the PHPExcel library, see lib/PHPExcel-1.8/license.md
 
 
 Installation
