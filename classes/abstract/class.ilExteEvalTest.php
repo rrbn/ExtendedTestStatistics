@@ -56,7 +56,8 @@ abstract class ilExteEvalTest extends ilExteEvalBase
 		if (!$this->isTestTypeAllowed())
 		{
 			$message = $this->getMessageNotAvailableForTestType();
-			return (new ilExteStatDetails)->setEmptyMessage($message);
+			$details = new ilExteStatDetails;
+			return $details->setEmptyMessage($message);
 		}
 		else
 		{

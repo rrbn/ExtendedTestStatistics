@@ -71,12 +71,14 @@ abstract class ilExteEvalQuestion extends ilExteEvalBase
 		if (!$this->isTestTypeAllowed())
 		{
 			$message = $this->getMessageNotAvailableForTestType();
-			return (new ilExteStatDetails)->setEmptyMessage($message);
+			$details = new ilExteStatDetails;
+			return $details->setEmptyMessage($message);
 		}
 		elseif (!$this->isQuestionTypeAllowed($this->data->getQuestion($a_question_id)->question_type))
 		{
 			$message = $this->getMessageNotAvailableForQuestionType();
-			return (new ilExteStatDetails)->setEmptyMessage($message);
+			$details = new ilExteStatDetails;
+			return $details->setEmptyMessage($message);
 		}
 		else
 		{
