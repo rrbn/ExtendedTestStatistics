@@ -53,10 +53,13 @@ abstract class ilExteEvalQuestion extends ilExteEvalBase
 			$message = $this->getMessageNotAvailableForQuestionType();
 			return ilExteStatValue::_create(null, ilExteStatValue::TYPE_TEXT, 0, $message, ilExteStatValue::ALERT_UNKNOWN);
 		}
-		else
-		{
-			return $this->calculateValue($a_question_id);
-		}
+        elseif (!isset($this->cachedValue))
+        {
+            $this->cachedValue = $this->calculateValue($a_question_id);
+        }
+
+        return $this->cachedValue;
+
 	}
 
 	/**
@@ -80,9 +83,22 @@ abstract class ilExteEvalQuestion extends ilExteEvalBase
 			$details = new ilExteStatDetails;
 			return $details->setEmptyMessage($message);
 		}
-		else
-		{
-			return $this->calculateDetails($a_question_id);
-		}
+        elseif (!isset($this->cachedDetails))
+        {
+            $this->cachedDetails = $this->calculateDetails($a_question_id);
+        }
+
+        return $this->cachedDetails;
 	}
+
+    /**
+     * Get the chart created by this evaluation
+     *
+     * @param integer $a_question_id
+     * @return ilChart
+     */
+    final public function getChart($a_question_id)
+    {
+        return $this->generateChart($this->calculateDetails($a_question_id));
+    }
 }

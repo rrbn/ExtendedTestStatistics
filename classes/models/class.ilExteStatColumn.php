@@ -45,6 +45,13 @@ class ilExteStatColumn
 
 
     /**
+     * The columns should be used as chart data
+     * @var bool
+     */
+    public $isChartData = false;
+
+
+    /**
      * Create a value by parameters
      *
      * @param string $a_name
@@ -53,13 +60,14 @@ class ilExteStatColumn
      * @param string $a_comment
      * @return ilExteStatColumn
      */
-    public static function _create($a_name, $a_title = '', $a_sort = self::SORT_NONE, $a_comment = '')
+    public static function _create($a_name, $a_title = '', $a_sort = self::SORT_NONE, $a_comment = '', $a_is_chart_data = false)
     {
         $column = new self;
         $column->name = $a_name;
         $column->title = $a_title ? $a_title : $a_name;
         $column->sort = $a_sort;
         $column->comment = $a_comment;
+        $column->isChartData = $a_is_chart_data;
 
         return $column;
     }

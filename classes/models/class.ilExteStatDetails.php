@@ -6,6 +6,10 @@
  */
 class ilExteStatDetails
 {
+    const CHART_BARS = 'bars';
+    const CHART_PIE = 'pie';
+    const CHART_SPIDER = 'spider';
+
 	/**
 	 * Individual message for empty details
 	 * @var string
@@ -24,6 +28,18 @@ class ilExteStatDetails
      */
 	public $rows = array();
 
+
+    /**
+     * Type of the chart to be generated
+     * @var null
+     */
+	public $chartType = null;
+
+    /**
+     * Index of the column to define the X axis
+     * @var int
+     */
+    public $chartXColumn = 0;
 
 	/**
 	 * Get the message for empty details

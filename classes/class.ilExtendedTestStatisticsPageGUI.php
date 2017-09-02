@@ -180,6 +180,12 @@ class ilExtendedTestStatisticsPageGUI
 
         $evaluation = $this->statObj->getEvaluation($_GET['details']);
 
+        if ($evaluation->providesChart())
+        {
+            $chart = $evaluation->getChart();
+            $chartHTML = $chart->getHTML();
+        }
+
 		/** @var  ilExteStatDetailsTableGUI $tableGUI */
 		$this->plugin->includeClass('tables/class.ilExteStatTableGUI.php');
 		$tableGUI = ilExteStatTableGUI::_create('ilExteStatDetailsTableGUI', $this, 'showTestDetails');
@@ -188,7 +194,7 @@ class ilExtendedTestStatisticsPageGUI
 		$tableGUI->setDescription($evaluation->getDescription());
 
 		$legendGUI = ilExteStatTableGUI::_create('ilExteStatLegendTableGUI', $this, 'showTestDetails');
-		$this->tpl->setContent($tableGUI->getHTML() . $legendGUI->getHTML());
+		$this->tpl->setContent($chartHTML. $tableGUI->getHTML() . $legendGUI->getHTML());
 		$this->tpl->show();
     }
 
@@ -233,7 +239,14 @@ class ilExtendedTestStatisticsPageGUI
 
         $evaluation = $this->statObj->getEvaluation($_GET['details']);
 
-		/** @var  ilExteStatDetailsTableGUI $tableGUI */
+        if ($evaluation->providesChart())
+        {
+            $chart = $evaluation->getChart($_GET['qid']);
+            $chartHTML = $chart->getHTML();
+        }
+
+
+        /** @var  ilExteStatDetailsTableGUI $tableGUI */
 		$this->plugin->includeClass('tables/class.ilExteStatTableGUI.php');
 		$tableGUI = ilExteStatTableGUI::_create('ilExteStatDetailsTableGUI', $this, 'showQuestionDetails');
 		$tableGUI->prepareData($evaluation->getDetails($_GET['qid']));
@@ -241,7 +254,7 @@ class ilExtendedTestStatisticsPageGUI
 		$tableGUI->setDescription($evaluation->getTitle());
 
 		$legendGUI = ilExteStatTableGUI::_create('ilExteStatLegendTableGUI', $this, 'showQuestionDetails');
-        $this->tpl->setContent($tableGUI->getHTML() . $legendGUI->getHTML());
+        $this->tpl->setContent($chartHTML . $tableGUI->getHTML() . $legendGUI->getHTML());
         $this->tpl->show();
     }
 

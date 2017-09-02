@@ -39,10 +39,12 @@ abstract class ilExteEvalTest extends ilExteEvalBase
 			$message = $this->getMessageNotAvailableForTestType();
 			return ilExteStatValue::_create(null, ilExteStatValue::TYPE_TEXT, 0, $message, ilExteStatValue::ALERT_UNKNOWN);
 		}
-		else
-		{
-			return $this->calculateValue();
-		}
+		elseif (!isset($this->cachedValue))
+        {
+            $this->cachedValue = $this->calculateValue();
+        }
+
+        return $this->cachedValue;
 	}
 
 	/**
@@ -59,9 +61,20 @@ abstract class ilExteEvalTest extends ilExteEvalBase
 			$details = new ilExteStatDetails;
 			return $details->setEmptyMessage($message);
 		}
-		else
+		elseif (!isset($this->cachedDetails))
 		{
-			return $this->calculateDetails();
+		    $this->cachedDetails = $this->calculateDetails();
 		}
-	}
+
+        return $this->cachedDetails;
+    }
+
+    /**
+     * Get the chart created by this evaluation
+     * @return ilChart
+     */
+	final public function getChart()
+    {
+        return $this->generateChart($this->getDetails());
+    }
 }

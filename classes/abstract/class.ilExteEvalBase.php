@@ -27,6 +27,11 @@ abstract class ilExteEvalBase
 	 */
 	protected $provides_details = false;
 
+    /**
+     * @var bool    evaluation provides a chart
+     */
+	protected $provides_chart = false;
+
 	/**
 	 * @var array 	list of allowed test types, e.g. array(self::TEST_TYPE_FIXED)
 	 */
@@ -58,6 +63,15 @@ abstract class ilExteEvalBase
 	 */
 	protected $params = array();
 
+    /**
+     * @var ilExteStatValue
+     */
+    protected $cachedValue = null;
+
+    /**
+     * @var ilExteStatDetails
+     */
+    protected $cachedDetails = null;
 
 	/**
 	 * ilExtendedTestStatisticsEvalBase constructor.
@@ -218,6 +232,14 @@ abstract class ilExteEvalBase
 		return $this->provides_details;
 	}
 
+    /**
+     * @return bool evaluation provides a chart
+     */
+	public function providesChart()
+    {
+        return $this->provides_chart;
+    }
+
 	/**
 	 * Get a localized text
 	 * The language variable will be prefixed by self::_getLangPrefix()
@@ -261,5 +283,53 @@ abstract class ilExteEvalBase
 	{
 		return $this->plugin->txt('not_for_question_type');
 	}
+
+    /**
+     * Generate a chart
+     * @param ilExteStatDetails $a_details
+     * @return ilChart
+     */
+	protected function generateChart($a_details)
+    {
+        include_once "Services/Chart/classes/class.ilChart.php";
+
+        $id = rand(100000,999999);
+        $datatype = null;
+        switch ($a_details->chartType)
+        {
+            case ilExteStatDetails::CHART_PIE:
+                $chart = ilChart::getInstanceByType(ilChart::TYPE_PIE, $id);
+                break;
+            case ilExteStatDetails::CHART_SPIDER:
+                $chart = ilChart::getInstanceByType(ilChart::TYPE_SPIDER, $id);
+                break;
+            case ilExteStatDetails::CHART_BARS:
+            default:
+                $chart = ilChart::getInstanceByType(ilChart::TYPE_GRID, $id);
+                $datatype = ilChartGrid::DATA_BARS;
+        }
+
+        foreach ($a_details->columns as $column)
+        {
+            if ($column->isChartData)
+            {
+                $data = $chart->getDataInstance($datatype);
+                $data->setLabel($column->title);
+                foreach ($a_details->rows as $rownum => $row)
+                {
+                    /** @var ilExteStatValue $value */
+                    foreach ($row as $colname => $value)
+                    {
+                        if ($colname == $column->name)
+                        {
+                            $data->addPoint($rownum, $value->value);
+                        }
+                    }
+                }
+            }
+        }
+
+        return $chart;
+    }
 
 }
