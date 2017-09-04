@@ -6,7 +6,6 @@
  */
 abstract class ilExteEvalQuestion extends ilExteEvalBase
 {
-
 	/**
 	 * Calculate the single value for a question (to be overwritten)
 	 *
@@ -53,13 +52,18 @@ abstract class ilExteEvalQuestion extends ilExteEvalBase
 			$message = $this->getMessageNotAvailableForQuestionType();
 			return ilExteStatValue::_create(null, ilExteStatValue::TYPE_TEXT, 0, $message, ilExteStatValue::ALERT_UNKNOWN);
 		}
-        elseif (!isset($this->cachedValue))
-        {
-            $this->cachedValue = $this->calculateValue($a_question_id);
-        }
 
-        return $this->cachedValue;
-
+		$value = $this->cache->read(get_called_class(), 'value'. $a_question_id);
+		if (!isset($value))
+		{
+			$value = $this->calculateValue($a_question_id);
+			$this->cache->write(get_called_class(), 'value'. $a_question_id, serialize($value));
+		}
+		else
+		{
+			$value = unserialize($value);
+		}
+        return $value;
 	}
 
 	/**
@@ -83,12 +87,18 @@ abstract class ilExteEvalQuestion extends ilExteEvalBase
 			$details = new ilExteStatDetails;
 			return $details->setEmptyMessage($message);
 		}
-        elseif (!isset($this->cachedDetails))
-        {
-            $this->cachedDetails = $this->calculateDetails($a_question_id);
-        }
 
-        return $this->cachedDetails;
+		$details = $this->cache->read(get_called_class(), 'details'. $a_question_id);
+		if (!isset($details))
+		{
+			$details = $this->calculateDetails($a_question_id);
+			$this->cache->write(get_called_class(), 'details'. $a_question_id, serialize($details));
+		}
+		else
+		{
+			$details = unserialize($details);
+		}
+		return $details;
 	}
 
     /**

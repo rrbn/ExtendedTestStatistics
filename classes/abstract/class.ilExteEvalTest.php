@@ -39,12 +39,19 @@ abstract class ilExteEvalTest extends ilExteEvalBase
 			$message = $this->getMessageNotAvailableForTestType();
 			return ilExteStatValue::_create(null, ilExteStatValue::TYPE_TEXT, 0, $message, ilExteStatValue::ALERT_UNKNOWN);
 		}
-		elseif (!isset($this->cachedValue))
-        {
-            $this->cachedValue = $this->calculateValue();
-        }
 
-        return $this->cachedValue;
+		$value = $this->cache->read(get_called_class(), 'value');
+		if (!isset($value))
+		{
+			$value = $this->calculateValue();
+			$this->cache->write(get_called_class(), 'value', serialize($value));
+		}
+		else
+		{
+			$value = unserialize($value);
+		}
+		return $value;
+
 	}
 
 	/**
@@ -61,12 +68,18 @@ abstract class ilExteEvalTest extends ilExteEvalBase
 			$details = new ilExteStatDetails;
 			return $details->setEmptyMessage($message);
 		}
-		elseif (!isset($this->cachedDetails))
-		{
-		    $this->cachedDetails = $this->calculateDetails();
-		}
 
-        return $this->cachedDetails;
+		$details = $this->cache->read(get_called_class(), 'details');
+		if (!isset($details))
+		{
+			$details = $this->calculateDetails();
+			$this->cache->write(get_called_class(), 'details', serialize($details));
+		}
+		else
+		{
+			$details = unserialize($details);
+		}
+		return $details;
     }
 
     /**

@@ -64,3 +64,45 @@ if (!$ilDB->tableExists('etstat_params'))
     $ilDB->addPrimaryKey("etstat_params", array("evaluation_name", "parameter_name"));
 }
 ?>
+<#4>
+<?php
+    if (!$ilDB->tableExists('etstat_cache'))
+    {
+        $fields = array(
+            'test_id' => array(
+                'type' => 'integer',
+                'length' => 4,
+                'notnull' => true,
+            ),
+            'pass_selection' => array(
+				'type' => 'text',
+				'length' => 10,
+				'notnull' => true,
+            ),
+			'consumer_class' => array(
+				'type' => 'text',
+				'length' => 50,
+				'notnull' => true,
+			),
+			'content_key' => array(
+				'type' => 'text',
+				'length' => 50,
+				'notnull' => false,
+                'default' => null
+			),
+            'content' => array(
+                'type' => 'clob',
+                'notnull' => false,
+                'default' => null
+            ),
+            'tstamp' => array(
+                'type' => 'integer',
+                'length' => 4,
+                'notnull' => true,
+	        ),
+        );
+        $ilDB->createTable("etstat_cache", $fields);
+        $ilDB->addPrimaryKey("etstat_cache", array("test_id", "pass_selection", 'consumer_class', 'content_key'));
+		$ilDB->addIndex('etstat_cache', array('tstamp'), 'i1');
+    }
+?>

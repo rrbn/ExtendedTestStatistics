@@ -54,6 +54,11 @@ abstract class ilExteEvalBase
 	protected $plugin;
 
 	/**
+	 * @var ilExtendedTestStatisticsCache	cache object
+	 */
+	protected $cache;
+
+	/**
 	 * @var ilExteStatSourceData        	source data for the calculations
 	 */
 	protected $data;
@@ -63,29 +68,27 @@ abstract class ilExteEvalBase
 	 */
 	protected $params = array();
 
-    /**
-     * @var ilExteStatValue
-     */
-    protected $cachedValue = null;
 
-    /**
-     * @var ilExteStatDetails
-     */
-    protected $cachedDetails = null;
 
 	/**
-	 * ilExtendedTestStatisticsEvalBase constructor.
+	 * Constructor
 	 * @param ilExtendedTestStatisticsPlugin $a_plugin
+	 * @param ilExtendedTestStatisticsCache	$a_cache
 	 */
-	public function __construct($a_plugin)
+	public function __construct($a_plugin, $a_cache)
 	{
 		$this->plugin = $a_plugin;
+		$this->cache = $a_cache;
+
 		$this->plugin->includeClass('models/class.ilExteStatParam.php');
 		$this->plugin->includeClass('models/class.ilExteStatValue.php');
 		$this->plugin->includeClass('models/class.ilExteStatColumn.php');
 		$this->plugin->includeClass('models/class.ilExteStatDetails.php');
 
 		$this->initParams();
+
+		// preload all values of the initialized evaluations
+		$this->cache->preload(get_called_class(), 'value');
 	}
 
 	protected function initParams()

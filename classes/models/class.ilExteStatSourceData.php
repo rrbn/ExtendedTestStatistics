@@ -21,6 +21,11 @@ class ilExteStatSourceData
 	protected $object;
 
 	/**
+	 * @var ilExtendedTestStatisticsCache $cache
+	 */
+	protected $cache;
+
+	/**
 	 * @var ilTestEvaluationData
 	 */
 	protected $eval;
@@ -76,11 +81,13 @@ class ilExteStatSourceData
 	 * ilExteStatSourceData constructor.
 	 * @param ilObjTest $a_test_obj
 	 * @param ilExtendedTestStatisticsPlugin $a_plugin
+	 * @param ilExtendedTestStatisticsCache $a_cache
 	 */
-	public function __construct($a_test_obj, $a_plugin)
+	public function __construct($a_test_obj, $a_plugin, $a_cache)
 	{
 		$this->object = $a_test_obj;
 		$this->plugin = $a_plugin;
+		$this->cache = $a_cache;
 
 		$this->plugin->includeClass('models/class.ilExteStatSourceParticipant.php');
 		$this->plugin->includeClass('models/class.ilExteStatSourceQuestion.php');
@@ -140,8 +147,9 @@ class ilExteStatSourceData
 		return $this->pass_selection;
 	}
 
+
 	/**
-	 * Load the source data from the test
+	 * Load the source data
 	 *
 	 * @param    string    $a_pass_selection	pass selection, e.g. self::PASS_SCORED
 	 * @see ilObjTest::getUnfilteredEvaluationData()
@@ -149,12 +157,95 @@ class ilExteStatSourceData
 	public function load($a_pass_selection = self::PASS_SCORED)
 	{
 		$this->pass_selection = $a_pass_selection;
+		$this->cache->setPassSelection($a_pass_selection);
+
+		if (!$this->readFromCache())
+		{
+			$this->readFromTest();
+			$this->writeToCache();
+		}
+	}
+
+	/**
+	 * Reset all source data
+	 */
+	protected function reset()
+	{
+		$this->question_types = array();
+		$this->questions = array();
+		$this->answers = array();
+		$this->participants = array();
+		$this->answers_by_question_id = array();
+		$this->answers_by_active_id = array();
+		$this->basic_test_values = array();
+		$this->basic_question_values = array();
+	}
+
+	/**
+	 * Read the data from the cache
+	 * @return bool	cache could be read
+	 */
+	protected function readFromCache()
+	{
+		$this->reset();
+		try
+		{
+			$this->question_types = unserialize($this->cache->read(__CLASS__, 'question_types'));
+			$this->questions = unserialize($this->cache->read(__CLASS__, 'questions'));
+			$this->participants = unserialize($this->cache->read(__CLASS__, 'participants'));
+			$this->answers = unserialize($this->cache->read(__CLASS__, 'answers'));
+			$this->basic_test_values = unserialize($this->cache->read(__CLASS__, 'basic_test_values'));
+			$this->basic_question_values = unserialize($this->cache->read(__CLASS__, 'basic_question_values'));
+		}
+		catch (Exception $e)
+		{
+			$this->reset();
+			return false;
+		}
+
+		if ($this->question_types === false || $this->questions === false || $this->participants === false || $this->answers === false)
+		{
+			$this->reset();
+			return false;
+		}
+
+		foreach ($this->answers as $answer)
+		{
+			$this->answers_by_question_id[$answer->question_id][$answer->active_id][$answer->pass] = $answer;
+			$this->answers_by_active_id[$answer->active_id][$answer->pass][$answer->question_id] = $answer;
+		}
+
+		return false;
+	}
+
+
+	/**
+	 * Write the data to the cache
+	 */
+	protected function writeToCache()
+	{
+		$this->cache->write(__CLASS__, 'question_types', serialize($this->question_types));
+		$this->cache->write(__CLASS__, 'questions', serialize($this->questions));
+		$this->cache->write(__CLASS__, 'participants', serialize($this->participants));
+		$this->cache->write(__CLASS__, 'answers', serialize($this->answers));
+		$this->cache->write(__CLASS__, 'basic_test_values', serialize($this->basic_test_values));
+		$this->cache->write(__CLASS__, 'basic_question_values', serialize($this->basic_question_values));
+	}
+
+
+	/**
+	 * Read the source data from the test
+	 *
+	 * @see ilObjTest::getUnfilteredEvaluationData()
+	 */
+	protected function readFromTest()
+	{
 		$this->eval = $this->object->getUnfilteredEvaluationData();
 
 		// get the order and obligatory data of questions in a fixed test
 		if ($this->object->isFixedTest())
 		{
-			$this->loadFixedTestQuestionData();
+			$this->readFixedTestQuestionData();
 		}
 
 		// get the question titles
@@ -225,15 +316,15 @@ class ilExteStatSourceData
 			}
 		}
 
-		$this->loadQuestionTypes();
+		$this->readQuestionTypes();
 		$this->calculateBasicTestValues();
 		$this->calculateBasicQuestionValues();
 	}
 
 	/**
-	 * Load the types of the relevant questions
+	 * Read the types of the relevant questions
 	 */
-	protected function loadQuestionTypes()
+	protected function readQuestionTypes()
 	{
 		global $ilDB;
 
@@ -260,9 +351,9 @@ class ilExteStatSourceData
 	}
 
 	/**
-	 * Load the ordering data of questions in a fixed test
+	 * Read the ordering data of questions in a fixed test
 	 */
-	protected function loadFixedTestQuestionData()
+	protected function readFixedTestQuestionData()
 	{
 		global $ilDB;
 

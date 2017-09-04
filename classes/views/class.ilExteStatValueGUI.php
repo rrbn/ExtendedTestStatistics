@@ -248,7 +248,11 @@ class ilExteStatValueGUI
 
 		$text = preg_replace('/<span class="latex">(.*)<\/span>/','[tex]$1[/tex]', $text);
 		$text = ilUtil::secureString($text, false);
-		$text = ilUtil::insertLatexImages($text);
+
+		if (strpos($text,'[tex]') !== false)
+		{
+			$text = ilUtil::insertLatexImages($text);
+		}
 
 		return $text;
 	}

@@ -17,6 +17,16 @@ class ilExtendedTestStatisticsPlugin extends ilUserInterfaceHookPlugin
 	 */
 	protected $config;
 
+	/**
+	 * After update processing
+	 */
+	protected function afterUpdate()
+	{
+		parent::afterUpdate();
+		$this->includeClass("class.ilExtendedTestStatisticsCache.php");
+		ilExtendedTestStatisticsCache::flushAll();
+	}
+
 
 
 	public function getPluginName()

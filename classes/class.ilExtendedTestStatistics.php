@@ -22,7 +22,7 @@ class ilExtendedTestStatistics
 	protected $plugin;
 
 	/**
-	 * @var	ilExtendedTestStatisticsConfig;
+	 * @var	ilExtendedTestStatisticsConfig
 	 */
 	protected $config;
 
@@ -37,10 +37,20 @@ class ilExtendedTestStatistics
 	protected $data;
 
 	/**
+	 * @var ilExtendedTestStatisticsCache
+	 */
+	protected $cache;
+
+	/**
 	 * @var ilExteEvalBase[]	indexed by class name
 	 */
 	protected $evaluations;
 
+
+	/**
+	 * @var string
+	 */
+	protected $pass_selection;
 
 	/**
 	 * ilExtendedTestStatistics constructor.
@@ -55,6 +65,14 @@ class ilExtendedTestStatistics
 
 		//Set the config object
 		$this->config = $this->plugin->getConfig();
+
+		// Set which pass should be evaluated
+		$this->plugin->includeClass('models/class.ilExteStatSourceData.php');
+		$this->pass_selection = $this->plugin->getUserPreference('evaluated_pass', ilExteStatSourceData::PASS_SCORED);
+
+		// load the cache object
+		$this->plugin->includeClass('class.ilExtendedTestStatisticsCache.php');
+		$this->cache = new ilExtendedTestStatisticsCache($this->object->getTestId(), $this->pass_selection);
 	}
 
 	/**
@@ -136,9 +154,8 @@ class ilExtendedTestStatistics
 		{
 			require_once('Modules/Test/classes/class.ilTestRandomQuestionSetConfig.php');
 		}
-		$this->plugin->includeClass('models/class.ilExteStatSourceData.php');
-		$this->data = new ilExteStatSourceData($this->object, $this->plugin);
-		$this->data->load($this->plugin->getUserPreference('evaluated_pass', ilExteStatSourceData::PASS_SCORED));
+		$this->data = new ilExteStatSourceData($this->object, $this->plugin, $this->cache);
+		$this->data->load($this->pass_selection);
 	}
 
 	/**
@@ -158,7 +175,7 @@ class ilExtendedTestStatistics
 			}
 
 			// instantiate the evaluation object
-			$this->evaluations[$class] = new $class($this->plugin);
+			$this->evaluations[$class] = new $class($this->plugin, $this->cache);
 			$this->evaluations[$class]->setData($this->getSourceData());
 		}
 	}
