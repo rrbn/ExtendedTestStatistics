@@ -303,21 +303,52 @@ abstract class ilExteEvalBase
             case ilExteStatDetails::CHART_PIE:
                 $chart = ilChart::getInstanceByType(ilChart::TYPE_PIE, $id);
                 break;
+
             case ilExteStatDetails::CHART_SPIDER:
                 $chart = ilChart::getInstanceByType(ilChart::TYPE_SPIDER, $id);
                 break;
+
             case ilExteStatDetails::CHART_BARS:
             default:
                 $chart = ilChart::getInstanceByType(ilChart::TYPE_GRID, $id);
+                $chart->setXAxisToInteger(true);
                 $datatype = ilChartGrid::DATA_BARS;
         }
 
-        foreach ($a_details->columns as $column)
+        $labels = array();
+		if (isset($a_details->chartLabelsColumn))
+		{
+			$colname = $a_details->columns[$a_details->chartLabelsColumn]->name;
+			foreach ($a_details->rows as $rownum => $row)
+			{
+				$labels[$rownum] = ilUtil::secureString($row[$colname]->value);
+			}
+
+			if ($chart instanceof ilChartGrid)
+			{
+				foreach ($labels as $rownum => $label)
+				{
+					$labels[$rownum] = '<div class="ilExteStatDiagramLabel">'.$label.'</div>';
+				}
+				$chart->setTicks($labels, false, true);
+			}
+			elseif ($chart instanceof ilChartSpider)
+			{
+				$chart->setLegLabels($labels);
+			}
+		}
+
+        foreach ($a_details->columns as $index => $column)
         {
             if ($column->isChartData)
             {
                 $data = $chart->getDataInstance($datatype);
                 $data->setLabel($column->title);
+                if ($data instanceof ilChartDataBars)
+				{
+					$data->setBarOptions(0.5, "center", false);
+				}
+
                 foreach ($a_details->rows as $rownum => $row)
                 {
                     /** @var ilExteStatValue $value */
@@ -325,13 +356,30 @@ abstract class ilExteEvalBase
                     {
                         if ($colname == $column->name)
                         {
-                            $data->addPoint($rownum, $value->value);
+                        	if ($data instanceof ilChartDataBars)
+							{
+								$data->addPoint($rownum, $value->value);
+							}
+							elseif ($data instanceof ilChartDataPie)
+							{
+								$data->addPoint($value->value, isset($labels[$rownum]) ? $labels[$rownum] : $rownum);
+							}
+							elseif ($data instanceof ilChartDataSpider)
+							{
+								$data->addPoint($rownum, $value->value);
+							}
                         }
                     }
                 }
+                $chart->addData($data);
             }
         }
 
+
+		$legend = new ilChartLegend();
+		$chart->setLegend($legend);
+        $chart->setSize(700,400);
+		$chart->setAutoResize(true);
         return $chart;
     }
 

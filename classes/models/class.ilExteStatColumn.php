@@ -58,6 +58,7 @@ class ilExteStatColumn
      * @param string $a_title
      * @param string $a_sort
      * @param string $a_comment
+	 * @param bool	$a_is_chart_data
      * @return ilExteStatColumn
      */
     public static function _create($a_name, $a_title = '', $a_sort = self::SORT_NONE, $a_comment = '', $a_is_chart_data = false)

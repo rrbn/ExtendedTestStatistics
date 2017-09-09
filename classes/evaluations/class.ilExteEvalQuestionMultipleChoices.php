@@ -17,6 +17,11 @@ class ilExteEvalQuestionMultipleChoices extends ilExteEvalQuestion
 	protected $provides_details = true;
 
 	/**
+	 * @var bool    evaluation provides a chart
+	 */
+	protected $provides_chart = true;
+
+	/**
 	 * @var array   list of allowed test types, e.g. array(self::TEST_TYPE_FIXED)
 	 */
 	protected $allowed_test_types = array();
@@ -75,9 +80,11 @@ class ilExteEvalQuestionMultipleChoices extends ilExteEvalQuestion
         $details->columns = array (
             ilExteStatColumn::_create('index',$this->txt('index'), ilExteStatColumn::SORT_NUMBER),
 			ilExteStatColumn::_create('points',$this->txt('points'),ilExteStatColumn::SORT_NUMBER),
-			ilExteStatColumn::_create('count',$this->txt('count'),ilExteStatColumn::SORT_NUMBER),
+			ilExteStatColumn::_create('count',$this->txt('count'),ilExteStatColumn::SORT_NUMBER, '', true),
             ilExteStatColumn::_create('choice', $this->txt('choice'), ilExteStatColumn::SORT_TEXT)
         );
+        $details->chartType = ilExteStatDetails::CHART_BARS;
+        $details->chartLabelsColumn = 3;
 
         $option_count = array();
         foreach ($options as $key => $option)

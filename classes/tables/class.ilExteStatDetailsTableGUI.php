@@ -49,7 +49,15 @@ class ilExteStatDetailsTableGUI extends ilExteStatTableGUI
         //Columns
         foreach ($this->details->columns as $column)
         {
-            $this->addColumn($column->title, $column->sort ? 'sort_'.$column->name : '', '', false, '', $column->comment);
+        	if ($column->sort == ilExteStatColumn::SORT_NUMBER)
+			{
+				$title = "<span class='ilExteStatHeaderRight'>".$column->title."</span>";
+			}
+			else
+			{
+				$title = $column->title;
+			}
+            $this->addColumn($title, $column->sort ? 'sort_'.$column->name : '', '', false, '', $column->comment);
         }
 
         // Row data

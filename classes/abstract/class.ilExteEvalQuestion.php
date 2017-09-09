@@ -109,6 +109,6 @@ abstract class ilExteEvalQuestion extends ilExteEvalBase
      */
     final public function getChart($a_question_id)
     {
-        return $this->generateChart($this->calculateDetails($a_question_id));
+        return $this->generateChart($this->getDetails($a_question_id));
     }
 }

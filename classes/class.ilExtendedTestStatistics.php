@@ -76,6 +76,14 @@ class ilExtendedTestStatistics
 	}
 
 	/**
+	 * Clear the cache of this test
+	 */
+	public function flushCache()
+	{
+		$this->cache->flush();
+	}
+
+	/**
 	 * Get the source data object
 	 * @return ilExteStatSourceData
 	 */
@@ -91,7 +99,7 @@ class ilExtendedTestStatistics
 	/**
 	 * Get a single loaded evaluation
 	 * @param string $a_class  class name of the evaluation
-	 * @return ilExteEvalTest|ilExteEvalQuestion|null
+	 * @return ilExteEvalBase|ilExteEvalTest|ilExteEvalQuestion|null
 	 */
 	public function getEvaluation($a_class)
 	{

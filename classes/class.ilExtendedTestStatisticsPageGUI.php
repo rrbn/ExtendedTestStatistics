@@ -79,6 +79,7 @@ class ilExtendedTestStatisticsPageGUI
 			case "exportEvaluations":
 			case "deliverExportFile":
 			case "selectEvaluatedPass":
+			case "flushCache":
 				$this->$cmd();
 				break;
 			case "applyFilter":
@@ -179,7 +180,7 @@ class ilExtendedTestStatisticsPageGUI
         $this->ctrl->saveParameter($this, 'details');
 
         $evaluation = $this->statObj->getEvaluation($_GET['details']);
-
+		$chartHTML = '';
         if ($evaluation->providesChart())
         {
             $chart = $evaluation->getChart();
@@ -194,7 +195,7 @@ class ilExtendedTestStatisticsPageGUI
 		$tableGUI->setDescription($evaluation->getDescription());
 
 		$legendGUI = ilExteStatTableGUI::_create('ilExteStatLegendTableGUI', $this, 'showTestDetails');
-		$this->tpl->setContent($chartHTML. $tableGUI->getHTML() . $legendGUI->getHTML());
+		$this->tpl->setContent($chartHTML . $tableGUI->getHTML() . $legendGUI->getHTML());
 		$this->tpl->show();
     }
 
@@ -238,13 +239,12 @@ class ilExtendedTestStatisticsPageGUI
         $this->ctrl->saveParameter($this, 'qid');
 
         $evaluation = $this->statObj->getEvaluation($_GET['details']);
-
+        $chartHTML = '';
         if ($evaluation->providesChart())
         {
             $chart = $evaluation->getChart($_GET['qid']);
             $chartHTML = $chart->getHTML();
         }
-
 
         /** @var  ilExteStatDetailsTableGUI $tableGUI */
 		$this->plugin->includeClass('tables/class.ilExteStatTableGUI.php');
@@ -307,6 +307,14 @@ class ilExtendedTestStatisticsPageGUI
 		$button = ilSubmitButton::getInstance();
 		$button->setCommand('selectEvaluatedPass');
 		$button->setCaption('select');
+		$button->getOmitPreventDoubleSubmission();
+		$ilToolbar->addButtonInstance($button);
+
+		$ilToolbar->addSeparator();
+
+		$button = ilSubmitButton::getInstance();
+		$button->setCommand('flushCache');
+		$button->setCaption($this->plugin->txt('flush_cache'), false);
 		$button->getOmitPreventDoubleSubmission();
 		$ilToolbar->addButtonInstance($button);
 
@@ -464,5 +472,24 @@ class ilExtendedTestStatisticsPageGUI
 		}
 
 	}
+
+	/**
+	 * Flush the cache
+	 */
+	protected function flushCache()
+	{
+		$this->statObj->flushCache();
+
+		ilUtil::sendSuccess($this->plugin->txt('cache_flushed'), true);
+
+		// show the screen from which the export was started
+		switch ($_POST['level'])
+		{
+			case ilExtendedTestStatistics::LEVEL_QUESTION:
+				$this->ctrl->redirect($this, 'showQuestionsOverview');
+				break;
+			default:
+				$this->ctrl->redirect($this, 'showTestOverview');
+		}
+	}
 }
-?>

@@ -145,3 +145,5 @@ pass_scored#:#Scored Pass (Standard)
 pass_best#:#Best Pass
 pass_last#:#Last Pass
 evaluation_info_id#:#(ID: %s)
+flush_cache#:#Update Cache
+cache_flushed#:#The statistics cache of this test is update. This happens automatically when test results are added or changed.

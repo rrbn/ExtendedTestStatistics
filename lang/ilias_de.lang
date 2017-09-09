@@ -145,3 +145,5 @@ pass_scored#:#Bewerteter Durchlauf (Standard)
 pass_best#:#Bester Durchlauf
 pass_last#:#Letzter Durchlauf
 evaluation_info_id#:#(ID: %s)
+flush_cache#:#Cache aktualisieren
+cache_flushed#:#Der Statistik-Cache dieses Tests wurde aktualisiert. Das geschieht auch automatisch, wenn Testergebnisse geändert oder hinzugefügt wurden.

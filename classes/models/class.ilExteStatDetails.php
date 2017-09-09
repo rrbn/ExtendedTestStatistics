@@ -39,7 +39,7 @@ class ilExteStatDetails
      * Index of the column to define the X axis
      * @var int
      */
-    public $chartXColumn = 0;
+    public $chartLabelsColumn = 0;
 
 	/**
 	 * Get the message for empty details

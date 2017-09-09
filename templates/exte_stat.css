@@ -18,5 +18,17 @@
     padding-left: 5px;
 }
 
+.ilExteStatHeaderRight {
+    display: inline-block;
+    width: 90%;
+    text-align: right;
+    padding-left: 5px;
+}
+
+.ilExteStatDiagramLabel {
+    display: inline-block;
+    width: 80%;
+}
+
 
 
