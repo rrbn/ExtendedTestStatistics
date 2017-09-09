@@ -65,6 +65,12 @@ and includes no comments or quality signs. An MS Excel file contains both tables
 includes all comments and color bachgrounds for the differend quality signs. An MS Excel file with details contains an extra sheet for any
 detailed evaluation.
 
+Diagrams
+--------
+Since version 1.1.0 the generation of a diagram is supported. An evaluation has to provide a details table that is used to generate the diagram.
+One column of this table is used for the labels and one or some other columns are used as the data series of the diagram. The
+diagram is shown to the details screen if the evaluations supports this.
+
 
 Known Issues
 ------------
@@ -73,7 +79,7 @@ Known Issues
 
 * The calculation of extended evaluations takes care of performance, e.g. the additional question evaluations are calculated on a separate
   page only for the questions that are shown. But the basic values from ILIAS are calculated for all, which takes time for large tests.
-  In this case it's better to create an MS Excel export that is stored on the 'export' tab. 
+  This is now improved by caching.
 
 Extension
 ---------
