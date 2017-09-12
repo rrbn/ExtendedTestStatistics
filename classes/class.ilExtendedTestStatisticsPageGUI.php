@@ -56,7 +56,7 @@ class ilExtendedTestStatisticsPageGUI
 		/** @var ilErrorHandling $ilErr */
 		global $ilAccess, $ilErr, $lng;
 
-		if (!$ilAccess->checkAccess('write','',$this->testObj->getRefId()))
+		if (!$ilAccess->checkAccess('tst_statistics','',$this->testObj->getRefId()))
 		{
             ilUtil::sendFailure($lng->txt("permission_denied"), true);
             ilUtil::redirect("goto.php?target=tst_".$this->testObj->getRefId());

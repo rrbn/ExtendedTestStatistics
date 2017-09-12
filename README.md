@@ -89,11 +89,15 @@ https://github.com/ilifau/ExampleEvaluations
 Version History
 ===============
 
-Version 1.1.0 (2017-09-10)
+Version 1.1.1 (2017-09-12)
 --------------------------
+- Permission "Statistics" is checked instead of "Write"
+
 - Caching of basic and calculated data
 - Diagram support
 - Bar diagrams for single/multiple choice options
+
+
 
 Version 1.0.0 (2017-03-20)
 -------------

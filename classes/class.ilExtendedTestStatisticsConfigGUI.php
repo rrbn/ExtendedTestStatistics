@@ -17,6 +17,9 @@ class ilExtendedTestStatisticsConfigGUI extends ilPluginConfigGUI
 	/** @var ilExtendedTestStatisticsConfig $config */
 	protected $config;
 
+	/** @var  ilExtendedTestStatisticsCache */
+	protected $cache;
+
 	/**
 	 * Handles all commands, default is "configure"
 	 */
@@ -26,6 +29,10 @@ class ilExtendedTestStatisticsConfigGUI extends ilPluginConfigGUI
 
 		//Set config object
 		$this->config = $this->plugin->getConfig();
+
+		// Create a dummy cache
+		$this->plugin->includeClass('class.ilExtendedTestStatisticsCache.php');
+		$this->cache = new ilExtendedTestStatisticsCache(0,'');
 
 		switch ($cmd)
 		{
@@ -82,7 +89,7 @@ class ilExtendedTestStatisticsConfigGUI extends ilPluginConfigGUI
 		foreach ($this->config->getEvaluationClasses($a_type) as $class => $availability)
 		{
 			/** @var ilExteEvalBase $evaluation */
-			$evaluation = new $class($this->plugin);
+			$evaluation = new $class($this->plugin, $this->cache);
 			$prefix = $evaluation->getLangPrefix();
 
 			$select_input = new ilSelectInputGUI($this->plugin->txt($prefix . "_title_long"), $class);
@@ -148,7 +155,7 @@ class ilExtendedTestStatisticsConfigGUI extends ilPluginConfigGUI
 					$this->config->writeAvailability($class, $new_availability);
 
 					/** @var ilExteEvalBase $evaluation */
-					$evaluation = new $class($this->plugin);
+					$evaluation = new $class($this->plugin, $this->cache);
 					foreach ($evaluation->getParams() as $name => $param)
 					{
 						$postvar = $class.'_'.$name;
