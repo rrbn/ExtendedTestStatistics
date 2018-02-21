@@ -89,6 +89,12 @@ https://github.com/ilifau/ExampleEvaluations
 Version History
 ===============
 
+Version 1.1.2 (2018-02-21)
+--------------------------
+- Add selection of first evaluated pass
+- Allow strings in options
+
+
 Version 1.1.1 (2017-09-12)
 --------------------------
 - Permission "Statistics" is checked instead of "Write"

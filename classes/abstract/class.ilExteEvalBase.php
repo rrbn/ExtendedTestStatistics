@@ -116,6 +116,9 @@ abstract class ilExteEvalBase
 					case ilExteStatParam::TYPE_BOOLEAN:
 						$param->value = (bool) $data[$param->name];
 						break;
+					case ilExteStatParam::TYPE_STRING:
+						$param->value = (string) $data[$param->name];
+						break;
 				}
 			}
 		}
