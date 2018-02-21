@@ -297,6 +297,7 @@ class ilExtendedTestStatisticsPageGUI
 		$options = array(
 			ilExteStatSourceData::PASS_SCORED => $this->plugin->txt('pass_scored'),
 			ilExteStatSourceData::PASS_BEST => $this->plugin->txt('pass_best'),
+			ilExteStatSourceData::PASS_FIRST => $this->plugin->txt('pass_first'),
 			ilExteStatSourceData::PASS_LAST => $this->plugin->txt('pass_last'),
 		);
 		$pass_selection->setOptions($options);
@@ -400,6 +401,9 @@ class ilExtendedTestStatisticsPageGUI
 				break;
 			case ilExteStatSourceData::PASS_BEST:
 				$name .= '_best_pass';
+				break;
+			case ilExteStatSourceData::PASS_FIRST:
+				$name .= '_first_pass';
 				break;
 		}
 
