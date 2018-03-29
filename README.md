@@ -89,6 +89,11 @@ https://github.com/ilifau/ExampleEvaluations
 Version History
 ===============
 
+Version 1.2.0 (2018-03-29)
+--------------------------
+Beta version for ILIAS 5.3
+
+
 Version 1.1.1 (2017-09-12)
 --------------------------
 - Permission "Statistics" is checked instead of "Write"
