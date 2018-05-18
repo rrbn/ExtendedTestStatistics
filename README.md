@@ -89,11 +89,12 @@ https://github.com/ilifau/ExampleEvaluations
 Version History
 ===============
 
-Version 1.1.2 (2018-02-21)
+Version 1.1.2 (2018-05-18)
 --------------------------
+Thanks to Christoph Jobst!
 - Add selection of first evaluated pass
 - Allow strings in options
-
+- Allow custom HTML in evaluations
 
 Version 1.1.1 (2017-09-12)
 --------------------------
