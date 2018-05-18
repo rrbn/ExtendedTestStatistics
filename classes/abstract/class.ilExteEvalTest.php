@@ -90,4 +90,15 @@ abstract class ilExteEvalTest extends ilExteEvalBase
     {
         return $this->generateChart($this->getDetails());
     }
+    
+    /**
+     * Get the custom HTML
+     * @param ilExteStatDetails $a_details
+     * @return string
+     */
+    final public function getCustomHTML()
+    {
+    	$details = $this->getDetails();
+    	return $details->customHTML;
+    }
 }

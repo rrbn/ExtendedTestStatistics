@@ -41,6 +41,12 @@ class ilExteStatDetails
      */
     public $chartLabelsColumn = 0;
 
+    /**
+     * Custom HTML for the evaluation
+     * @var string
+     */
+    public $customHTML = '';
+    
 	/**
 	 * Get the message for empty details
 	 * @return string

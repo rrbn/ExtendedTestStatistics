@@ -33,6 +33,11 @@ abstract class ilExteEvalBase
 	protected $provides_chart = false;
 
 	/**
+	 * @var bool    evaluation provides custom HTML
+	 */
+	protected $provides_HTML = false;
+
+	/**
 	 * @var array 	list of allowed test types, e.g. array(self::TEST_TYPE_FIXED)
 	 */
 	protected $allowed_test_types = array();
@@ -115,6 +120,9 @@ abstract class ilExteEvalBase
 						break;
 					case ilExteStatParam::TYPE_BOOLEAN:
 						$param->value = (bool) $data[$param->name];
+						break;
+					case ilExteStatParam::TYPE_STRING:
+						$param->value = (string) $data[$param->name];
 						break;
 				}
 			}
@@ -241,6 +249,14 @@ abstract class ilExteEvalBase
 	public function providesChart()
     {
         return $this->provides_chart;
+    }
+
+    /**
+     * @return bool evaluation provides custom HTML
+     */
+    public function providesHTML()
+    {
+    	return $this->provides_HTML;
     }
 
 	/**
@@ -382,5 +398,4 @@ abstract class ilExteEvalBase
 		$chart->setAutoResize(true);
         return $chart;
     }
-
 }

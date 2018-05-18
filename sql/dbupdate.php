@@ -106,3 +106,11 @@ if (!$ilDB->tableExists('etstat_params'))
 		$ilDB->addIndex('etstat_cache', array('tstamp'), 'i1');
     }
 ?>
+<#5>
+<?php
+	//Enlarge storage for params
+    if($ilDB->tableColumnExists('etstat_params', 'value'))
+    {
+    	$ilDB->query('ALTER TABLE etstat_params MODIFY value VARCHAR(100)');
+    }
+?>

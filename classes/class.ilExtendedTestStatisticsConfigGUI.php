@@ -117,6 +117,11 @@ class ilExtendedTestStatisticsConfigGUI extends ilPluginConfigGUI
 						$input->setSize(10);
 						$input->setValue($param->value);
 						break;
+					case ilExteStatParam::TYPE_STRING:
+						$input = new ilTextInputGUI($title, $postvar);
+						$input->setMaxLength(100);
+						$input->setValue($param->value);
+						break;
 					case ilExteStatParam::TYPE_INT:
 					default:
 						$input = new ilNumberInputGUI($title, $postvar);
