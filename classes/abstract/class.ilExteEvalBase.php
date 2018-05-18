@@ -33,6 +33,11 @@ abstract class ilExteEvalBase
 	protected $provides_chart = false;
 
 	/**
+	 * @var bool    evaluation provides custom HTML
+	 */
+	protected $provides_HTML = false;
+
+	/**
 	 * @var array 	list of allowed test types, e.g. array(self::TEST_TYPE_FIXED)
 	 */
 	protected $allowed_test_types = array();
@@ -246,6 +251,14 @@ abstract class ilExteEvalBase
         return $this->provides_chart;
     }
 
+    /**
+     * @return bool evaluation provides custom HTML
+     */
+    public function providesHTML()
+    {
+    	return $this->provides_HTML;
+    }
+
 	/**
 	 * Get a localized text
 	 * The language variable will be prefixed by self::_getLangPrefix()
@@ -385,5 +398,4 @@ abstract class ilExteEvalBase
 		$chart->setAutoResize(true);
         return $chart;
     }
-
 }
