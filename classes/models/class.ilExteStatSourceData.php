@@ -8,6 +8,7 @@ class ilExteStatSourceData
 {
 	const PASS_LAST = 'last';
 	const PASS_BEST = 'best';
+	const PASS_FIRST = 'first';
 	const PASS_SCORED = 'scored';
 
 	/**
@@ -258,6 +259,7 @@ class ilExteStatSourceData
 			$participant = $this->getParticipant($active_id, true);
 			$participant->best_pass = $userdata->getBestPass();
 			$participant->last_pass = $userdata->getLastPass();
+			$participant->first_pass = 0;
 			$participant->scored_pass = $userdata->getScoredPass();
 
 			switch ($this->pass_selection)
@@ -268,12 +270,14 @@ class ilExteStatSourceData
 				case self::PASS_BEST:
 					$pass = $userdata->getBestPassObject();
 					break;
+				case self::PASS_FIRST:
+					$pass = $userdata->passes[0];
+					break;
 				case self::PASS_SCORED:
 				default:
 					$pass = $userdata->getScoredPassObject();
 					break;
 			}
-
 			if ($pass instanceof ilTestEvaluationPassData)
 			{
 				// all quetions for a participant in the test pass
