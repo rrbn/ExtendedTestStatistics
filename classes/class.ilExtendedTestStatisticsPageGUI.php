@@ -187,6 +187,12 @@ class ilExtendedTestStatisticsPageGUI
             $chartHTML = $chart->getHTML();
         }
 
+        $customHTML = '';
+        if ($evaluation->providesHTML())
+        {
+        	$customHTML = $evaluation->getCustomHTML();
+        }
+
 		/** @var  ilExteStatDetailsTableGUI $tableGUI */
 		$this->plugin->includeClass('tables/class.ilExteStatTableGUI.php');
 		$tableGUI = ilExteStatTableGUI::_create('ilExteStatDetailsTableGUI', $this, 'showTestDetails');
@@ -195,7 +201,7 @@ class ilExtendedTestStatisticsPageGUI
 		$tableGUI->setDescription($evaluation->getDescription());
 
 		$legendGUI = ilExteStatTableGUI::_create('ilExteStatLegendTableGUI', $this, 'showTestDetails');
-		$this->tpl->setContent($chartHTML . $tableGUI->getHTML() . $legendGUI->getHTML());
+		$this->tpl->setContent($customHTML . $chartHTML . $tableGUI->getHTML() . $legendGUI->getHTML());
 		$this->tpl->show();
     }
 
@@ -297,6 +303,7 @@ class ilExtendedTestStatisticsPageGUI
 		$options = array(
 			ilExteStatSourceData::PASS_SCORED => $this->plugin->txt('pass_scored'),
 			ilExteStatSourceData::PASS_BEST => $this->plugin->txt('pass_best'),
+			ilExteStatSourceData::PASS_FIRST => $this->plugin->txt('pass_first'),
 			ilExteStatSourceData::PASS_LAST => $this->plugin->txt('pass_last'),
 		);
 		$pass_selection->setOptions($options);
@@ -400,6 +407,9 @@ class ilExtendedTestStatisticsPageGUI
 				break;
 			case ilExteStatSourceData::PASS_BEST:
 				$name .= '_best_pass';
+				break;
+			case ilExteStatSourceData::PASS_FIRST:
+				$name .= '_first_pass';
 				break;
 		}
 

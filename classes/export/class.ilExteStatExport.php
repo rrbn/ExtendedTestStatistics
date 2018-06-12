@@ -231,6 +231,9 @@ class ilExteStatExport
 			case ilExteStatSourceData::PASS_BEST:
 				$pass = $this->plugin->txt('pass_best');
 				break;
+			case ilExteStatSourceData::PASS_FIRST:
+				$pass = $this->plugin->txt('pass_first');
+				break;
 			case ilExteStatSourceData::PASS_LAST:
 				$pass = $this->plugin->txt('pass_last');
 				break;

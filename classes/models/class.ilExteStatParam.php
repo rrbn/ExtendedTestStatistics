@@ -12,6 +12,7 @@ class ilExteStatParam
 	const TYPE_FLOAT = 'float';
 	const TYPE_INT = 'int';
 	const TYPE_BOOLEAN = 'bool';
+	const TYPE_STRING = 'string';
 
 	/**
 	 * @var string		name of the parameter (should be unique within an evaluation class)

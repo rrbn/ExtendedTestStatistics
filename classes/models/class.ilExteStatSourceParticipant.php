@@ -22,6 +22,11 @@ class ilExteStatSourceParticipant
 	public $best_pass;
 
 	/**
+	 * @var integer		index of the first pass
+	 */
+	public $first_pass;
+	
+	/**
 	 * @var integer		index of the scored pass
 	 */
 	public $scored_pass;
