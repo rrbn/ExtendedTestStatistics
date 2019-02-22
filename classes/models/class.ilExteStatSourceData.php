@@ -392,7 +392,7 @@ class ilExteStatSourceData
 		$value = new ilExteStatValue();
 		$value->type = ilExteStatValue::TYPE_NUMBER;
 		$value->precision = 0;
-		$value->value = $this->object->evalTotalFinished();
+		$value->value = $this->eval->getTotalFinishedParticipants();
 		$this->basic_test_values['tst_eval_total_finished'] = $value;
 
 		// Average test processing time
