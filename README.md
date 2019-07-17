@@ -89,6 +89,11 @@ https://github.com/ilifau/ExampleEvaluations
 Version History
 ===============
 
+Version 1.3.0 (2019-07-17)
+--------------------------
+- Update for ILIAS 5.4
+
+
 Version 1.2.1 (2018-06-12)
 --------------------------
 Thanks to Christoph Jobst!
