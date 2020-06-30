@@ -137,7 +137,7 @@ class ilExtendedTestStatisticsPageGUI
 		$ilLocator->addRepositoryItems($this->testObj->getRefId());
 		$ilLocator->addItem($this->testObj->getTitle(),$this->ctrl->getLinkTargetByClass('ilObjTestGUI'));
 
-		$this->tpl->getStandardTemplate();
+		$this->tpl->loadStandardTemplate();
 		$this->tpl->setLocator();
 		$this->tpl->setTitle($this->testObj->getPresentationTitle());
 		$this->tpl->setDescription($this->testObj->getLongDescription());
@@ -147,7 +147,7 @@ class ilExtendedTestStatisticsPageGUI
 		if ($this->statObj->getSourceData()->getTestType() == ilExteEvalBase::TEST_TYPE_DYNAMIC)
 		{
 			ilUtil::sendFailure($this->plugin->txt('not_for_dynamic_test'));
-			$this->tpl->show();
+			$this->tpl->printToStdout();
 			return false;
 		}
 
@@ -168,7 +168,7 @@ class ilExtendedTestStatisticsPageGUI
 
 		$legendGUI = ilExteStatTableGUI::_create('ilExteStatLegendTableGUI', $this, 'showTestOverview');
 		$this->tpl->setContent($tableGUI->getHTML() . $legendGUI->getHTML());
-		$this->tpl->show();
+		$this->tpl->printToStdout();
 	}
 
     /**
@@ -202,7 +202,7 @@ class ilExtendedTestStatisticsPageGUI
 
 		$legendGUI = ilExteStatTableGUI::_create('ilExteStatLegendTableGUI', $this, 'showTestDetails');
 		$this->tpl->setContent($customHTML . $chartHTML . $tableGUI->getHTML() . $legendGUI->getHTML());
-		$this->tpl->show();
+		$this->tpl->printToStdout();
     }
 
     /**
@@ -231,7 +231,7 @@ class ilExtendedTestStatisticsPageGUI
 
 		$legendGUI = ilExteStatTableGUI::_create('ilExteStatLegendTableGUI', $this, 'showQuestionsOverview');
 		$this->tpl->setContent($tableGUI->getHTML() . $legendGUI->getHTML());
-        $this->tpl->show();
+        $this->tpl->printToStdout();
 	}
 
 
@@ -261,7 +261,7 @@ class ilExtendedTestStatisticsPageGUI
 
 		$legendGUI = ilExteStatTableGUI::_create('ilExteStatLegendTableGUI', $this, 'showQuestionDetails');
         $this->tpl->setContent($chartHTML . $tableGUI->getHTML() . $legendGUI->getHTML());
-        $this->tpl->show();
+        $this->tpl->printToStdout();
     }
 
 	/**
