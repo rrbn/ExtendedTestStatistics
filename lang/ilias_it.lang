@@ -1,0 +1,150 @@
+//
+// Copyright (c) 2017 Institut fuer Lern-Innovation, Friedrich-Alexander-Universitaet Erlangen-Nuernberg, GPLv3, see LICENSE
+//
+// Italian Language File for the Extended Test Statistics Plugin
+//
+
+<!-- language file start -->
+alert_unknown#:#Sconosciuto
+alert_good#:#Buono
+alert_medium#:#Mediocre
+alert_bad#:#Male
+test_results#:#Risultati dei Test Aggregati
+questions_results#:#Risultati delle Domande Aggregate
+show_details#:#Mostra dettagli
+question_type#:#Tipo di Domanda
+assigned_count#:#Assegnata
+assigned_count_description#:#Numero di utenti a cui è stata assegnata questa domanda
+answers_count#:#Risposto
+answers_count_description#:#Numero di utenti che hanno risposto a questa domanda
+average_points#:#Ø Punti
+average_points_description#:#Punti medi raggiunti dall'utente che ha risposto a questa domanda assegnata
+average_percentage#:#Percento
+average_percentage_description#:#Percentuale media di punti raggiunti dall'utente che ha risposto a questa domanda assegnata
+tst_median_title_long#:#Punteggio mediano
+tst_median_title_short#:#Mediano
+tst_median_description#:#Il punteggio mediano ordina l'elenco dei punti raggiunti in questo test e prende il valore medio se i tentativi totali sono dispari o la media tra i due tentativi centrali se i tentativi totali sono pari. Il punteggio mediano non è sensibile ai valori estremi.
+tst_mean_title_long#:#Punteggio medio
+tst_mean_title_short#:#Medio
+tst_mean_description#:#Il punteggio medio è calcolato come la somma dei punteggi divisa per il numero di partecipanti. È sensibile ai valori estremi.
+tst_standarddeviation_title_long#:#Deviazione standard
+tst_standarddeviation_title_short#:#Deviazione standard
+tst_standarddeviation_description#:#La deviazione standard misura la quantità di variazione dei punteggi raggiunti per il test. Una deviazione standard bassa indica che i punteggi tendono ad essere vicini alla media, mentre una deviazione standard alta indica che i risultati dei punteggi sono distribuiti su una gamma più ampia di valori. Viene calcolato con la correzione di Bessel, ovvero il denominatore utilizza il numero di partecipanti meno uno.
+tst_standarddeviation_only_one_participant#:#La deviazione standard è banale quando il test è sostenuto da un solo partecipante
+tst_cic_title_long#:#Coefficiente di coerenza interna (Alfa di Cronbach)
+tst_cic_title_short#:#Alfa di Cronbach
+tst_cic_description#:#La coerenza interna viene solitamente misurata con l'alfa di Cronbach, una statistica calcolata dalle correlazioni a coppie tra gli elementi. La consistenza interna varia tra infinito negativo e uno. L'alfa di Cronbach sarà negativa ogniqualvolta vi è una maggiore variabilità all'interno dei soggetti rispetto alla variabilità tra soggetti. I valori per un test dovrebbero essere maggiori di 0,7.
+tst_cic_min_qst_title#:#Domande minime
+tst_cic_min_qst_description#:#Numero minimo di domande in un test per calcolare l'alfa di Cronbach.
+tst_cic_min_qst_alert#:#Il test deve contenere un minimo di %s domande per calcolare l'alfa di cronbach.
+tst_cic_min_part_title#:#Numero minimo di partecipanti
+tst_cic_min_part_description#:#Numero minimo di partecipanti al test per calcolare l'alfa di Cronbach.
+tst_cic_min_part_alert#:#Il test deve avere un minimo di %s partecipanti per calcolare l'alfa di Cronbach.
+tst_cic_min_medium_title#:#Minimo "mediocre"
+tst_cic_min_medium_description#:#Valore minimo classificato come "mediocre". 0 per sopprimere la valutazione.
+tst_cic_min_good_title#:#Minimo "buono"
+tst_cic_min_good_description#:#Valore minimo classificato come "buono". 0 per sopprimere la valutazione.
+tst_cic_sum_of_mean_is_zero#:#La somma della media è zero
+qst_facility_title_long#:#Indice della struttura
+qst_facility_title_short#:#Indice della struttura
+qst_facility_description#:#L'indice di struttura è calcolato come il rapporto delle distanze tra media e minimo e tra massimo e minimo dei punteggi raggiunti, espresso in percentuale. Più alto è l'indice di struttura, più facile è la domanda. L'indice dovrebbe essere compreso tra il 20% e l'80%.
+qst_facility_min_ans_title#:#Risposte minime
+qst_facility_min_ans_description#:#Numero minimo di risposte per calcolare un indice di indice di struttura per una domanda.
+qst_facility_min_ans_alert#:#La domanda deve contenere un minimo di %s risposte per calcolare il suo indice di struttura.
+qst_facility_min_medium_title#:#Minimo "mediocre"
+qst_facility_min_medium_description#:#Valore minimo classificato come "mediocre". 0 per sopprimere la valutazione.
+qst_facility_min_good_title#:#Minimo "buono"
+qst_facility_min_good_description#:#Valore minimo classificato come "buono". 0 per sopprimere la valutazione.
+qst_facility_max_good_title#:#Massimo "buono"
+qst_facility_max_good_description#:#Valore massimo classificato come "buono". 0 per sopprimere la valutazione.
+qst_facility_max_medium_title#:#Massimo "mediocre"
+qst_facility_max_medium_description#:#Valore massimo classificato come "mediocre". 0 per sopprimere la valutazione.
+qst_facility_all_scores_identical#:#Tutti gli studenti hanno raggiunto lo stesso punteggio per questa domanda
+qst_standarddeviation_title_long#:#Standard Deviation
+qst_standarddeviation_title_short#:#Standard Deviation
+qst_standarddeviation_description#:#La deviazione standard misura la quantità di variazione dei punteggi raggiunti per la domanda. Una deviazione standard bassa indica che i punteggi tendono ad essere vicini alla media, mentre una deviazione standard alta indica che i punteggi sono distribuiti su una gamma più ampia di valori. Viene calcolato con la correzione di Bessel, ovvero il denominatore utilizza il numero di risposte meno uno.
+qst_discrimination_title_long#:#Indice di discriminazione
+qst_discrimination_title_short#:#Indice di discriminazione
+qst_discrimination_description#:#L'indice di discriminazione valuta se la domanda separa i partecipanti "buoni" da quelli "deboli". Calcola la relazione tra il risultato della domanda e il risultato del test finale. È auspicabile un indice di discriminazione compreso tra 0,4 e 0,7. se l'indice è inferiore a zero i partecipanti deboli risolvono la domanda invece di quelli buoni.
+qst_discrimination_zero_variance_of_question#:#La varianza dei punti è 0 per questa domanda
+qst_discrimination_zero_variance_of_other_question#:#La varianza dei punti è 0 per le altre domande
+qst_discrimination_min_qst_title#:#Domande minime
+qst_discrimination_min_qst_description#:#Numero minimo di domande in un test per calcolare un indice di discriminazione.
+qst_discrimination_min_qst_alert#:#Il test deve contenere un minimo di %s domande per calcolare l'indice di discriminazione di una domanda.
+qst_discrimination_min_ans_title#:#Risposte minime
+qst_discrimination_min_ans_description#:#Numero minimo di risposte per calcolare un indice di discriminazione per una domanda.
+qst_discrimination_min_ans_alert#:#La domanda deve avere un minimo di %s risposte per calcolare il suo indice di discriminazione.
+qst_discrimination_min_medium_title#:#Minimo "mediocre"
+qst_discrimination_min_medium_description#:#Valore minimo classificato come "mediocre". 0 per sopprimere la valutazione.
+qst_discrimination_min_good_title#:#Minimo "buono"
+qst_discrimination_min_good_description#:#Valore minimo classificato come "buono". 0 per sopprimere la valutazione.
+qst_discrimination_random_test#:#Il calcolo di un indice di discriminazione in un test casuale è incerto.
+show_test_evaluations#:#Mostra valutazioni dei test
+show_question_evaluations#:#Mostra valutazioni delle domande
+evaluation_available_for_admins#:#Admin
+evaluation_available_for_users#:#User
+evaluation_available_for_none#:#Not available
+test_evaluation_settings#:#Test Impostazioni valutazioni
+question_evaluation_settings#:#Impostazioni di valutazione delle domande
+test_settings_saved#:#Impostazioni Test salvate
+question_settings_saved#:#Impostazioni della domanda salvate
+statisticsexport_format#:#Statistiche Test (Excel)
+title_of_test#:#Titolo
+date_of_export#:#Data di esportazione
+number_of_qst_and_part#:#Domande (per participanti/totale)
+number#:#N.
+max_points#:#Max. Punti
+points#:#Punti raggiunti
+mean#:#Medio
+variance#:#Variazione
+std_deviation#:#Std. deviazione
+tasks#:#Oggetti
+aborted#:#Test annullato
+column_sum#:#Somma delle colonne
+sumproduct#:#Somma prodotto
+reachable_points#:#Punti raggiungibili
+correct#:#Risposte corrette
+wrong#:#Wrong Answers
+not_answered#:#Senza risposta
+difficultyindex#:#Difficoltà dell'oggetto
+item_total_correlation#:#Correlazione oggetto-totale
+name_user_name#:#Nome (Login)
+not_enough_test_results#:#Risultati dei test disponibili insufficienti
+not_enough_answers#:#Non sono disponibili risposte sufficienti
+qst_choices_title_long#:#Elenco delle opzioni scelte
+qst_choices_title_short#:#Opzioni scelte
+qst_choices_description#:#Mostra un elenco delle opzioni di risposta disponibili e il conteggio della loro selezione.
+qst_choices_index#:#Index
+qst_choices_choice#:#Opzione di rispostan
+qst_choices_points#:#Punti
+qst_choices_count#:#Contare
+qst_choices_answer_options#:#Opzioni di risposta
+not_for_fixed_test#:#Non disponibile per set di domande fisse
+not_for_random_test#:#Non disponibile per set di domande casuali
+not_for_dynamic_test#:#Non disponibile per il test dinamico
+not_for_test_type#:#Non disponibile per questo tipo di test
+not_for_question_type#:#Non disponibile per questo tipo di domanda
+exp_type_excel_overviews#:#Microsoft Excel
+exp_type_excel_details#:#Microsoft Excel (con dettagli)
+exp_type_csv_test#:#Valore separato da virgole (CSV), solo panoramica del test
+exp_type_csv_questions#:#Valore separato da virgole (CSV), Panoramica solo domande
+tst_passed_average_max_points#:#Punti massimi medi dei test superati
+max_points_description#:#Punti massimi raggiungibili per questa domanda
+export_written#:#Il <a href="%s">file di esportazione </a> viene scritto e può essere scaricato anche nella scheda "Esporta".
+export_not_found#:#Il file di esportazione non è stato trovato!
+any_question_type#:#Qualsiasi tipo di domanda
+legend_symbol_format#:#Simbolo/Formato
+legend_alert_good#:#Il valore indica una buona qualità
+legend_alert_medium#:#Il valore indica una qualità mediocre
+legend_alert_bad#:#Il valore indica una cattiva qualità
+legend_alert_unknown#:#Il valore non è definito o non consente un'interpretazione
+legend_uncertain#:#Il valore è incerto a causa del suo database (vedi tooltip)
+legend_comment#:#Questo simbolo indica la presenza di un commento (tooltip)
+evaluated_pass#:#Valutazione
+pass_scored#:#Punteggio Test (Standard)
+pass_best#:#Punteggio Migliore
+pass_last#:#Ultimo Punteggio
+pass_first#:#Primo Punteggio
+evaluation_info_id#:#(ID: %s)
+flush_cache#:#Aggiorna Cache
+cache_flushed#:#La cache delle statistiche di questo test è aggiornata. Ciò avviene automaticamente quando i risultati del test vengono aggiunti o modificati.
