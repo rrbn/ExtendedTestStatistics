@@ -104,7 +104,7 @@ column_sum#:#Somma delle colonne
 sumproduct#:#Somma prodotto
 reachable_points#:#Punti raggiungibili
 correct#:#Risposte corrette
-wrong#:#Wrong Answers
+wrong#:#Risposte errate
 not_answered#:#Senza risposta
 difficultyindex#:#Difficoltà dell'oggetto
 item_total_correlation#:#Correlazione oggetto-totale
@@ -114,7 +114,7 @@ not_enough_answers#:#Non sono disponibili risposte sufficienti
 qst_choices_title_long#:#Elenco delle opzioni scelte
 qst_choices_title_short#:#Opzioni scelte
 qst_choices_description#:#Mostra un elenco delle opzioni di risposta disponibili e il conteggio della loro selezione.
-qst_choices_index#:#Index
+qst_choices_index#:#Indice
 qst_choices_choice#:#Opzione di rispostan
 qst_choices_points#:#Punti
 qst_choices_count#:#Contare
