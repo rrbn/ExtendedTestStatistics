@@ -144,8 +144,12 @@ class ilExteEvalQuestionStack extends ilExteEvalQuestion
 						//FALSE
 						if ($prt_name . "-" . $node_name . "-F" == $answer_note or (stripos($answer_note, "-" . $node_name . "-F") !== FALSE)) {
 							$data[$prt_name . "-" . $node_name . "-F"]["count"]++;
-							if($prt_name . "-" . $node_name . "-F" != $answer_note){
-								$data[$prt_name . "-" . $node_name . "-F"]["feedback"] .= $answer_note;
+							if(stripos($answer_note, "-" . $node_name . "-F")){
+								if($data[$prt_name . "-" . $node_name . "-F"]["feedback"] == ""){
+									$data[$prt_name . "-" . $node_name . "-F"]["feedback"] .= $answer_note;
+								}else{
+									$data[$prt_name . "-" . $node_name . "-F"]["feedback"] .= " / ".$answer_note;
+								}
 							}
 							//RECALCULATE frequency
 							$total = (float)$data[$prt_name . "-" . $node_name . "-F"]["count"] + $data[$prt_name . "-" . $node_name . "-T"]["count"] + $data[$prt_name . "-" . $node_name . "-NoAnswer"]["count"];
@@ -158,8 +162,12 @@ class ilExteEvalQuestionStack extends ilExteEvalQuestion
 						//TRUE
 						if ($prt_name . "-" . $node_name . "-T" == $answer_note or (stripos($answer_note, "-" . $node_name . "-T") !== FALSE)) {
 							$data[$prt_name . "-" . $node_name . "-T"]["count"]++;
-							if($prt_name . "-" . $node_name . "-T" != $answer_note) {
-								$data[$prt_name . "-" . $node_name . "-T"]["feedback"] .= $answer_note;
+							if(stripos($answer_note, "-" . $node_name . "-T")) {
+								if($data[$prt_name . "-" . $node_name . "-T"]["feedback"] == ""){
+									$data[$prt_name . "-" . $node_name . "-T"]["feedback"] .= $answer_note;
+								}else{
+									$data[$prt_name . "-" . $node_name . "-T"]["feedback"] .= " / ". $answer_note;
+								}
 							}
 							//RECALCULATE frequency
 							$total = (float)$data[$prt_name . "-" . $node_name . "-F"]["count"] + $data[$prt_name . "-" . $node_name . "-T"]["count"] + $data[$prt_name . "-" . $node_name . "-NoAnswer"]["count"];
