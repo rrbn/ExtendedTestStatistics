@@ -89,6 +89,10 @@ https://github.com/ilifau/ExampleEvaluations
 Version History
 ===============
 
+Version 1.4.1 (2020-12-02)
+--------------------------
+- Included support for STACK Questions.
+
 Version 1.3.0 (2019-07-17)
 --------------------------
 - Update for ILIAS 5.4

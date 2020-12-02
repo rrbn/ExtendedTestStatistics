@@ -148,3 +148,12 @@ pass_first#:#Primo Punteggio
 evaluation_info_id#:#(ID: %s)
 flush_cache#:#Aggiorna Cache
 cache_flushed#:#La cache delle statistiche di questo test è aggiornata. Ciò avviene automaticamente quando i risultati del test vengono aggiunti o modificati.
+qst_stack_title_long#:#Elenco delle risposte
+qst_stack_title_short#:#STACK
+qst_stack_prt#:#PRT
+qst_stack_node#:#Nodo
+qst_stack_model_response#:#Nota di Risposta
+qst_stack_no_answer#:#[nessuna risposta]
+qst_stack_feedback_errors#:#Maxima Feedback
+qst_stack_partial#:#Punti Parziali
+qst_stack_frequency#:#Frequenza
