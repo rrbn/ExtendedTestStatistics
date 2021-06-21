@@ -1,7 +1,7 @@
 ILIAS Extended Test Statistics plugin
 =====================================
 
-Copyright (c) 2017 Institut fuer Lern-Innovation, Friedrich-Alexander-Universitaet Erlangen-Nuernberg, GPLv3, see LICENSE
+Copyright (c) 2021 Institut fuer Lern-Innovation, Friedrich-Alexander-Universitaet Erlangen-Nuernberg, GPLv3, see LICENSE
 
 - Authors:   Fred Neumann <fred.neumann@ili.fau.de>, Jesus Copado <jesus.copado@ili.fau.de>
 - Forum: http://www.ilias.de/docu/goto_docu_frm_3474_4315.html
@@ -89,9 +89,13 @@ https://github.com/ilifau/ExampleEvaluations
 Version History
 ===============
 
+Version 1.5.0 (2021-06-21)
+--------------------------
+- Includes extra features for STACK Questions.
+
 Version 1.4.1 (2020-12-02)
 --------------------------
-- Included support for STACK Questions.
+- Includes support for STACK Questions.
 
 Version 1.3.0 (2019-07-17)
 --------------------------

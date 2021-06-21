@@ -157,3 +157,8 @@ qst_stack_no_answer#:#[no answer]
 qst_stack_feedback_errors#:#Maxima Feedback
 qst_stack_partial#:#Partial Points
 qst_stack_frequency#:#Frequence
+qst_stack_extra_1#:#Frequency of answer notes, for each PRT, regardless of which variant was used
+qst_stack_extra_2#:#Raw inputs and PRT answer notes by variant
+qst_stack_extra_3#:#Raw inputs, regardless of which variant was used
+qst_stack_no_variants#:#No Variants used
+qst_stack_variant#:#Variant

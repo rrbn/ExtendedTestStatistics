@@ -62,9 +62,6 @@ class ilExteEvalQuestionStack extends ilExteEvalQuestion
 	 */
 	public function calculateDetails($a_question_id)
 	{
-		global $ilDB;
-
-
 		require_once('Modules/TestQuestionPool/classes/class.assQuestion.php');
 		/** @var assStackQuestion $question */
 		$question = assQuestion::_instantiateQuestion($a_question_id);
@@ -72,27 +69,13 @@ class ilExteEvalQuestionStack extends ilExteEvalQuestion
 			return new ilExteStatDetails();
 		}
 
-		$raw_data = array();
-		/** @var ilExteStatSourceAnswer $answer */
-		foreach ($this->data->getAnswersForQuestion($a_question_id, true) as $answer) {
-			$result = $ilDB->queryF(
-				"SELECT * FROM tst_solutions WHERE active_fi = %s AND pass = %s AND question_fi = %s",
-				array("integer", "integer", "integer"),
-				array($answer->active_id, $answer->pass, $a_question_id)
-			);
-			while ($data = $ilDB->fetchAssoc($result)) {
-				if ($data["points"] != NULL) {
-					$raw_data[$answer->active_id . "_" . $answer->pass][$data["value2"]] = $data["points"];
-				} else {
-					$raw_data[$answer->active_id . "_" . $answer->pass][$data["value1"]] = $data["value2"];
-				}
-			}
-		}
+		$raw_data = $this->getRawData($a_question_id);
+
 		$data = $this->processData($raw_data, $question->getPotentialResponsesTrees(), $question->getPoints());
 		// answer details
 		$details = new ilExteStatDetails();
 		$details->columns = array(
-			ilExteStatColumn::_create('prt', $this->txt('prt')."-".$this->txt('node'), ilExteStatColumn::SORT_TEXT),
+			ilExteStatColumn::_create('prt', $this->txt('prt') . "-" . $this->txt('node'), ilExteStatColumn::SORT_TEXT),
 			ilExteStatColumn::_create('model_response', $this->txt('model_response'), ilExteStatColumn::SORT_TEXT),
 			ilExteStatColumn::_create('feedback_errors', $this->txt('feedback_errors'), ilExteStatColumn::SORT_TEXT),
 			ilExteStatColumn::_create('partial', $this->txt('partial'), ilExteStatColumn::SORT_TEXT),
@@ -124,9 +107,9 @@ class ilExteEvalQuestionStack extends ilExteEvalQuestion
 			foreach ($prt_obj->getPRTNodes() as $node_name => $node) {
 				$node_name = (string)$node_name;
 				//FALSE
-				$data[$prt_name . "-" . $node_name . "-F"] = array("prt" => $prt_name, "node" => $node_name, "answernote" => $prt_name . "-" . $node_name . "-F", "feedback" => "", "count" => 0, "frequency" => 0, "partial" => $points_structure[$prt_name][$node_name]["false_mode"].$points_structure[$prt_name][$node_name]["false_value"]);
+				$data[$prt_name . "-" . $node_name . "-F"] = array("prt" => $prt_name, "node" => $node_name, "answernote" => $prt_name . "-" . $node_name . "-F", "feedback" => "", "count" => 0, "frequency" => 0, "partial" => $points_structure[$prt_name][$node_name]["false_mode"] . $points_structure[$prt_name][$node_name]["false_value"]);
 				//TRUE
-				$data[$prt_name . "-" . $node_name . "-T"] = array("prt" => $prt_name, "node" => $node_name, "answernote" => $prt_name . "-" . $node_name . "-T", "feedback" => "", "count" => 0, "frequency" => 0, "partial" => $points_structure[$prt_name][$node_name]["true_mode"].$points_structure[$prt_name][$node_name]["true_value"]);
+				$data[$prt_name . "-" . $node_name . "-T"] = array("prt" => $prt_name, "node" => $node_name, "answernote" => $prt_name . "-" . $node_name . "-T", "feedback" => "", "count" => 0, "frequency" => 0, "partial" => $points_structure[$prt_name][$node_name]["true_mode"] . $points_structure[$prt_name][$node_name]["true_value"]);
 				//NO ANSWER
 				$data[$prt_name . "-" . $node_name . "-NoAnswer"] = array("prt" => $prt_name, "node" => $node_name, "answernote" => $this->txt("no_answer"), "feedback" => "", "count" => 0, "frequency" => 0, "partial" => "");
 			}
@@ -144,11 +127,11 @@ class ilExteEvalQuestionStack extends ilExteEvalQuestion
 						//FALSE
 						if ($prt_name . "-" . $node_name . "-F" == $answer_note or (stripos($answer_note, "-" . $node_name . "-F") !== FALSE)) {
 							$data[$prt_name . "-" . $node_name . "-F"]["count"]++;
-							if(stripos($answer_note, "-" . $node_name . "-F")){
-								if($data[$prt_name . "-" . $node_name . "-F"]["feedback"] == ""){
+							if (stripos($answer_note, "-" . $node_name . "-F")) {
+								if ($data[$prt_name . "-" . $node_name . "-F"]["feedback"] == "") {
 									$data[$prt_name . "-" . $node_name . "-F"]["feedback"] .= $answer_note;
-								}else{
-									$data[$prt_name . "-" . $node_name . "-F"]["feedback"] .= " / ".$answer_note;
+								} else {
+									$data[$prt_name . "-" . $node_name . "-F"]["feedback"] .= " / " . $answer_note;
 								}
 							}
 							//RECALCULATE frequency
@@ -162,11 +145,11 @@ class ilExteEvalQuestionStack extends ilExteEvalQuestion
 						//TRUE
 						if ($prt_name . "-" . $node_name . "-T" == $answer_note or (stripos($answer_note, "-" . $node_name . "-T") !== FALSE)) {
 							$data[$prt_name . "-" . $node_name . "-T"]["count"]++;
-							if(stripos($answer_note, "-" . $node_name . "-T")) {
-								if($data[$prt_name . "-" . $node_name . "-T"]["feedback"] == ""){
+							if (stripos($answer_note, "-" . $node_name . "-T")) {
+								if ($data[$prt_name . "-" . $node_name . "-T"]["feedback"] == "") {
 									$data[$prt_name . "-" . $node_name . "-T"]["feedback"] .= $answer_note;
-								}else{
-									$data[$prt_name . "-" . $node_name . "-T"]["feedback"] .= " / ". $answer_note;
+								} else {
+									$data[$prt_name . "-" . $node_name . "-T"]["feedback"] .= " / " . $answer_note;
 								}
 							}
 							//RECALCULATE frequency
@@ -250,4 +233,254 @@ class ilExteEvalQuestionStack extends ilExteEvalQuestion
 		return $structure;
 	}
 
+	protected function getRawData($a_question_id)
+	{
+		global $ilDB;
+
+		require_once('Modules/TestQuestionPool/classes/class.assQuestion.php');
+		/** @var assStackQuestion $question */
+		$question = assQuestion::_instantiateQuestion($a_question_id);
+		if (!is_object($question)) {
+			return new ilExteStatDetails();
+		}
+
+		$raw_data = array();
+		/** @var ilExteStatSourceAnswer $answer */
+		foreach ($this->data->getAnswersForQuestion($a_question_id, true) as $answer) {
+			$result = $ilDB->queryF(
+				"SELECT * FROM tst_solutions WHERE active_fi = %s AND pass = %s AND question_fi = %s",
+				array("integer", "integer", "integer"),
+				array($answer->active_id, $answer->pass, $a_question_id)
+			);
+			while ($data = $ilDB->fetchAssoc($result)) {
+				if ($data["points"] != NULL) {
+					$raw_data[$answer->active_id . "_" . $answer->pass][$data["value2"]] = $data["points"];
+				} else {
+					$raw_data[$answer->active_id . "_" . $answer->pass][$data["value1"]] = $data["value2"];
+				}
+			}
+		}
+
+		return $raw_data;
+	}
+
+	public function getExtraInfo($a_question_id)
+	{
+		require_once('Modules/TestQuestionPool/classes/class.assQuestion.php');
+		/** @var assStackQuestion $question */
+		$question = assQuestion::_instantiateQuestion($a_question_id);
+		if (!is_object($question)) {
+			return new ilExteStatDetails();
+		}
+
+		$raw_data = $this->getRawData($a_question_id);
+		$text = $this->firstRequest($raw_data, $question);
+		$text .= '</br>' . $this->secondRequest($raw_data, $question);
+		$text .= '</br>' . $this->thirdRequest($raw_data, $question);
+		return $text;
+	}
+
+	public function firstRequest($raw_data, assStackQuestion $question)
+	{
+		$data = array();
+
+		//Prepare data array
+		foreach ($question->getPotentialResponsesTrees() as $prt_name => $value) {
+			$data[$prt_name] = array('value' => array(), 'count' => 0);
+		}
+
+		//Fill data array
+		foreach ($data as $prt_name => $value) {
+			foreach ($raw_data as $activeid_pass => $user_answer) {
+				//Answer Note
+				if (isset($user_answer['xqcas_prt_' . $prt_name . '_answernote'])) {
+					$data[$prt_name]['value'][$activeid_pass] = $user_answer['xqcas_prt_' . $prt_name . '_answernote'];
+					$data[$prt_name]['count']++;
+				}
+			}
+		}
+
+		//Adjust data Array
+		$view_data = array();
+		foreach ($data as $prt_name => $prt) {
+			$view_data[$prt_name] = array('count' => $prt['count'], 'answer_notes' => array());
+			foreach ($prt['value'] as $attempt => $answer_note) {
+				if (!key_exists($answer_note, $view_data[$prt_name]['answer_notes'])) {
+					$view_data[$prt_name]['answer_notes'][$answer_note]['value'] = 1;
+					$view_data[$prt_name]['answer_notes'][$answer_note]['percentage'] = (float)$view_data[$prt_name]['answer_notes'][$answer_note]['value'] / $prt['count'];
+				} else {
+					$view_data[$prt_name]['answer_notes'][$answer_note]['value']++;
+					$view_data[$prt_name]['answer_notes'][$answer_note]['percentage'] = ($view_data[$prt_name]['answer_notes'][$answer_note]['value'] / $prt['count']);
+				}
+			}
+		}
+
+
+		//Show request
+		$text = '<div class="alert alert-info" role="alert">'.$this->txt('extra_1').'</div>';
+		foreach ($view_data as $prt_name => $values) {
+			$text .= '#' . $prt_name . ' (' . $view_data[$prt_name]['count'] . ')</br>';
+			foreach ($values['answer_notes'] as $answer_note => $info) {
+				$text .= $info['value'] . ' ( ' . round($info['percentage'] * 100, 2) . '% ) / ' . $answer_note . '  </br>';
+			}
+		}
+
+		return $text;
+	}
+
+	public function secondRequest($raw_data, assStackQuestion $question)
+	{
+		$data = array();
+		$pre_data = array();
+		$data2 = array();
+
+		//are there variants?
+		$variants = false;
+		foreach ($raw_data as $activeid_pass => $attempt) {
+			foreach ($attempt as $key => $value) {
+				foreach ($question->getPotentialResponsesTrees() as $prt_name => $p_value) {
+					//Get Variant
+					$seed = 'xqcas_prt_' . $prt_name . '_seed';
+					if (key_exists($seed, $attempt)) {
+						if($attempt[$seed] === "0"){
+							$pre_data[$attempt[$seed]][$activeid_pass] = $attempt;
+						}else{
+							$pre_data[$attempt[$seed]][$activeid_pass] = $attempt;
+							$variants = true;
+						}
+					}
+				}
+			}
+		}
+
+		//Fill data array
+		foreach ($pre_data as $variant => $attempt) {
+			foreach ($attempt as $activeid_pass => $value) {
+				foreach ($question->getPotentialResponsesTrees() as $prt_name => $p_value) {
+					$answer_note = 'xqcas_prt_' . $prt_name . '_answernote';
+					if (key_exists($answer_note, $value)) {
+						$data[$variant][$activeid_pass][$prt_name] = $value[$answer_note];
+					}
+					foreach ($question->getInputs() as $input_name => $i_value) {
+						$user_answer = 'xqcas_prt_' . $prt_name . '_value_' . $input_name;
+						if (key_exists($user_answer, $value)) {
+							$data[$variant][$activeid_pass][$input_name] = $value[$user_answer];
+							$data2[$input_name][$activeid_pass] = $value[$user_answer];
+						}
+					}
+				}
+			}
+		}
+
+		$this->data_view = $data2;
+
+		if (!$variants) {
+			return $this->txt('no_variants').'</br>';
+		}
+
+		//Adjust data
+		$view_data_pre = array();
+		$view_data = array();
+		$input_answers = $question->getInputs();
+		foreach ($input_answers as $input_name => $object) {
+			$view_data_pre['input'][$input_name] = array();
+		}
+		$PRT_answer_notes = $question->getPotentialResponsesTrees();
+		foreach ($PRT_answer_notes as $prt_name => $object) {
+			$view_data_pre['prt'][$prt_name] = array();
+		}
+
+
+		foreach ($data as $variant => $attempt) {
+			foreach ($attempt as $activeid_pass => $values) {
+				foreach ($values as $key => $value) {
+					//Inputs
+					if (array_key_exists($key, $view_data_pre['input'])) {
+						if (!isset($view_data['input'][$key][$value])) {
+							$view_data[$variant]['input'][$key][$value]['count'] = 1;
+						} else {
+							$view_data[$variant]['input'][$key][$value]['count']++;
+						}
+					}
+
+					//PRT ANSWERNOTES
+					if (array_key_exists($key, $view_data_pre['prt'])) {
+						if (!isset($view_data['prt'][$key][$value])) {
+							$view_data[$variant]['prt'][$key][$value]['count'] = 1;
+						} else {
+							$view_data[$variant]['prt'][$key][$value]['count']++;
+						}
+					}
+				}
+			}
+		}
+
+
+		//Show request
+		$text = '<div class="alert alert-info" role="alert">'.$this->txt('extra_2').'</div>';
+
+		foreach ($view_data as $variant => $attempt) {
+			$text .= '<div class="alert alert-success" role="alert">'.$this->txt('variant').': '.$variant.'</div>';
+			//Inputs
+			if (isset($attempt['input'])) {
+				foreach ($attempt['input'] as $input_name => $answers) {
+					if (is_array($answers)) {
+						$answer_num = sizeof($answers);
+						$text .= '##' . $input_name . ' (' . $answer_num . ')</br>';
+						foreach ($answers as $user_answer => $count_array) {
+							if (isset($count_array['count'])) {
+								$text .= $count_array['count'] . ' (' . round((sizeof($count_array) / $answer_num) * 100, 2) . '%); ' . $user_answer . '</br>';
+							}
+						}
+					}
+				}
+			}
+			$text .= '</br>';
+
+			//PRT
+			if (isset($attempt['prt'])) {
+				foreach ($attempt['prt'] as $prt_name => $answer_notes) {
+					if (is_array($answer_notes)) {
+						$answernotes_num = sizeof($answer_notes);
+						$text .= '##' . $prt_name . ' (' . $answernotes_num . ')</br>';
+						foreach ($answer_notes as $answer_note => $count_array) {
+							if (isset($count_array['count'])) {
+								$text .= $count_array['count'] . ' (' . round((sizeof($count_array) / $answernotes_num) * 100, 2) . '%); ' . $answer_note . '</br>';
+							}
+						}
+					}
+				}
+			}
+		}
+
+		return $text;
+	}
+
+	public function thirdRequest($raw_data, assStackQuestion $question)
+	{
+
+		//Show request
+		$text = '<div class="alert alert-info" role="alert">'.$this->txt('extra_3').'</div>';
+
+		$data = $this->data_view;
+		foreach ($question->getInputs() as $input_name => $input){
+			if(isset($data[$input_name])){
+				$text .= '##' . $input_name . ' (' . sizeof($data[$input_name]) . ')</br>';
+
+				$total = array();
+				foreach ($data[$input_name] as $activeid_pass => $user_answer){
+					if(key_exists($user_answer,$total)){
+						$total[$user_answer]++;
+					}else{
+						$total[$user_answer] = 1;
+					}
+				}
+				foreach ($total as $user_answer => $count){
+					$text .= $count . ' (' . round(($count / sizeof($data[$input_name])) * 100, 2) . '%); ' . $user_answer . '</br>';
+				}
+			}
+		}
+
+		return $text;
+	}
 }

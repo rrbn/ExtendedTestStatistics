@@ -157,3 +157,8 @@ qst_stack_no_answer#:#[keine Antwort]
 qst_stack_feedback_errors#:#Maxima Rückmeldung
 qst_stack_partial#:#Teilpunkte
 qst_stack_frequency#:#Frequenz
+qst_stack_extra_1#:#Häufigkeit der Antwortnotizen für jedes PRT, unabhängig davon, welche Variante verwendet wurde.
+qst_stack_extra_2#:#Roheingaben und PRT-Antwortnotizen nach Variante
+qst_stack_extra_3#:#Roheingaben, egal welche Variante verwendet wurde
+qst_stack_no_variants#:#Keine Varianten
+qst_stack_variant#:#Variante

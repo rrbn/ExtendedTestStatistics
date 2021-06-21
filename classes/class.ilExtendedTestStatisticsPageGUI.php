@@ -245,6 +245,14 @@ class ilExtendedTestStatisticsPageGUI
         $this->ctrl->saveParameter($this, 'qid');
 
         $evaluation = $this->statObj->getEvaluation($_GET['details']);
+
+        //Extra STACK features
+		if (is_a($evaluation, 'ilExteEvalQuestionStack')){
+			$extra_content = $evaluation->getExtraInfo($_GET['qid']);
+		} else {
+			$extra_content = '';
+		}
+
         $chartHTML = '';
         if ($evaluation->providesChart())
         {
@@ -260,7 +268,7 @@ class ilExtendedTestStatisticsPageGUI
 		$tableGUI->setDescription($evaluation->getTitle());
 
 		$legendGUI = ilExteStatTableGUI::_create('ilExteStatLegendTableGUI', $this, 'showQuestionDetails');
-        $this->tpl->setContent($chartHTML . $tableGUI->getHTML() . $legendGUI->getHTML());
+        $this->tpl->setContent($chartHTML . $tableGUI->getHTML() . $extra_content . $legendGUI->getHTML());
         $this->tpl->printToStdout();
     }
 
