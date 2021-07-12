@@ -475,9 +475,12 @@ class ilExteEvalQuestionStack extends ilExteEvalQuestion
 						$total[$user_answer] = 1;
 					}
 				}
-				foreach ($total as $user_answer => $count){
-					$text .= $count . ' (' . round(($count / sizeof($data[$input_name])) * 100, 2) . '%); ' . $user_answer . '</br>';
-				}
+			}
+
+			arsort($total);
+
+			foreach ($total as $user_answer => $count){
+				$text .= $count . ' (' . round(($count / sizeof($data[$input_name])) * 100, 2) . '%); ' . $user_answer . '</br>';
 			}
 		}
 

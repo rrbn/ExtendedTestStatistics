@@ -89,6 +89,11 @@ https://github.com/ilifau/ExampleEvaluations
 Version History
 ===============
 
+Version 1.5.1 (2021-07-12)
+--------------------------
+- Variant-regardless Option is now sorted.
+- Solved a typo.
+
 Version 1.5.0 (2021-06-21)
 --------------------------
 - Includes extra features for STACK Questions.

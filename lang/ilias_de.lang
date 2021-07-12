@@ -162,3 +162,4 @@ qst_stack_extra_2#:#Roheingaben und PRT-Antwortnotizen nach Variante
 qst_stack_extra_3#:#Roheingaben, egal welche Variante verwendet wurde
 qst_stack_no_variants#:#Keine Varianten
 qst_stack_variant#:#Variante
+qst_stack_count#:#Anzahl
