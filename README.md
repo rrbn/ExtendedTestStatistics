@@ -93,6 +93,11 @@ Version 1.6.0 (2021-12-01)
 --------------------------
 - Updated for ILIAS 7
 
+Version 1.5.1 (2021-07-12)
+--------------------------
+- Variant-regardless Option is now sorted.
+- Solved a typo.
+
 
 Version 1.5.0 (2021-06-21)
 --------------------------
