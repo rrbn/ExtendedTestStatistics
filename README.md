@@ -89,10 +89,10 @@ https://github.com/ilifau/ExampleEvaluations
 Version History
 ===============
 
-Version 1.5.1 (2021-07-12)
+Version 1.6.0 (2021-12-01)
 --------------------------
-- Variant-regardless Option is now sorted.
-- Solved a typo.
+- Updated for ILIAS 7
+
 
 Version 1.5.0 (2021-06-21)
 --------------------------
