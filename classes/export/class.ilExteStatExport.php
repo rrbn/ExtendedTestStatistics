@@ -1,6 +1,14 @@
 <?php
 // Copyright (c) 2017 Institut fuer Lern-Innovation, Friedrich-Alexander-Universitaet Erlangen-Nuernberg, GPLv3, see LICENSE
 
+use PhpOffice\PhpSpreadsheet\Cell\DataType;
+use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Writer\Csv;
+
 /**
  * Extended Test Statistics Export
  *
@@ -95,9 +103,8 @@ class ilExteStatExport
 	 */
 	public function buildExportFile($path)
 	{
-		//Creating Files with Charts using PHPExcel
-		require_once $this->plugin->getDirectory(). '/lib/PHPExcel-1.8/Classes/PHPExcel.php';
-		$excelObj = new PHPExcel();
+        $excelObj = new Spreadsheet();
+        //$excelObj->removeSheetByIndex(0);
 
 		if ($this->type == self::TYPE_CSV)
 		{
@@ -162,22 +169,24 @@ class ilExteStatExport
 		switch ($this->type)
 		{
 			case self::TYPE_EXCEL:
-				/** @var PHPExcel_Writer_Excel2007 $writerObj */
-				$writerObj = PHPExcel_IOFactory::createWriter($excelObj, 'Excel2007');
-				$writerObj->save($path);
+
+                $writer = IOFactory::createWriter($excelObj, 'Xlsx');
+                $writer->save($path);
 				break;
+
 			case self::TYPE_CSV:
-				/** @var PHPExcel_Writer_CSV $writerObj */
-				$writerObj = PHPExcel_IOFactory::createWriter($excelObj, 'CSV');
-				$writerObj->setDelimiter(';');
-				$writerObj->setEnclosure('"');
-				$writerObj->save($path);
+                /** @var Csv $writer */
+                $writer = IOFactory::createWriter($excelObj, 'Csv');
+				$writer->setDelimiter(';');
+				$writer->setEnclosure('"');
+				$writer->save($path);
+                break;
 		}
 	}
 
 	/**
 	 * Fill the legend sheet
-	 * @param PHPExcel_Worksheet	$worksheet
+	 * @param Worksheet	$worksheet
 	 */
 	protected function fillLegend($worksheet)
 	{
@@ -262,10 +271,10 @@ class ilExteStatExport
 		// legend header
 		$row++;
 		$cell = $worksheet->getCell('A'.$row);
-		$cell->setValueExplicit($this->plugin->txt('legend_symbol_format'), PHPExcel_Cell_DataType::TYPE_STRING);
+		$cell->setValueExplicit($this->plugin->txt('legend_symbol_format'), DataType::TYPE_STRING);
 		$cell->getStyle()->applyFromArray($this->headerStyle);
 		$cell = $worksheet->getCell('B'.$row);
-		$cell->setValueExplicit($lng->txt('description'), PHPExcel_Cell_DataType::TYPE_STRING);
+		$cell->setValueExplicit($lng->txt('description'), DataType::TYPE_STRING);
 		$cell->getStyle()->applyFromArray($this->headerStyle);
 		$row++;
 
@@ -282,7 +291,7 @@ class ilExteStatExport
 			}
 
 			$cell = $worksheet->getCell('B'.$row);
-			$cell->setValueExplicit($data['description'], PHPExcel_Cell_DataType::TYPE_STRING);
+			$cell->setValueExplicit($data['description'], DataType::TYPE_STRING);
 			$row++;
 		}
 
@@ -293,7 +302,7 @@ class ilExteStatExport
 
 	/**
 	 * Fill the test overview sheet
-	 * @param PHPExcel_Worksheet	$worksheet
+	 * @param Worksheet	$worksheet
 	 */
 	protected function fillTestOverview($worksheet)
 	{
@@ -346,7 +355,7 @@ class ilExteStatExport
 
 			// title
 			$cell = $worksheet->getCell('A'.$rownum);
-			$cell->setValueExplicit($row['title'],PHPExcel_Cell_DataType::TYPE_STRING);
+			$cell->setValueExplicit($row['title'],DataType::TYPE_STRING);
 			$cell->getStyle()->applyFromArray($this->headerStyle);
 			if (!empty($row['description']))
 			{
@@ -356,7 +365,7 @@ class ilExteStatExport
 			/** @var ilExteStatValue $value */
 			$value = $row['value'];
 			$cell = $worksheet->getCell('B'.$rownum);
-			$cell->getStyle()->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+			$cell->getStyle()->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
 			$this->valView->writeInCell($cell, $value);
 			if (!empty($value->comment))
 			{
@@ -371,7 +380,7 @@ class ilExteStatExport
 
 	/**
 	 * Fill the questions overview sheet
-	 * @param PHPExcel_Worksheet	$worksheet
+	 * @param Worksheet	$worksheet
 	 */
 	protected function fillQuestionsOverview($worksheet)
 	{
@@ -399,11 +408,11 @@ class ilExteStatExport
 			{
 				continue;
 			}
-			$letter = PHPExcel_Cell::stringFromColumnIndex($col++);
+			$letter = Coordinate::stringFromColumnIndex($col++);
 			$mapping[$name] = $letter;
 			$coordinate = $letter.'1';
 			$cell = $worksheet->getCell($coordinate);
-			$cell->setValueExplicit($def['title'], PHPExcel_Cell_DataType::TYPE_STRING);
+			$cell->setValueExplicit($def['title'], DataType::TYPE_STRING);
 			$cell->getStyle()->applyFromArray($this->headerStyle);
 			if (!empty($def['description']))
 			{
@@ -454,7 +463,7 @@ class ilExteStatExport
 
 	/**
 	 * Add a sheet with details for the test
-	 * @param PHPExcel	$excelObj
+	 * @param Spreadsheet	$excelObj
 	 * @param ilExteEvalTest $evaluation
 	 */
 	protected function addTestDetailsSheet($excelObj, $evaluation)
@@ -474,11 +483,11 @@ class ilExteStatExport
 		$mapping = array();
 		foreach ($details->columns as $column)
 		{
-			$letter = PHPExcel_Cell::stringFromColumnIndex($col);
+			$letter = Coordinate::stringFromColumnIndex($col);
 			$mapping[$column->name] = $letter;
 			$coordinate = $letter.'1';
 			$cell = $worksheet->getCell($coordinate);
-			$cell->setValueExplicit($column->title, PHPExcel_Cell_DataType::TYPE_STRING);
+			$cell->setValueExplicit($column->title, DataType::TYPE_STRING);
 			$cell->getStyle()->applyFromArray($this->headerStyle);
 			if (!empty($column->comment))
 			{
@@ -515,7 +524,7 @@ class ilExteStatExport
 
 	/**
 	 * Add a sheet with details for the test
-	 * @param PHPExcel	$excelObj
+	 * @param Spreadsheet	$excelObj
 	 * @param ilExteEvalQuestion $evaluation
 	 */
 	protected function addQuestionsDetailsSheet($excelObj, $evaluation)
@@ -552,7 +561,7 @@ class ilExteStatExport
 				{
 					if (!isset($columns[$column->name]))
 					{
-						$letter = PHPExcel_Cell::stringFromColumnIndex($col);
+						$letter = Coordinate::stringFromColumnIndex($col);
 						$columns[$column->name] = $column;
 						$mapping[$column->name] = $letter;
 						$col++;
@@ -591,9 +600,9 @@ class ilExteStatExport
 		// can be written when all columns are known
 		foreach ($columns as $column)
 		{
-			$coordinate = $coordinate = $mapping[$column->name].'1';
+			$coordinate =  $mapping[$column->name].'1';
 			$cell = $worksheet->getCell($coordinate);
-			$cell->setValueExplicit($column->title, PHPExcel_Cell_DataType::TYPE_STRING);
+			$cell->setValueExplicit($column->title, DataType::TYPE_STRING);
 			$cell->getStyle()->applyFromArray($this->headerStyle);
 			if (!empty($column->comment))
 			{
@@ -608,7 +617,7 @@ class ilExteStatExport
 
 
 	/**
-	 * @param PHPExcel_Worksheet	$worksheet
+	 * @param worksheet	$worksheet
 	 */
 	protected function adjustSizes($worksheet, $range = null)
 	{

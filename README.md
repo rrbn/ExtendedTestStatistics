@@ -89,6 +89,10 @@ https://github.com/ilifau/ExampleEvaluations
 Version History
 ===============
 
+Version 1.6.1 (2022-01-11)
+--------------------------
+- Removed the deprecated PHPExcel library (replaced by PhpSpreadsheet from ILIAS)
+
 Version 1.6.0 (2021-12-01)
 --------------------------
 - Updated for ILIAS 7

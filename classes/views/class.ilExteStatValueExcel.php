@@ -1,6 +1,17 @@
 <?php
 // Copyright (c) 2017 Institut fuer Lern-Innovation, Friedrich-Alexander-Universitaet Erlangen-Nuernberg, GPLv3, see LICENSE
 
+
+use PhpOffice\PhpSpreadsheet\Shared\Date;
+use PhpOffice\PhpSpreadsheet\Cell\Cell;
+use PhpOffice\PhpSpreadsheet\Cell\DataType;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
+use PhpOffice\PhpSpreadsheet\Comment;
+use PhpOffice\PhpSpreadsheet\RichText\RichText;
+use PhpOffice\PhpSpreadsheet\RichText\TextElement;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
+
 /**
  * Excel representation of a statistical values
  */
@@ -34,7 +45,7 @@ class ilExteStatValueExcel
 
 	/**
 	 * Fill a cell with the value
-	 * @param PHPExcel_Cell	$cell
+	 * @param Cell	$cell
 	 * @param ilExteStatValue $value
 	 */
 	public function writeInCell($cell, ilExteStatValue $value)
@@ -48,48 +59,44 @@ class ilExteStatValueExcel
 			switch ($value->type)
 			{
 				case ilExteStatValue::TYPE_ALERT:
-					$cell->setValueExplicit(ilUtil::secureString($value->value), PHPExcel_Cell_DataType::TYPE_STRING);
-					$numberFormat->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
-					break;
-
-				case ilExteStatValue::TYPE_TEXT:
-					$cell->setValueExplicit(ilUtil::secureString($value->value), PHPExcel_Cell_DataType::TYPE_STRING);
-					$numberFormat->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
+                case ilExteStatValue::TYPE_TEXT:
+					$cell->setValueExplicit(ilUtil::secureString($value->value), DataType::TYPE_STRING);
+					$numberFormat->setFormatCode(NumberFormat::FORMAT_TEXT);
 					break;
 
 				case ilExteStatValue::TYPE_NUMBER:
-					$cell->setValueExplicit($value->value, PHPExcel_Cell_DataType::TYPE_NUMERIC);
+					$cell->setValueExplicit($value->value, DataType::TYPE_NUMERIC);
 					$numberFormat->setFormatCode($value->precision == 0 ?
-						PHPExcel_Style_NumberFormat::FORMAT_NUMBER : PHPExcel_Style_NumberFormat::FORMAT_NUMBER_00);
-					$alignment->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+                        NumberFormat::FORMAT_NUMBER : NumberFormat::FORMAT_NUMBER_00);
+					$alignment->setHorizontal(Alignment::HORIZONTAL_RIGHT);
 					break;
 
 				case ilExteStatValue::TYPE_DURATION:
-					$cell->setValueExplicit($value->value/86400, PHPExcel_Cell_DataType::TYPE_NUMERIC);
-					$numberFormat->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_DATE_TIME4);
-					$alignment->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+					$cell->setValueExplicit($value->value/86400, DataType::TYPE_NUMERIC);
+					$numberFormat->setFormatCode(NumberFormat::FORMAT_DATE_TIME4);
+					$alignment->setHorizontal(Alignment::HORIZONTAL_RIGHT);
 					break;
 
 				case ilExteStatValue::TYPE_DATETIME:
 					if ($value->value instanceof ilDateTime)
 					{
-						$cell->setValue(PHPExcel_Shared_Date::PHPToExcel($value->value->getUnixTime()));
-						$numberFormat->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_DATE_DATETIME);
-						$alignment->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+						$cell->setValue(Date::PHPToExcel($value->value->getUnixTime()));
+						$numberFormat->setFormatCode(NumberFormat::FORMAT_DATE_DATETIME);
+						$alignment->setHorizontal(Alignment::HORIZONTAL_RIGHT);
 						break;
 					}
 					break;
 				case ilExteStatValue::TYPE_PERCENTAGE:
-					$cell->setValueExplicit($value->value/100, PHPExcel_Cell_DataType::TYPE_NUMERIC);
+					$cell->setValueExplicit($value->value/100, DataType::TYPE_NUMERIC);
 					$numberFormat->setFormatCode($value->precision == 0 ?
-						PHPExcel_Style_NumberFormat::FORMAT_PERCENTAGE : PHPExcel_Style_NumberFormat::FORMAT_PERCENTAGE_00);
-					$alignment->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+						NumberFormat::FORMAT_PERCENTAGE : NumberFormat::FORMAT_PERCENTAGE_00);
+					$alignment->setHorizontal(Alignment::HORIZONTAL_RIGHT);
 					break;
 
 				case ilExteStatValue::TYPE_BOOLEAN:
-					$cell->setValueExplicit((bool) $value->value, PHPExcel_Cell_DataType::TYPE_BOOL);
-					$numberFormat->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_NUMBER);
-					$alignment->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+					$cell->setValueExplicit((bool) $value->value, DataType::TYPE_BOOL);
+					$numberFormat->setFormatCode(NumberFormat::FORMAT_NUMBER);
+					$alignment->setHorizontal(Alignment::HORIZONTAL_RIGHT);
 					break;
 			}
 		}
@@ -115,11 +122,10 @@ class ilExteStatValueExcel
 					$color = self::COLOR_NONE;
 			}
 
-			$cell->getStyle()->applyFromArray(array(
-				'fill' => array(
-					'type' => PHPExcel_Style_Fill::FILL_SOLID,
+			$cell->getStyle()->getFill()->applyFromArray(array(
+					'fillType' => Fill::FILL_SOLID,
 					'color' => array('rgb' => $color),
-			)));
+			));
 		}
 
 		if ($value->uncertain)
@@ -134,7 +140,7 @@ class ilExteStatValueExcel
 	/**
 	 * Get the Excel comment for the value
 	 * @param ilExteStatValue $value
-	 * @return PHPExcel_Comment
+	 * @return Comment
 	 */
 	public function getComment(ilExteStatValue $value)
 	{
@@ -144,13 +150,13 @@ class ilExteStatValueExcel
 	/**
 	 * Create an excel comment from a text
 	 * @param $text
-	 * @return	PHPExcel_Comment
+	 * @return	Comment
 	 */
 	public static function _createComment($text)
 	{
-		$comment = new PHPExcel_Comment();
-		$richText = new PHPExcel_RichText();
-		$extElement = new PHPExcel_RichText_TextElement($text);
+		$comment = new Comment();
+		$richText = new RichText();
+		$extElement = new TextElement($text);
 		$richText->addText($extElement);
 		$comment->setText($richText);
 		$comment->setHeight('150pt');
