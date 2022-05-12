@@ -401,14 +401,14 @@ class ilExteStatExport
 
 		$comments = array();
 		$mapping = array();
-		$col = 0;
+		$col = 1;
 		foreach ($header as $name => $def)
 		{
 			if (!empty($def['test_types']) && !in_array($this->statObj->getSourceData()->getTestType(), $def['test_types']))
 			{
 				continue;
 			}
-			$letter = Coordinate::stringFromColumnIndex($col++);
+			$letter = Coordinate::stringFromColumnIndex($col);
 			$mapping[$name] = $letter;
 			$coordinate = $letter.'1';
 			$cell = $worksheet->getCell($coordinate);
@@ -418,6 +418,7 @@ class ilExteStatExport
 			{
 				$comments[$coordinate] = ilExteStatValueExcel::_createComment($def['description']);
 			}
+			$col++;
 		}
 
 		$row = 2;
@@ -478,7 +479,7 @@ class ilExteStatExport
 			return;
 		}
 
-		$col = 0;
+		$col = 1;
 		$comments = array();
 		$mapping = array();
 		foreach ($details->columns as $column)
