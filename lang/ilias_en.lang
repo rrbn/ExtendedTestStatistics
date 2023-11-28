@@ -19,7 +19,7 @@ answers_count#:#Answered
 answers_count_description#:#Number of users who answered this question
 average_points#:#Ø Points
 average_points_description#:#Average points reached by the user who git this question assigned
-average_percentage#:#Percent
+average_percentage#:#Percent Points
 average_percentage_description#:#Average percentage of points reached by the user who git this question assigned
 tst_median_title_long#:#Median Score
 tst_median_title_short#:#Median
@@ -45,6 +45,9 @@ tst_cic_min_medium_description#:#Minimum value rated as 'mediocre'. 0 to suppres
 tst_cic_min_good_title#:#Minimum 'good'
 tst_cic_min_good_description#:#Minimum value rated as 'good'. 0 to suppress the rating.
 tst_cic_sum_of_mean_is_zero#:#The sum of mean is zero
+qst_correct_title_long#:#Percentage of Correct Answers
+qst_correct_title_short#:#Correct Answers
+qst_correct_description#:#The percentage rate for each question is calculated by dividing the number of answers with a full score by the number of questions assigned.
 qst_facility_title_long#:#Facility Index
 qst_facility_title_short#:#Facility Index
 qst_facility_description#:#The facility index is calculated as the relation of the distances between average and minimum and between maximum and minimum of the reached scores, expressed as a percentage. The higher the facility index, the easier the question is. The index should be in a range between 20% and 80%.
@@ -163,3 +166,5 @@ qst_stack_extra_3#:#Raw inputs, regardless of which variant was used
 qst_stack_no_variants#:#No Variants used
 qst_stack_variant#:#Variant
 qst_stack_count#:#Count
+question_position#:#Position
+question_title#:#Question

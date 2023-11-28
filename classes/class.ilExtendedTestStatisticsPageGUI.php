@@ -227,16 +227,26 @@ class ilExtendedTestStatisticsPageGUI
 			$tableGUI->resetOffset();
 			$tableGUI->writeFilterToSession();
 		}
-		elseif (($this->ctrl->getCmd() == 'applyFilter'))
+		elseif (($this->ctrl->getCmd() == 'resetFilter'))
 		{
 			$tableGUI->resetOffset();
 			$tableGUI->resetFilter();
 		}
 
 		$tableGUI->prepareData();
+        $tableHtml = $tableGUI->getHTML();
+        
+        $chartHtml = '';
+        /** @var ilExteEvalQuestionPercentCorrect $evaluation */
+        if (!empty($evaluation = $this->statObj->getEvaluation('ilExteEvalQuestionPercentCorrect'))) {
+            $chart = $evaluation->getOverviewChart($tableGUI->getShownQuestionIds());
+            $chart->setAutoResize(true);
+            $chartHtml .= $chart->getHTML();
+        }
 
 		$legendGUI = ilExteStatTableGUI::_create('ilExteStatLegendTableGUI', $this, 'showQuestionsOverview');
-		$this->tpl->setContent($tableGUI->getHTML() . $legendGUI->getHTML());
+        $legendHtml = $legendGUI->getHTML();
+		$this->tpl->setContent($tableHtml . $chartHtml. $legendHtml);
         $this->tpl->printToStdout();
 	}
 

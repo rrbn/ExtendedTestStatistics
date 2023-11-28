@@ -177,7 +177,8 @@ class ilExtendedTestStatistics
 		foreach ($this->config->getEvaluationClasses() as $class => $availability)
 		{
 			// check configured availability
-			if (!($isAdmin || $availability == ilExtendedTestStatisticsConfig::FOR_USER))
+			if ( $availability == ilExtendedTestStatisticsConfig::FOR_NONE ||
+                !($isAdmin || $availability == ilExtendedTestStatisticsConfig::FOR_USER))
 			{
 				continue;
 			}

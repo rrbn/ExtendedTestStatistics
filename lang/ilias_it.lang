@@ -19,7 +19,7 @@ answers_count#:#Risposto
 answers_count_description#:#Numero di utenti che hanno risposto a questa domanda
 average_points#:#Ø Punti
 average_points_description#:#Punti medi raggiunti dall'utente che ha risposto a questa domanda assegnata
-average_percentage#:#Percento
+average_percentage#:#Percento di punti
 average_percentage_description#:#Percentuale media di punti raggiunti dall'utente che ha risposto a questa domanda assegnata
 tst_median_title_long#:#Punteggio mediano
 tst_median_title_short#:#Mediano
@@ -45,6 +45,9 @@ tst_cic_min_medium_description#:#Valore minimo classificato come "mediocre". 0 p
 tst_cic_min_good_title#:#Minimo "buono"
 tst_cic_min_good_description#:#Valore minimo classificato come "buono". 0 per sopprimere la valutazione.
 tst_cic_sum_of_mean_is_zero#:#La somma della media è zero
+qst_correct_title_long#:#Percentuale di risposte corrette
+qst_correct_title_short#:#Risposte corrette
+qst_correct_description#:#Il tasso percentuale per ogni domanda è calcolato dividendo il numero di risposte con punteggio pieno per il numero di domande assegnate.
 qst_facility_title_long#:#Indice della struttura
 qst_facility_title_short#:#Indice della struttura
 qst_facility_description#:#L'indice di struttura è calcolato come il rapporto delle distanze tra media e minimo e tra massimo e minimo dei punteggi raggiunti, espresso in percentuale. Più alto è l'indice di struttura, più facile è la domanda. L'indice dovrebbe essere compreso tra il 20% e l'80%.
@@ -157,3 +160,5 @@ qst_stack_no_answer#:#[nessuna risposta]
 qst_stack_feedback_errors#:#Maxima Feedback
 qst_stack_partial#:#Punti Parziali
 qst_stack_frequency#:#Frequenza
+question_position#:#Posizione
+question_title#:#

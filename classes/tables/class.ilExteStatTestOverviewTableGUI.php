@@ -40,21 +40,19 @@ class ilExteStatTestOverviewTableGUI extends ilExteStatTableGUI
      */
     public function prepareData()
     {
-        global $lng;
-
-        $data = array();
+        $data = [];
 
         /** @var ilExteStatValue[]  $values */
         $values = $this->statObj->getSourceData()->getBasicTestValues();
 		foreach ($this->statObj->getSourceData()->getBasicTestValuesList() as $def)
         {
-            array_push($data,
-                array(
-                    'title' => $def['title'],
-                    'description' => $def['description'],
-                    'value' => $values[$def['id']],
-                    'details' => null
-                ));
+            $data[] = [
+                'title' => $def['title'],
+                'description' => $def['description'],
+                'value' => $values[$def['id']],
+                'details' => null
+                
+            ];
         }
 
 		/**
@@ -63,13 +61,14 @@ class ilExteStatTestOverviewTableGUI extends ilExteStatTableGUI
 		 */
 		foreach ($this->statObj->getEvaluations(ilExtendedTestStatistics::LEVEL_TEST) as $class => $evaluation)
         {
-            array_push($data,
-                array(
+            if ($evaluation->providesValue() || $evaluation->providesDetails()) {
+                $data[] = [
                     'title' => $evaluation->getTitle(),
                     'description' => $evaluation->getDescription(),
                     'value' => $evaluation->providesValue() ? $evaluation->getValue() : null,
                     'details' => $evaluation->providesDetails() ? $class : null
-                ));
+                ];
+            }
         }
 
 		// Debug value formats
@@ -77,13 +76,12 @@ class ilExteStatTestOverviewTableGUI extends ilExteStatTableGUI
 		{
 			foreach (ilExteStatValue::_getDemoValues() as $value)
 			{
-				array_push($data,
-					array(
-						'title' => $value->comment,
-						'description' => '',
-						'value' => $value,
-						'details' => null
-					));
+                $data[] = [
+                    'title' => $value->comment,
+                    'description' => '',
+                    'value' => $value,
+                    'details' => null
+                ];
 			}
 		}
 

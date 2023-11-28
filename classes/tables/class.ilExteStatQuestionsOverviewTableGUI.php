@@ -11,6 +11,9 @@ class ilExteStatQuestionsOverviewTableGUI extends ilExteStatTableGUI
 
 	/** @var array names of the columns with basic values */
 	protected $basicColumns = array();
+    
+    /** @var int[] question ids of the currently shown questions */
+    protected $shownQuestionIds = array();
 
     /**
 	 * Constructor
@@ -246,6 +249,8 @@ class ilExteStatQuestionsOverviewTableGUI extends ilExteStatTableGUI
 	public function fillRow($data)
 	{
 		$question_id = $data['question_id'];
+        
+        $this->shownQuestionIds[] = (int) $question_id;
 
         foreach ($this->getSelectedColumns() as $colid)
         {
@@ -302,5 +307,16 @@ class ilExteStatQuestionsOverviewTableGUI extends ilExteStatTableGUI
         $this->tpl->setVariable('CONTENT', $content);
         $this->tpl->parseCurrentBlock();
 
+    }
+
+    /**
+     * Get the ids of the shown questions
+     * This must be called after getHTML()
+     * 
+     * @return int[]
+     */
+    public function getShownQuestionIds() : array
+    {
+        return $this->shownQuestionIds;    
     }
 }

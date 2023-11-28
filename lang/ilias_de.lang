@@ -19,7 +19,7 @@ answers_count#:#Beantwortet
 answers_count_description#:#Anzahl Nutzer, die diese Frage beantwortet haben
 average_points#:#Ø Punkte
 average_points_description#:#Mittlere erreichte Punktzahl aller Nutzer, die diese Frage zugeteilt bekamen
-average_percentage#:#Prozent
+average_percentage#:#Prozent Punkte
 average_percentage_description#:#Mittlere Prozent der maximalen Punkte, die von Nutzern erreicht wurden, welche diese Frage zugeteilt bekamen
 tst_median_title_long#:#Median der erreichten Punkte
 tst_median_title_short#:#Median
@@ -45,6 +45,9 @@ tst_cic_min_medium_description#:#Mindestwert, der als als "mäßig" bewertet wir
 tst_cic_min_good_title#:#Mindestwert "gut"
 tst_cic_min_good_description#:#Mindestwert, der als "gut" bewertet wird. 0, falls keine Bewertung erwünscht ist.
 tst_cic_sum_of_mean_is_zero#:#Die Mittelwertsumme ist 0
+qst_correct_title_long#:#Prozentsatz richtiger Antworten
+qst_correct_title_short#:#Richtige Antworten
+qst_correct_description#:#Der Prozenzsatz errechnet sich pro Frage aus der Anzahl Antworten mit voller Punktzahl, dividiert durch die Anzahl der zugeteilten Fragen. 
 qst_facility_title_long#:#Schwierigkeitsindex (Beantwortbarkeit) der Frage
 qst_facility_title_short#:#Schwierigkeitsindex
 qst_facility_description#:#Der Schwierigkeitsindex wird als Verhältnis der Abstände zwischen mittlerer und minimaler und zwischen maximaler und minimaler der erreichten Punktzahlen berechnet und in Prozent ausgegeben. Bei 0% wurde die Frage von niemandem richtig beantwortet und bei 100% von allen. Der Schwierigkeitsindex sollte im Bereich 20% – 80% liegen.
@@ -163,3 +166,5 @@ qst_stack_extra_3#:#Roheingaben, egal welche Variante verwendet wurde
 qst_stack_no_variants#:#Keine Varianten
 qst_stack_variant#:#Variante
 qst_stack_count#:#Anzahl
+question_position#:#Position
+question_title#:#Frage

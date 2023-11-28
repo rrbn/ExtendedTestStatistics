@@ -337,7 +337,7 @@ abstract class ilExteEvalBase
 			$colname = $a_details->columns[$a_details->chartLabelsColumn]->name;
 			foreach ($a_details->rows as $rownum => $row)
 			{
-				$labels[$rownum] = ilUtil::secureString($row[$colname]->value);
+				$labels[$rownum] = ilUtil::secureString($row[$colname]->value, true , '<br>');
 			}
 
 			if ($chart instanceof ilChartGrid)
@@ -394,7 +394,7 @@ abstract class ilExteEvalBase
 
 		$legend = new ilChartLegend();
 		$chart->setLegend($legend);
-        $chart->setSize(700,400);
+        $chart->setSize("100%",500);
 		$chart->setAutoResize(true);
         return $chart;
     }

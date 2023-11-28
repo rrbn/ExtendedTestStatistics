@@ -50,6 +50,7 @@ Additional question evaluations:
 * Facility Index
 * Standard deviation
 * List of chosen options for single and multiple choice
+* Percentage of Correct Answers (shown as diagram on the question overview)
 
 The evaluation titles have tooltips with further explanations. Some values have read/yellow/green signs to indicate their quality. 
 Values displayed in italics are considered as 'uncertain' because they are calculated in a random test. Nevertheless they 
@@ -88,6 +89,11 @@ https://github.com/ilifau/ExampleEvaluations
 
 Version History
 ===============
+
+Version 1.7.0 (2023-11-28)
+--------------------------
+- fixed saving of evaluation parameters (thx to jcopado)
+- added diagram for percentage of correct answers
 
 Version 1.6.1 (2022-01-11)
 --------------------------
