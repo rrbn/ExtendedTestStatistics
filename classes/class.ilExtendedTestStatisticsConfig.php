@@ -189,7 +189,7 @@ class ilExtendedTestStatisticsConfig
 		global $ilDB;
 		$ilDB->replace('etstat_params',
 			array('evaluation_name' => array('text', $evaluation_name),
-				'parameter_name '=> array('text', $parameter_name)),
+				'parameter_name'=> array('text', $parameter_name)),
 			array('value' => array('text', (string) $value))
 		);
 	}
