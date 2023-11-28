@@ -47,7 +47,7 @@ tst_cic_min_good_description#:#Mindestwert, der als "gut" bewertet wird. 0, fall
 tst_cic_sum_of_mean_is_zero#:#Die Mittelwertsumme ist 0
 qst_correct_title_long#:#Prozentsatz richtiger Antworten
 qst_correct_title_short#:#Richtige Antworten
-qst_correct_description#:#Der Prozenzsatz errechnet sich pro Frage aus der Anzahl Antworten mit voller Punktzahl, dividiert durch die Anzahl der zugeteilten Fragen. 
+qst_correct_description#:#Der Prozentsatz errechnet sich pro Frage aus der Anzahl Antworten mit voller Punktzahl, dividiert durch die Anzahl der zugeteilten Fragen. 
 qst_facility_title_long#:#Schwierigkeitsindex (Beantwortbarkeit) der Frage
 qst_facility_title_short#:#Schwierigkeitsindex
 qst_facility_description#:#Der Schwierigkeitsindex wird als Verhältnis der Abstände zwischen mittlerer und minimaler und zwischen maximaler und minimaler der erreichten Punktzahlen berechnet und in Prozent ausgegeben. Bei 0% wurde die Frage von niemandem richtig beantwortet und bei 100% von allen. Der Schwierigkeitsindex sollte im Bereich 20% – 80% liegen.
