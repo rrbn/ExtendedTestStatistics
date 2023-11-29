@@ -42,6 +42,15 @@ class ilExteStatDetails
     public $chartLabelsColumn = 0;
 
     /**
+     * Horizontal lines to be presented in a bar chart 
+     * This also allow to set a maximum value for the diagram
+     * Lines will be auto-generated, if null
+     * 
+     * @var array|null value => label
+     */
+    public $chartLines = null;
+
+    /**
      * Custom HTML for the evaluation
      * @var string
      */

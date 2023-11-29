@@ -317,15 +317,18 @@ abstract class ilExteEvalBase
         switch ($a_details->chartType)
         {
             case ilExteStatDetails::CHART_PIE:
+                /** @var ilChartPie $chart */
                 $chart = ilChart::getInstanceByType(ilChart::TYPE_PIE, $id);
                 break;
 
             case ilExteStatDetails::CHART_SPIDER:
+                /** @var ilChartSpider $chart */
                 $chart = ilChart::getInstanceByType(ilChart::TYPE_SPIDER, $id);
                 break;
 
             case ilExteStatDetails::CHART_BARS:
             default:
+                /** @var ilChartGrid $chart */
                 $chart = ilChart::getInstanceByType(ilChart::TYPE_GRID, $id);
                 $chart->setXAxisToInteger(true);
                 $datatype = ilChartGrid::DATA_BARS;
@@ -337,18 +340,18 @@ abstract class ilExteEvalBase
 			$colname = $a_details->columns[$a_details->chartLabelsColumn]->name;
 			foreach ($a_details->rows as $rownum => $row)
 			{
-				$labels[$rownum] = ilUtil::secureString($row[$colname]->value, true , '<br>');
+				$labels[$rownum] = ilUtil::secureString($row[$colname]->value, true);
 			}
 
 			if ($chart instanceof ilChartGrid)
 			{
 				foreach ($labels as $rownum => $label)
 				{
-					$labels[$rownum] = '<div class="ilExteStatDiagramLabel">'.$label.'</div>';
+					$labels[$rownum] = '<div class="ilExteStatDiagramLabelOuter"><div class="ilExteStatDiagramLabelInner">'.$label.'</div></div>';
 				}
-				$chart->setTicks($labels, false, true);
+				$chart->setTicks($labels, $a_details->chartLines ?? false, true);
 			}
-			elseif ($chart instanceof ilChartSpider)
+			elseif ($chart instanceof ilChartSpider)    
 			{
 				$chart->setLegLabels($labels);
 			}

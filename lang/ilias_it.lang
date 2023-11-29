@@ -161,4 +161,5 @@ qst_stack_feedback_errors#:#Maxima Feedback
 qst_stack_partial#:#Punti Parziali
 qst_stack_frequency#:#Frequenza
 question_position#:#Posizione
-question_title#:#
+question_title#:#Domanda
+average_sign#:#Ø

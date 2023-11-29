@@ -73,7 +73,7 @@ class ilExteEvalQuestionPercentCorrect extends ilExteEvalQuestion
      * Calculate the details for a diagram to be displayed on the overview page
      * 
      * @param array $question_ids
-     * @return ilChart
+     * @return ilChartGrid
      */
     public function getOverviewChart($question_ids = [])
     {
@@ -85,21 +85,52 @@ class ilExteEvalQuestionPercentCorrect extends ilExteEvalQuestion
         );
         $details->chartType = ilExteStatDetails::CHART_BARS;
         $details->chartLabelsColumn = 1;
+        $details->chartLines = [25 => '25%', 50 => '50%', 75 => '75%', 100 => '100%'];
+        
         
         $questions = $this->data->getAllQuestions();
-        foreach ($question_ids as $question_id) {
-            if (isset($questions[$question_id])) {
-                $question = $questions[$question_id];
-                $details->rows[] = array(
-                    'question_pos' => ilExteStatValue::_create($question->order_position, ilExteStatValue::TYPE_NUMBER, 0),
-                    'question_title' => ilExteStatValue::_create('[' . $question->order_position . ']<br>' . $question->question_title),
-                    'percent_correct' => $this->calculateValue($question->question_id),
-                );
+        
+        $num_assigned = 0;
+        $sum_percent = 0;
+        $values = [];
+        foreach ($questions as $question) {
+            if ($question->assigned_count > 0) {
+                
+                $value = $this->calculateValue($question->question_id);
+                $values[$question->question_id] = $value;
+
+                $num_assigned++;
+                $sum_percent += $value->value;
             }
         }
         
-        /** @var ilChart $chart */
-        return $this->generateChart($details);
+        if ($num_assigned > 0) {
+            $average_percent = round($sum_percent / $num_assigned, 2);
+            $details->chartLines[$average_percent] = '<strong>' . $this->plugin->txt('average_sign') . ' '. $average_percent . '%</strong>';
+            ksort($details->chartLines);
+        }
+
+        
+        foreach ($question_ids as $question_id) {
+            if (isset($questions[$question_id])) {
+                $question = $questions[$question_id];
+                
+                $title = ilUtil::shortenText($question->question_title, 20, true) . ' (' . $question->order_position . ')'; 
+                
+                $details->rows[] = array(
+                    'question_pos' => ilExteStatValue::_create($question->order_position, ilExteStatValue::TYPE_NUMBER, 0),
+                    'question_title' => ilExteStatValue::_create($title),
+                    'percent_correct' => $values[$question_id],
+                );
+            }
+        }
+
+        /**
+         * @var ilChartGrid
+         */
+        $chart = $this->generateChart($details);
+        
+        return $chart;
     }
 
 }

@@ -90,7 +90,7 @@ https://github.com/ilifau/ExampleEvaluations
 Version History
 ===============
 
-Version 1.7.0 (2023-11-28)
+Version 1.7.1 (2023-11-29)
 --------------------------
 - fixed saving of evaluation parameters (thx to jcopado)
 - added diagram for percentage of correct answers

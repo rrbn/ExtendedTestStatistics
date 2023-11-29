@@ -238,9 +238,12 @@ class ilExtendedTestStatisticsPageGUI
         
         $chartHtml = '';
         /** @var ilExteEvalQuestionPercentCorrect $evaluation */
+        /** @car ilChart $chart */
         if (!empty($evaluation = $this->statObj->getEvaluation('ilExteEvalQuestionPercentCorrect'))) {
+            if (count($tableGUI->getShownQuestionIds()) > 10) {
+                $this->tpl->addCss($this->plugin->getStyleSheetLocation('exte_stat_large_grid.css'));
+            }
             $chart = $evaluation->getOverviewChart($tableGUI->getShownQuestionIds());
-            $chart->setAutoResize(true);
             $chartHtml .= $chart->getHTML();
         }
 

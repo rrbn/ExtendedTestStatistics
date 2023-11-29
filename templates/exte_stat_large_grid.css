@@ -1,0 +1,15 @@
+div.ilExteStatDiagramLabelOuter {
+    height: 200px;
+}
+
+div.ilExteStatDiagramLabelInner {
+    position: absolute;
+    word-break: keep-all;
+    width: 200px;
+    height: 100%;
+    text-align: right;
+    transform: rotate(-90deg);
+}
+
+
+
