@@ -87,7 +87,6 @@ class ilExteEvalQuestionPercentCorrect extends ilExteEvalQuestion
         $details->chartLabelsColumn = 1;
         $details->chartLines = [25 => '25%', 50 => '50%', 75 => '75%', 100 => '100%'];
         
-        
         $questions = $this->data->getAllQuestions();
         
         $num_assigned = 0;
@@ -115,7 +114,10 @@ class ilExteEvalQuestionPercentCorrect extends ilExteEvalQuestion
             if (isset($questions[$question_id])) {
                 $question = $questions[$question_id];
                 
-                $title = ilUtil::shortenText($question->question_title, 20, true) . ' (' . $question->order_position . ')'; 
+                $title = ilUtil::shortenText($question->question_title, 20, true);
+                if ($this->data->getTestType() == ilExteEvalBase::TEST_TYPE_FIXED) {
+                    $title .= ' (' . $question->order_position . ')';
+                }
                 
                 $details->rows[] = array(
                     'question_pos' => ilExteStatValue::_create($question->order_position, ilExteStatValue::TYPE_NUMBER, 0),
