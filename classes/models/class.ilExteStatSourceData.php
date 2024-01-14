@@ -626,11 +626,11 @@ class ilExteStatSourceData
 				'description' => $this->plugin->txt('average_points_description'),
 				'test_types' => array()
 			),
-			'average_percentage' => array(
-				'title' => $this->plugin->txt('average_percentage'),
-				'description' => $this->plugin->txt('average_percentage_description'),
-				'test_types' => array()
-			)
+//			'average_percentage' => array(
+//				'title' => $this->plugin->txt('average_percentage'),
+//				'description' => $this->plugin->txt('average_percentage_description'),
+//				'test_types' => array()
+//			)
 		);
 	}
 
