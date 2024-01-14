@@ -19,8 +19,9 @@ answers_count#:#Risposto
 answers_count_description#:#Numero di utenti che hanno risposto a questa domanda
 average_points#:#Ø Punti
 average_points_description#:#Punti medi raggiunti dall'utente che ha risposto a questa domanda assegnata
-average_percentage#:#Percento di punti
-average_percentage_description#:#Percentuale media di punti raggiunti dall'utente che ha risposto a questa domanda assegnata
+qst_percent_points_title_short#:#Percento di punti
+qst_percent_points_title_long#:#Percentuale media di punti
+qst_percent_points_description#:#Percentuale media di punti raggiunti dall'utente che ha risposto a questa domanda assegnata
 tst_median_title_long#:#Punteggio mediano
 tst_median_title_short#:#Mediano
 tst_median_description#:#Il punteggio mediano ordina l'elenco dei punti raggiunti in questo test e prende il valore medio se i tentativi totali sono dispari o la media tra i due tentativi centrali se i tentativi totali sono pari. Il punteggio mediano non è sensibile ai valori estremi.
@@ -163,3 +164,4 @@ qst_stack_frequency#:#Frequenza
 question_position#:#Posizione
 question_title#:#Domanda
 average_sign#:#Ø
+select_chart#:#Selezionare il diagramma

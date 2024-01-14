@@ -13,13 +13,22 @@ require_once ('Modules/Test/classes/class.ilObjTest.php');
  */
 class ilExtendedTestStatisticsPageGUI
 {
-	/** @var ilCtrl $ctrl */
+    /** @var ilCtrl $ctrl */
 	protected $ctrl;
 
-	/** @var ilTemplate $tpl */
+	/** @var ilGlobalTemplate $tpl */
 	protected $tpl;
 
-	/** @var ilExtendedTestStatisticsPlugin $plugin */
+    /** @var ilLanguage */
+    protected $lng;
+
+    /** @var \ILIAS\UI\Factory */
+    protected $uiFactory;
+
+    /** @var \ILIAS\UI\Renderer */
+    protected $uiRenderer;
+
+    /** @var ilExtendedTestStatisticsPlugin $plugin */
 	protected $plugin;
 
 	/** @var ilObjTest $testObj */
@@ -33,12 +42,15 @@ class ilExtendedTestStatisticsPageGUI
 	 */
 	public function __construct()
 	{
-		global $ilCtrl, $tpl, $lng;
+        global $DIC;
 
-		$this->ctrl = $ilCtrl;
-		$this->tpl = $tpl;
+		$this->ctrl = $DIC->ctrl();
+		$this->tpl = $DIC->ui()->mainTemplate();
+        $this->lng = $DIC->language();
+        $this->uiFactory = $DIC->ui()->factory();
+        $this->uiRenderer = $DIC->ui()->renderer();
 
-		$lng->loadLanguageModule('assessment');
+		$this->lng->loadLanguageModule('assessment');
 
 		$this->plugin = ilPlugin::getPluginObject(IL_COMP_SERVICE, 'UIComponent', 'uihk', 'ExtendedTestStatistics');
 		$this->plugin->includeClass('class.ilExtendedTestStatistics.php');
@@ -79,6 +91,7 @@ class ilExtendedTestStatisticsPageGUI
 			case "exportEvaluations":
 			case "deliverExportFile":
 			case "selectEvaluatedPass":
+            case "selectQuestionsChart":
 			case "flushCache":
 				$this->$cmd();
 				break;
@@ -216,6 +229,9 @@ class ilExtendedTestStatisticsPageGUI
      */
 	protected function showQuestionsOverview()
 	{
+        global $DIC;
+        $factors = $DIC->ui()->factory();
+
 		$this->setOverviewToolbar(ilExtendedTestStatistics::LEVEL_QUESTION);
 
 		/** @var  ilExteStatQuestionsOverviewTableGUI $tableGUI */
@@ -235,15 +251,31 @@ class ilExtendedTestStatisticsPageGUI
 
 		$tableGUI->prepareData();
         $tableHtml = $tableGUI->getHTML();
-        
+
         $chartHtml = '';
+        $chartActions = [];
+        $chartEvaluation = null;
+        /** @var ilExteEvalQuestion $evaluation */
+        foreach ($this->statObj->getEvaluations(ilExtendedTestStatistics::LEVEL_QUESTION) As $evaluation) {
+            if ($evaluation->providesOverviewChart()) {
+                if (empty($chartEvaluation) || get_class($evaluation) == $this->plugin->getUserPreference('questions_chart_class')) {
+                    $chartEvaluation = $evaluation;
+                }
+                $this->ctrl->setParameter($this, 'chart', get_class($evaluation));
+                $chartActions[] = $this->uiFactory->button()->shy($evaluation->getTitle(), $this->ctrl->getLinkTarget($this, 'selectQuestionsChart'));
+            }
+        }
+        if (!empty($chartActions)) {
+            $chartHtml = $this->uiRenderer->render($this->uiFactory->dropdown()->standard($chartActions)->withLabel($this->plugin->txt('select_chart')));
+        }
+
         /** @var ilExteEvalQuestionPercentCorrect $evaluation */
-        /** @car ilChart $chart */
-        if (!empty($evaluation = $this->statObj->getEvaluation('ilExteEvalQuestionPercentCorrect'))) {
+        /** @var ilChart $chart */
+        if (!empty($chartEvaluation)) {
             if (count($tableGUI->getShownQuestionIds()) > 10) {
                 $this->tpl->addCss($this->plugin->getStyleSheetLocation('exte_stat_large_grid.css'));
             }
-            $chart = $evaluation->getOverviewChart($tableGUI->getShownQuestionIds());
+            $chart = $chartEvaluation->getOverviewChart($tableGUI->getShownQuestionIds());
             $chartHtml .= $chart->getHTML();
         }
 
@@ -252,6 +284,7 @@ class ilExtendedTestStatisticsPageGUI
 		$this->tpl->setContent($tableHtml . $chartHtml. $legendHtml);
         $this->tpl->printToStdout();
 	}
+
 
 
     /**
@@ -510,7 +543,17 @@ class ilExtendedTestStatisticsPageGUI
 
 	}
 
-	/**
+    /**
+     * Set the evaluated pass
+     */
+    protected function selectQuestionsChart()
+    {
+        $this->plugin->setUserPreference('questions_chart_class', ilUtil::secureString($_GET['chart']));
+        $this->ctrl->redirect($this, 'showQuestionsOverview');
+    }
+
+
+    /**
 	 * Flush the cache
 	 */
 	protected function flushCache()

@@ -2,9 +2,9 @@
 // Copyright (c) 2017 Institut fuer Lern-Innovation, Friedrich-Alexander-Universitaet Erlangen-Nuernberg, GPLv3, see LICENSE
 
 /**
- * Prvide the percentage of correctly answered from all assigned of this question
+ * Provide the mean reached percentage of maximum points from all assigned of this question
  */
-class ilExteEvalQuestionPercentCorrect extends ilExteEvalQuestion
+class ilExteEvalQuestionPercentPoints extends ilExteEvalQuestion
 {
     /**
      * @var bool    evaluation provides a single value for the overview level
@@ -39,7 +39,7 @@ class ilExteEvalQuestionPercentCorrect extends ilExteEvalQuestion
 	/**
 	 * @var string	specific prefix of language variables (lowercase classname is default)
 	 */
-	protected $lang_prefix = 'qst_correct';
+	protected $lang_prefix = 'qst_percent_points';
 
 
     /**
@@ -61,16 +61,9 @@ class ilExteEvalQuestionPercentCorrect extends ilExteEvalQuestion
             return ilExteStatValue::_create(0, ilExteStatValue::TYPE_PERCENTAGE,
                 0, '', $this->txt('not_assigned'));
         }
-        
-        $correct_count = 0;
-        foreach ($this->data->getAnswersForQuestion($a_question_id) as $answerObj) {
-            if ($answerObj->reached_points >= $questionObj->maximum_points) {
-                $correct_count++;
-            }
-        }
 
         return ilExteStatValue::_create(
-            100 * $correct_count / $questionObj->assigned_count, 
+            $questionObj->average_percentage,
             ilExteStatValue::TYPE_PERCENTAGE, 2);
     }
 
@@ -86,7 +79,7 @@ class ilExteEvalQuestionPercentCorrect extends ilExteEvalQuestion
         $details->columns = array (
             ilExteStatColumn::_create('question_pos',$this->plugin->txt('question_position'), ilExteStatColumn::SORT_NUMBER),
             ilExteStatColumn::_create('question_title',$this->plugin->txt('question_title'),ilExteStatColumn::SORT_TEXT),
-            ilExteStatColumn::_create('percent_correct',$this->txt('title_long'),ilExteStatColumn::SORT_NUMBER, '', true),
+            ilExteStatColumn::_create('percent_points',$this->txt('title_long'),ilExteStatColumn::SORT_NUMBER, '', true),
         );
         $details->chartType = ilExteStatDetails::CHART_BARS;
         $details->chartLabelsColumn = 1;
@@ -127,7 +120,7 @@ class ilExteEvalQuestionPercentCorrect extends ilExteEvalQuestion
                 $details->rows[] = array(
                     'question_pos' => ilExteStatValue::_create($question->order_position, ilExteStatValue::TYPE_NUMBER, 0),
                     'question_title' => ilExteStatValue::_create($title),
-                    'percent_correct' => $values[$question_id],
+                    'percent_points' => $values[$question_id],
                 );
             }
         }

@@ -19,8 +19,9 @@ answers_count#:#Answered
 answers_count_description#:#Number of users who answered this question
 average_points#:#Ø Points
 average_points_description#:#Average points reached by the user who git this question assigned
-average_percentage#:#Percent Points
-average_percentage_description#:#Average percentage of points reached by the user who git this question assigned
+qst_percent_points_title_short#:#Percent Points
+qst_percent_points_title_long#:#Average percentage of points
+qst_percent_points_description#:#Average percentage of points reached by the user who git this question assigned
 tst_median_title_long#:#Median Score
 tst_median_title_short#:#Median
 tst_median_description#:#The median score sorts the list of reached points on this test and takes the middle value if the total attemps are odd or the average between the two middle ones if the total attemps are even. The median score is not sensitive for extreme values.
@@ -169,3 +170,4 @@ qst_stack_count#:#Count
 question_position#:#Position
 question_title#:#Question
 average_sign#:#Ø
+select_chart#:#Select Chart

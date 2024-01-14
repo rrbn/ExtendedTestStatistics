@@ -19,8 +19,9 @@ answers_count#:#Beantwortet
 answers_count_description#:#Anzahl Nutzer, die diese Frage beantwortet haben
 average_points#:#Ø Punkte
 average_points_description#:#Mittlere erreichte Punktzahl aller Nutzer, die diese Frage zugeteilt bekamen
-average_percentage#:#Prozent Punkte
-average_percentage_description#:#Mittlere Prozent der maximalen Punkte, die von Nutzern erreicht wurden, welche diese Frage zugeteilt bekamen
+qst_percent_points_title_short#:#Prozent Punkte
+qst_percent_points_title_long#:#Mittlere Prozent der maximalen Punkte
+qst_percent_points_description#:#Mittlere Prozent der maximalen Punkte, die von Nutzern erreicht wurden, welche diese Frage zugeteilt bekamen
 tst_median_title_long#:#Median der erreichten Punkte
 tst_median_title_short#:#Median
 tst_median_description#:#Der Median wird für Daten genutzt, die eine „natürliche“ Reihenfolge bilden und mit Zahlenwerten versehen werden können. Die Mitte dieser geordneten Datenreihe ist der Median. Anders als der Mittelwert ist der Media unempfindlich gegenüber Extremwerten.
@@ -169,3 +170,4 @@ qst_stack_count#:#Anzahl
 question_position#:#Position
 question_title#:#Frage
 average_sign#:#Ø
+select_chart#:#Diagramm auswählen

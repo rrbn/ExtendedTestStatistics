@@ -6,7 +6,21 @@
  */
 abstract class ilExteEvalQuestion extends ilExteEvalBase
 {
-	/**
+
+    /**
+     * @var bool    evaluation provides a chart of the values presented in the overview of questions
+     */
+    protected $provides_overview_chart = false;
+
+    /**
+     * @return bool evaluation provides a chart of the values presented in the overview of questions
+     */
+    public function providesOverviewChart()
+    {
+        return $this->provides_overview_chart;
+    }
+
+    /**
 	 * Calculate the single value for a question (to be overwritten)
 	 *
 	 * Note:

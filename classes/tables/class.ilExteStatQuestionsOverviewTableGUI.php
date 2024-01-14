@@ -145,11 +145,11 @@ class ilExteStatQuestionsOverviewTableGUI extends ilExteStatTableGUI
                 'tooltip' => $this->plugin->txt('average_points_description'),
                 'default' => true
             ),
-			'average_percentage' => array(
-                'txt' => $this->plugin->txt('average_percentage'),
-                'tooltip' => $this->plugin->txt('average_percentage_description'),
-                'default' => false
-            ),
+//			'average_percentage' => array(
+//                'txt' => $this->plugin->txt('average_percentage'),
+//                'tooltip' => $this->plugin->txt('average_percentage_description'),
+//                'default' => false
+//            ),
         );
 
 		if ($this->statObj->getSourceData()->getTestType() != ilExteEvalBase::TEST_TYPE_FIXED)
