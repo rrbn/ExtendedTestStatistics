@@ -125,4 +125,105 @@ abstract class ilExteEvalQuestion extends ilExteEvalBase
     {
         return $this->generateChart($this->getDetails($a_question_id));
     }
+
+    /**
+     * Generate a standard bar chart from the calulated values
+     * @param bool $as_percent
+     * @return ilChart|ilChartGrid|ilChartPie|ilChartSpider
+     */
+     public function getOverviewChart($question_ids = []) {
+
+        $questions = $this->data->getAllQuestions();
+
+        $num_values = 0;
+        $sum_values = 0;
+        $min_value = null;
+        $max_value = null;
+        $is_percent = false;
+        $value_suffix = '';
+
+        $values = [];
+        foreach ($questions as $question) {
+            if ($question->assigned_count > 0) {
+
+                $value = $this->calculateValue($question->question_id);
+                $values[$question->question_id] = $value;
+
+                $num_values++;
+                $sum_values += $value->value;
+
+                if (!isset($min_value) || $value->value < $min_value) {
+                    $min_value = $value->value;
+                }
+                if (!isset($max_value) || $value->value > $max_value) {
+                    $max_value = $value->value;
+                }
+
+                if ($value->type == ilExteStatValue::TYPE_PERCENTAGE) {
+                    $is_percent = true;
+                    $value_suffix = '%';
+                }
+
+            }
+        }
+
+        $details = new ilExteStatDetails();
+        $details->columns = array (
+            ilExteStatColumn::_create('question_pos',$this->plugin->txt('question_position'), ilExteStatColumn::SORT_NUMBER),
+            ilExteStatColumn::_create('question_title',$this->plugin->txt('question_title'),ilExteStatColumn::SORT_TEXT),
+            ilExteStatColumn::_create('question_value',$this->txt('title_long'),ilExteStatColumn::SORT_NUMBER, '', true),
+        );
+
+        if ($is_percent) {
+            $details->chartLines = [0 => '0',  2500 => '25%', 5000 => '50%', 7500 => '75%', 10000 => '100%'];
+        }
+        elseif ($max_value <= 1) {
+            $details->chartLines = [0 => '0',  25 => '0.25', 50 => '0.5', 75 => '0.75', 100 => '1'];
+        }
+        else {
+            $details->chartLines = [
+                0 => '0',
+                round(25 * $max_value) => round(0.25 * $max_value, 2),
+                round(50 * $max_value) => round(0.50 * $max_value, 2),
+                round(75 * $max_value) => round(0.75 * $max_value, 2)
+            ];
+        }
+
+        if ($num_values > 0) {
+            $average_value = round($sum_values / $num_values, 2);
+            $details->chartLines[round(100 * $average_value)] = '<strong>' . $this->plugin->txt('average_sign') . ' '. $average_value . $value_suffix .'</strong>';
+            ksort($details->chartLines);
+        }
+
+        $details->chartType = ilExteStatDetails::CHART_BARS;
+        $details->chartLabelsColumn = 1;
+
+
+        foreach ($question_ids as $question_id) {
+            if (isset($questions[$question_id])) {
+                $question = $questions[$question_id];
+
+                $title = ilUtil::shortenText($question->question_title, 20, true);
+                if ($this->data->getTestType() == ilExteEvalBase::TEST_TYPE_FIXED) {
+                    $title .= ' (' . $question->order_position . ')';
+                }
+
+                $value =  $values[$question_id];
+                $value->value = round($value->value * 100);
+
+                $details->rows[] = array(
+                    'question_pos' => ilExteStatValue::_create($question->order_position, ilExteStatValue::TYPE_NUMBER, 0),
+                    'question_title' => ilExteStatValue::_create($title),
+                    'question_value' => $values[$question_id],
+                );
+            }
+        }
+
+        /**
+         * @var ilChartGrid
+         */
+        $chart = $this->generateChart($details);
+
+        return $chart;
+    }
 }

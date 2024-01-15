@@ -11,7 +11,13 @@ class ilExteEvalQuestionStandardDeviation extends ilExteEvalQuestion
 	 */
 	protected $provides_value = true;
 
-	/**
+    /**
+     * @var bool    evaluation provides a chart of the values presented in the overview of questions
+     */
+    protected $provides_overview_chart = true;
+
+
+    /**
 	 * @var bool    evaluation provides data for a details screen
 	 */
 	protected $provides_details = false;

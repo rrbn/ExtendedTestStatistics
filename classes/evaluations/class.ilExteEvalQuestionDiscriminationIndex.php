@@ -11,7 +11,12 @@ class ilExteEvalQuestionDiscriminationIndex extends ilExteEvalQuestion
 	 */
 	protected $provides_value = true;
 
-	/**
+    /**
+     * @var bool    evaluation provides a chart of the values presented in the overview of questions
+     */
+    protected $provides_overview_chart = true;
+
+    /**
 	 * @var bool    evaluation provides data for a details screen
 	 */
 	protected $provides_details = false;
@@ -34,7 +39,7 @@ class ilExteEvalQuestionDiscriminationIndex extends ilExteEvalQuestion
 
 	/**
 	 * Get the available parameters for this evaluation
-	 * @return ilExteStatParam
+	 * @return ilExteStatParam[]
 	 */
 	public function getAvailableParams()
 	{
