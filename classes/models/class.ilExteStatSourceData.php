@@ -2,7 +2,9 @@
 // Copyright (c) 2017 Institut fuer Lern-Innovation, Friedrich-Alexander-Universitaet Erlangen-Nuernberg, GPLv3, see LICENSE
 
 /**
- * Data model for answered question
+ * Source data for test and question evaluations
+ * A call of load() must be done before any get...() function is used
+ *
  */
 class ilExteStatSourceData
 {
@@ -32,47 +34,60 @@ class ilExteStatSourceData
 	protected $eval;
 
 	/**
-	 * @var string selection of passe to evaluate
+     * Pass that should be selected for each participant to get the question and answer data
+     * Only questions and answers of these passes (one per participant) will be loaded
+     *
+	 * @var string selection of pass to evaluate
 	 */
 	protected $pass_selection = self::PASS_SCORED;
 
 	/**
+     * List of question type titles
 	 * @var array   class => title
 	 */
 	protected $question_types = array();
 
 
 	/**
+     * List of question data
 	 * @var ilExteStatSourceQuestion[]    	$questions 		(indexed by question_id)
 	 */
 	protected $questions = array();
 
 	/**
+     * List of participant data
 	 * @var ilExteStatSourceParticipant[]	$participants	(indexed by active_id)
 	 */
 	protected $participants = array();
 
 	/**
+     * List of answer data
 	 * @var ilExteStatSourceAnswer[]    	$answers		(flat list)
 	 */
 	protected $answers = array();
 
 	/**
+     * List of answer data
+     * @todo (ilias8) remove unnecessary pass step (only one pass is saved per participant)
 	 * @var array    question_id => active_id => pass => ilExteStatSourceAnswer
 	 */
 	protected $answers_by_question_id = array();
 
 	/**
-	 * @var array    active_id => pass => question_id => ilExteStatSourceAnswer
+     * List of answer data
+     * @todo (ilias8) remove unnecessary pass step (only one pass is saved per participant)
+     * @var array    active_id => pass => question_id => ilExteStatSourceAnswer
 	 */
 	protected $answers_by_active_id = array();
 
 	/**
+     * List of basic test values
 	 * @var array    value_id => ilExteStatValue
 	 */
 	protected $basic_test_values = array();
 
 	/**
+     * List of basic question values
 	 * @var array    question_id => value_id => ilExteStatValue
 	 */
 	protected $basic_question_values = array();
@@ -244,6 +259,7 @@ class ilExteStatSourceData
 		$this->eval = $this->object->getUnfilteredEvaluationData();
 
 		// get the order and obligatory data of questions in a fixed test
+        // other question data will be added later
 		if ($this->object->isFixedTest())
 		{
 			$this->readFixedTestQuestionData();
@@ -280,7 +296,9 @@ class ilExteStatSourceData
 			}
 			if ($pass instanceof ilTestEvaluationPassData)
 			{
-				// all quetions for a participant in the test pass
+				// all questions for a participant in the test pass
+                // in case of a random test, this fills the list of questions with all questions
+                //      drawn for the participants in the chosen pass
 				$pass_questions = $userdata->getQuestions($pass->getPass());
 
 				if (is_array($pass_questions))
@@ -292,6 +310,7 @@ class ilExteStatSourceData
 						$question->maximum_points = $pass_question['points'];
 						$question->question_title = $question_titles[$pass_question['id']];
 
+                        // initiate the questions for this pass (even if not answered)
 						$answer = $this->getAnswer($pass_question['id'], $active_id, $pass->getPass(), true);
 						$answer->sequence = $pass_question['sequence'];
 					}
@@ -368,7 +387,7 @@ class ilExteStatSourceData
 
 		while ($row = $ilDB->fetchAssoc($result))
 		{
-			$question = $this->getQuestion($row['question_fi'], true);
+			$question = $this->getQuestion($row['question_fi'], true); // reference!
 			$question->order_position = $row['sequence'];
 			$question->obligatory = (bool) $row['obligatory'];
 		}
@@ -655,10 +674,12 @@ class ilExteStatSourceData
 
 
 	/**
-	 * @param integer $a_active_id the participant id
+     * Get a participant object
+     * @todo (ilias8) public getter should not create (avoid evaluation interference)
+     * @param integer $a_active_id the participant id
 	 * @param bool $a_create create if not exists
 	 * @return ilExteStatSourceParticipant|null
-	 */
+     */
 	public function getParticipant($a_active_id, $a_create = false)
 	{
 		if (isset($this->participants[$a_active_id]))
@@ -680,8 +701,9 @@ class ilExteStatSourceData
 
 
 	/**
-	 * Get the source question object for a question id
-	 *
+	 * Get the question object for a question id
+     * @todo (ilias8) public getter should not create (avoid evaluation interference)
+     *
 	 * @param integer $a_question_id the question id
 	 * @param bool $a_create create if necessary
 	 * @return ilExteStatSourceQuestion|null
@@ -707,11 +729,13 @@ class ilExteStatSourceData
 
 
 	/**
-	 * Get the source answer status of a question
-	 *
+	 * Get or create the answer status of a question
+     * @todo (ilias8) public getter should not create (avoid evaluation interference)
+     * @todo (ilias8) remove unnecessary pass step (only one pass is saved per participant)
+     *
 	 * @param integer $a_question_id the question id
 	 * @param integer $a_active_id the active id of the user
-	 * @param integer $a_pass the pass of the answer
+	 * @param integer $a_pass the pass of the answer (used for creation)
 	 * @param boolean $a_create create if not exists
 	 * @return ilExteStatSourceAnswer|null
 	 */
@@ -765,7 +789,7 @@ class ilExteStatSourceData
 
 	/**
 	 * Get all answers in the test
-	 * The answser objects provides information abount questions being displayed to the participants
+	 * The answer objects provide information about questions being displayed to the participants
 	 * The 'answered' property indicates if an answer was saved by the participant
 	 *
 	 * @return ilExteStatSourceAnswer[]
@@ -777,7 +801,7 @@ class ilExteStatSourceData
 
 
 	/**
-	 * Get all answers for a question
+	 * Get all answers for a question of any participant in his/her relevant pass
 	 *
 	 * @param integer $a_question_id the question id
 	 * @param boolean $a_only_answered get only the really answered
@@ -807,13 +831,13 @@ class ilExteStatSourceData
 
 
 	/**
-	 * Get all answers for a participant
+	 * Get all answers for a participant in his/her relevant pass
 	 *
 	 * @param integer $a_active_id the participant id
-	 * @param boolean $a_answered get only the really answered
-	 * @return ilExteStatSourceAnswer[]
+	 * @param boolean $a_only_answered get only the really answered
+	 * @return ilExteStatSourceAnswer[] indexed by question_id
 	 */
-	public function getAnswersForParticipant($a_active_id, $a_answered = false)
+	public function getAnswersForParticipant($a_active_id, $a_only_answered = false)
 	{
 		$answers = array();
 		if (is_array($this->answers_by_active_id[$a_active_id]))
@@ -824,7 +848,7 @@ class ilExteStatSourceData
 				{
 					foreach ($pass_answers as $question_id => $answer)
 					{
-						if (!$a_answered or ($a_answered and $answer->answered))
+						if (!$a_only_answered or ($answer and $answer->answered))
 						{
 							$answers[$question_id] = $answer;
 						}
