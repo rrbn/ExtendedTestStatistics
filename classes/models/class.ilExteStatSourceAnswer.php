@@ -31,17 +31,17 @@ class ilExteStatSourceAnswer
 	/**
 	 * @var bool		the question was answered by the participant
 	 */
-	public $answered;
+	public $answered = false;
 
 
 	/**
 	 * @var float	    actual points reached for the question
 	 */
-	public $reached_points;
+	public $reached_points = 0;
 
 
 	/**
 	 * @var	bool	    score is set manually
 	 */
-	public $manual_scored;
+	public $manual_scored = false;
 }

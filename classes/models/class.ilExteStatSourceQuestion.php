@@ -48,25 +48,25 @@ class ilExteStatSourceQuestion
 	/**
 	 * @var bool obligatory status of the question in a fixed test
 	 */
-	public $obligatory;
+	public $obligatory = false;
 
 	/**
 	 * @var	float	average of points reached by the participants that got this question assigned
 	 */
-	public $average_points;
+	public $average_points = 0;
 
 	/**
 	 * @var	float 	average percentage reached by the participants that got this question assigned
 	 */
-	public $average_percentage;
+	public $average_percentage = 0;
 
 	/**
 	 * @var integer	number of users who answered the question
 	 */
-	public $answers_count;
+	public $answers_count = 0;
 
     /**
      * @var integer	number of users who got this question assigned
      */
-    public $assigned_count;
+    public $assigned_count = 0;
 }
