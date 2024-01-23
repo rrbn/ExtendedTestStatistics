@@ -325,9 +325,9 @@ class ilExteStatSourceData
 						foreach ($pass_answers as $pass_answer)
 						{
 							$answer = $this->getAnswer($pass_answer['id'], $active_id, $pass->getPass(), true);
-							$answer->reached_points = $pass_answer['reached'];
-							$answer->answered = (bool)$pass_answer['isAnswered'];
-							$answer->manual_scored = (bool)$pass_answer['manual'];
+							$answer->reached_points = (float) $pass_answer['reached'];
+							$answer->answered = (bool) $pass_answer['isAnswered'];
+							$answer->manual_scored = (bool) $pass_answer['manual'];
 
 							$current_reached_points += (float) $pass_answer['reached'];
 						}
@@ -560,6 +560,8 @@ class ilExteStatSourceData
 			$answered = 0;
 			$reached = 0;
 
+            // calculate the average points of all participants to which the question is assigned
+            // poits will be 0 if the question is not answered
 			foreach ($this->getAnswersForQuestion($question_id) as $answer)
 			{
 				$assigned++;
