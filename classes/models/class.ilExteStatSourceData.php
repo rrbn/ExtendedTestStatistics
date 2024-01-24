@@ -3,8 +3,16 @@
 
 /**
  * Source data for test and question evaluations
- * A call of load() must be done before any get...() function is used
+ * Provides data objects
+ * - for participants of tte test
+ * - for questions which are assigned to the participants
+ * - for answers in the relevant pass of each participant (also if not answered)
+ * - for basic test and question values
  *
+ * A call of load() must be done before any get...() function is used
+ * This determines the relevant pass for each participant
+ * Only assigned questions are included
+ * Only answers of the relevant pass of each participant are included
  */
 class ilExteStatSourceData
 {
@@ -45,52 +53,49 @@ class ilExteStatSourceData
      * List of question type titles
 	 * @var array   class => title
 	 */
-	protected $question_types = array();
-
+	protected $question_types = [];
 
 	/**
      * List of question data
 	 * @var ilExteStatSourceQuestion[]    	$questions 		(indexed by question_id)
 	 */
-	protected $questions = array();
+	protected $questions = [];
 
 	/**
      * List of participant data
 	 * @var ilExteStatSourceParticipant[]	$participants	(indexed by active_id)
 	 */
-	protected $participants = array();
+	protected $participants = [];
 
 	/**
      * List of answer data
 	 * @var ilExteStatSourceAnswer[]    	$answers		(flat list)
 	 */
-	protected $answers = array();
+	protected $answers = [];
 
 	/**
      * List of answer data
-     * @todo (ilias8) remove unnecessary pass step (only one pass is saved per participant)
-	 * @var array    question_id => active_id => pass => ilExteStatSourceAnswer
+	 * @var array    question_id => active_id => ilExteStatSourceAnswer
 	 */
-	protected $answers_by_question_id = array();
+	protected $answers_by_question_id = [];
 
 	/**
      * List of answer data
-     * @todo (ilias8) remove unnecessary pass step (only one pass is saved per participant)
-     * @var array    active_id => pass => question_id => ilExteStatSourceAnswer
+     * @var array    active_id => question_id => ilExteStatSourceAnswer
 	 */
-	protected $answers_by_active_id = array();
+	protected $answers_by_active_id = [];
 
 	/**
      * List of basic test values
 	 * @var array    value_id => ilExteStatValue
 	 */
-	protected $basic_test_values = array();
+	protected $basic_test_values = [];
 
 	/**
      * List of basic question values
 	 * @var array    question_id => value_id => ilExteStatValue
 	 */
-	protected $basic_question_values = array();
+	protected $basic_question_values = [];
 
 
 	/**
@@ -114,18 +119,16 @@ class ilExteStatSourceData
 
 	/**
 	 * Get the test title
-	 * @return string
 	 */
-	public function getTestTitle()
+	public function getTestTitle() : string
 	{
-		return $this->object->getTitle();
+		return (string) $this->object->getTitle();
 	}
 
 	/**
 	 * Get the test type (fixed, random, dynamic)
-	 * @return string
 	 */
-	public function getTestType()
+	public function getTestType() : string
 	{
 		if ($this->object->isFixedTest())
 		{
@@ -149,7 +152,7 @@ class ilExteStatSourceData
 	 * Get an assoc list of the question types
 	 * @return	array	class => type name
 	 */
-	public function getQuestionTypes()
+	public function getQuestionTypes() : array
 	{
 		return $this->question_types;
 	}
@@ -158,7 +161,7 @@ class ilExteStatSourceData
 	 * Get the selection of the evaluated pass
 	 * @return string
 	 */
-	public function getPassSelection()
+	public function getPassSelection() : string
 	{
 		return $this->pass_selection;
 	}
@@ -166,11 +169,10 @@ class ilExteStatSourceData
 
 	/**
 	 * Load the source data
-	 *
 	 * @param    string    $a_pass_selection	pass selection, e.g. self::PASS_SCORED
 	 * @see ilObjTest::getUnfilteredEvaluationData()
 	 */
-	public function load($a_pass_selection = self::PASS_SCORED)
+	public function load($a_pass_selection = self::PASS_SCORED) : void
 	{
 		$this->pass_selection = $a_pass_selection;
 		$this->cache->setPassSelection($a_pass_selection);
@@ -185,23 +187,23 @@ class ilExteStatSourceData
 	/**
 	 * Reset all source data
 	 */
-	protected function reset()
+	protected function reset() : void
 	{
-		$this->question_types = array();
-		$this->questions = array();
-		$this->answers = array();
-		$this->participants = array();
-		$this->answers_by_question_id = array();
-		$this->answers_by_active_id = array();
-		$this->basic_test_values = array();
-		$this->basic_question_values = array();
+		$this->question_types = [];
+		$this->questions =  [];
+		$this->answers =  [];
+		$this->participants =  [];
+		$this->answers_by_question_id =  [];
+		$this->answers_by_active_id =  [];
+		$this->basic_test_values =  [];
+		$this->basic_question_values = [];
 	}
 
 	/**
 	 * Read the data from the cache
 	 * @return bool	cache could be read
 	 */
-	protected function readFromCache()
+	protected function readFromCache() : bool
 	{
 		$this->reset();
 		try
@@ -227,18 +229,18 @@ class ilExteStatSourceData
 
 		foreach ($this->answers as $answer)
 		{
-			$this->answers_by_question_id[$answer->question_id][$answer->active_id][$answer->pass] = $answer;
-			$this->answers_by_active_id[$answer->active_id][$answer->pass][$answer->question_id] = $answer;
+			$this->answers_by_question_id[$answer->question_id][$answer->active_id] = $answer;
+			$this->answers_by_active_id[$answer->active_id][$answer->question_id] = $answer;
 		}
 
-		return false;
+		return true;
 	}
 
 
 	/**
 	 * Write the data to the cache
 	 */
-	protected function writeToCache()
+	protected function writeToCache() : void
 	{
 		$this->cache->write(__CLASS__, 'question_types', serialize($this->question_types));
 		$this->cache->write(__CLASS__, 'questions', serialize($this->questions));
@@ -251,7 +253,6 @@ class ilExteStatSourceData
 
 	/**
 	 * Read the source data from the test
-	 *
 	 * @see ilObjTest::getUnfilteredEvaluationData()
 	 */
 	protected function readFromTest()
@@ -272,7 +273,7 @@ class ilExteStatSourceData
 		$participants = $this->eval->getParticipants();
 		foreach ($participants as $active_id => $userdata)
 		{
-			$participant = $this->getParticipant($active_id, true);
+			$participant = $this->createParticipant($active_id);
 			$participant->best_pass = $userdata->getBestPass();
 			$participant->last_pass = $userdata->getLastPass();
 			$participant->first_pass = 0;
@@ -297,21 +298,22 @@ class ilExteStatSourceData
 			if ($pass instanceof ilTestEvaluationPassData)
 			{
 				// all questions for a participant in the test pass
-                // in case of a random test, this fills the list of questions with all questions
-                //      drawn for the participants in the chosen pass
+                // these may differ between participants in a random test
 				$pass_questions = $userdata->getQuestions($pass->getPass());
 
 				if (is_array($pass_questions))
 				{
 					foreach ($pass_questions as $pass_question)
 					{
-						$question = $this->getQuestion($pass_question['id'], true);
+                        if (empty($question = $this->getQuestion($pass_question['id']))) {
+                            $question = $this->createQuestion($pass_question['id']); // reference
+                        }
 						$question->original_id = $pass_question['o_id'];
 						$question->maximum_points = $pass_question['points'];
 						$question->question_title = $question_titles[$pass_question['id']];
 
-                        // initiate the questions for this pass (even if not answered)
-						$answer = $this->getAnswer($pass_question['id'], $active_id, $pass->getPass(), true);
+                        // initiate the answers for all questions in this pass (even if not answered)
+                        $answer = $this->createAnswer($pass_question['id'], $active_id, $pass->getPass());
 						$answer->sequence = $pass_question['sequence'];
 					}
 				}
@@ -324,12 +326,13 @@ class ilExteStatSourceData
 					{
 						foreach ($pass_answers as $pass_answer)
 						{
-							$answer = $this->getAnswer($pass_answer['id'], $active_id, $pass->getPass(), true);
-							$answer->reached_points = (float) $pass_answer['reached'];
-							$answer->answered = (bool) $pass_answer['isAnswered'];
-							$answer->manual_scored = (bool) $pass_answer['manual'];
-
-							$current_reached_points += (float) $pass_answer['reached'];
+                            // answer should be already created above, just to be sure
+							if (!empty($answer = $this->getAnswer($pass_answer['id'], $active_id))) {
+                                $answer->reached_points = (float) $pass_answer['reached'];
+                                $answer->answered = (bool) $pass_answer['isAnswered'];
+                                $answer->manual_scored = (bool) $pass_answer['manual'];
+                            }
+                            $current_reached_points += (float) $pass_answer['reached'];
 						}
 					}
 				}
@@ -387,9 +390,11 @@ class ilExteStatSourceData
 
 		while ($row = $ilDB->fetchAssoc($result))
 		{
-			$question = $this->getQuestion($row['question_fi'], true); // reference!
-			$question->order_position = $row['sequence'];
-			$question->obligatory = (bool) $row['obligatory'];
+            if (empty($question = $this->getQuestion($row['question_fi']))) {
+                $question = $this->createQuestion($row['question_fi']); // reference
+            }
+            $question->order_position = $row['sequence'];
+            $question->obligatory = (bool) $row['obligatory'];
 		}
 	}
 
@@ -646,20 +651,15 @@ class ilExteStatSourceData
 				'title' => $this->plugin->txt('average_points'),
 				'description' => $this->plugin->txt('average_points_description'),
 				'test_types' => array()
-			),
-//			'average_percentage' => array(
-//				'title' => $this->plugin->txt('average_percentage'),
-//				'description' => $this->plugin->txt('average_percentage_description'),
-//				'test_types' => array()
-//			)
+			)
 		);
 	}
 
-		/**
+	/**
 	 * Get the basic test values
-	 * @return array    value_id => ilExteStatValue
+	 * @return ilExteStatValue[] value_id => ilExteStatValue
 	 */
-	public function getBasicTestValues()
+	public function getBasicTestValues() : array
 	{
 		return $this->basic_test_values;
 	}
@@ -667,196 +667,183 @@ class ilExteStatSourceData
 
 	/**
 	 * Get the basic question values
-	 * @return	array question_id => value_id => ilExteStatValue
+	 * @return	ilExteStatValue[][] question_id => value_id => ilExteStatValue
 	 */
-	public function getBasicQuestionValues()
+	public function getBasicQuestionValues() : array
 	{
 		return $this->basic_question_values;
 	}
 
-
-	/**
-     * Get a participant object
-     * @todo (ilias8) public getter should not create (avoid evaluation interference)
+    /**
+     * Create a participant object for an active_id
      * @param integer $a_active_id the participant id
-	 * @param bool $a_create create if not exists
-	 * @return ilExteStatSourceParticipant|null
      */
-	public function getParticipant($a_active_id, $a_create = false)
+    public function createParticipant($a_active_id) : ilExteStatSourceParticipant
+    {
+        $participant = new ilExteStatSourceParticipant;
+        $participant->active_id = $a_active_id;
+        $this->participants[$a_active_id] = $participant;
+        return $participant;
+    }
+
+
+    /**
+     * Get a participant object
+     * @param integer $a_active_id the participant id
+     */
+	public function getParticipant($a_active_id, $a_create = false) : ?ilExteStatSourceParticipant
 	{
 		if (isset($this->participants[$a_active_id]))
 		{
 			return $this->participants[$a_active_id];
 		}
-		elseif ($a_create)
-		{
-			$participant = new ilExteStatSourceParticipant;
-			$participant->active_id = $a_active_id;
-			$this->participants[$a_active_id] = $participant;
-			return $participant;
-		}
-		else
-		{
-			return null;
-		}
+        return null;
 	}
 
+    /**
+     * Create the question object for a question id
+     * @param integer $a_question_id the question id
+     */
+    protected function createQuestion($a_question_id) : ilExteStatSourceQuestion
+    {
+        $question = new ilExteStatSourceQuestion;
+        $question->question_id = $a_question_id;
+        $this->questions[$a_question_id] = $question;
+        return $question;
+    }
 
 	/**
 	 * Get the question object for a question id
-     * @todo (ilias8) public getter should not create (avoid evaluation interference)
-     *
-	 * @param integer $a_question_id the question id
-	 * @param bool $a_create create if necessary
-	 * @return ilExteStatSourceQuestion|null
+     * @param integer $a_question_id the question id
 	 */
-	public function getQuestion($a_question_id, $a_create = false)
+	public function getQuestion($a_question_id) : ?ilExteStatSourceQuestion
 	{
 		if (isset($this->questions[$a_question_id]))
 		{
 			return $this->questions[$a_question_id];
 		}
-		elseif ($a_create)
-		{
-			$question = new ilExteStatSourceQuestion;
-			$question->question_id = $a_question_id;
-			$this->questions[$a_question_id] = $question;
-			return $question;
-		}
-		else
-		{
-			return null;
-		}
+        return null;
 	}
 
+    /**
+     * Create an answer object
+     * @param integer $a_question_id the question id
+     * @param integer $a_active_id the active id of the user
+     * @param integer $a_pass the pass of the answer
+     */
+    protected function createAnswer($a_question_id, $a_active_id, $a_pass) : ilExteStatSourceAnswer
+    {
+        $answer = new ilExteStatSourceAnswer;
+        $answer->question_id = $a_question_id;
+        $answer->active_id = $a_active_id;
+        $answer->pass = $a_pass;
 
-	/**
-	 * Get or create the answer status of a question
-     * @todo (ilias8) public getter should not create (avoid evaluation interference)
-     * @todo (ilias8) remove unnecessary pass step (only one pass is saved per participant)
-     *
+        $this->answers[] = $answer;
+        $this->answers_by_question_id[$a_question_id][$a_active_id] = $answer;
+        $this->answers_by_active_id[$a_active_id][$a_question_id] = $answer;
+
+        return $answer;
+    }
+
+
+    /**
+	 * Get or create the answer status of a question and participant
 	 * @param integer $a_question_id the question id
 	 * @param integer $a_active_id the active id of the user
-	 * @param integer $a_pass the pass of the answer (used for creation)
-	 * @param boolean $a_create create if not exists
-	 * @return ilExteStatSourceAnswer|null
 	 */
-	public function getAnswer($a_question_id, $a_active_id, $a_pass, $a_create = false)
+	public function getAnswer($a_question_id, $a_active_id) : ? ilExteStatSourceAnswer
 	{
-		if (!empty($this->answers_by_question_id[$a_question_id][$a_active_id][$a_pass]))
+		if (isset($this->answers_by_question_id[$a_question_id][$a_active_id]))
 		{
-			return $this->answers_by_question_id[$a_question_id][$a_active_id][$a_pass];
+			return $this->answers_by_question_id[$a_question_id][$a_active_id];
 		}
-		elseif ($a_create)
-		{
-			$answer = new ilExteStatSourceAnswer;
-			$answer->question_id = $a_question_id;
-			$answer->active_id = $a_active_id;
-			$answer->pass = $a_pass;
-
-			$this->answers[] = $answer;
-			$this->answers_by_question_id[$a_question_id][$a_active_id][$a_pass] = $answer;
-			$this->answers_by_active_id[$a_active_id][$a_pass][$a_question_id] = $answer;
-
-			return $answer;
-		}
-		else
-		{
-			return null;
-		}
+        return null;
 	}
 
 
 	/**
-	 * Get all participants in the test
-	 *
+	 * Get all participants in the test (indexed by active_id)
 	 * @return ilExteStatSourceParticipant[]
 	 */
-	public function getAllParticipants()
+	public function getAllParticipants() : array
 	{
 		return $this->participants;
 	}
 
 
 	/**
-	 * Get all questions in the test
-	 *
+	 * Get all questions which are assigned to the participants in the test (indexed by question_id)
 	 * @return ilExteStatSourceQuestion[]
 	 */
-	public function getAllQuestions()
+	public function getAllQuestions() : array
 	{
 		return $this->questions;
 	}
 
 
 	/**
-	 * Get all answers in the test
-	 * The answer objects provide information about questions being displayed to the participants
-	 * The 'answered' property indicates if an answer was saved by the participant
-	 *
+	 * Get answer objects for all questions assigned to the participants in their relevant pass (flat list)
+	 * - The answer objects provide information about the answer status of questions assigned to the participants
+	 * - The 'answered' property indicates if an answer was saved by the participant
 	 * @return ilExteStatSourceAnswer[]
 	 */
-	public function getAllAnswers()
+	public function getAllAnswers() : array
 	{
 		return $this->answers;
 	}
 
 
 	/**
-	 * Get all answers for a question of any participant in his/her relevant pass
-	 *
+	 * Get all answers for a question of any participant in his/her relevant pass (indexed by active_id)
 	 * @param integer $a_question_id the question id
-	 * @param boolean $a_only_answered get only the really answered
+	 * @param boolean $a_only_answered get only the really answered, otherwise for all assigned participants
 	 * @return ilExteStatSourceAnswer[]
 	 */
-	public function getAnswersForQuestion($a_question_id, $a_only_answered = false)
+	public function getAnswersForQuestion($a_question_id, $a_only_answered = false)  : array
 	{
-		$answers = array();
+		$answers = [];
 		if (is_array($this->answers_by_question_id[$a_question_id]))
 		{
-			foreach ($this->answers_by_question_id[$a_question_id] as $active_id => $pass_answers)
-			{
-				if (is_array($pass_answers))
-				{
-					foreach ($pass_answers as $pass => $answer)
-					{
-						if (!$a_only_answered or ($a_only_answered and $answer->answered))
-						{
-							$answers[] = $answer;
-						}
-					}
-				}
-			}
+            if (!$a_only_answered) {
+                return $this->answers_by_question_id[$a_question_id];
+            }
+            else {
+                foreach ($this->answers_by_question_id[$a_question_id] as $active_id => $answer)
+                {
+                    if ($answer->answered)
+                    {
+                        $answers[$active_id] = $answer;
+                    }
+                }
+            }
 		}
 		return $answers;
 	}
 
 
 	/**
-	 * Get all answers for a participant in his/her relevant pass
-	 *
+	 * Get all answers for a participant in his/her relevant pass (indexed by question_id)
 	 * @param integer $a_active_id the participant id
-	 * @param boolean $a_only_answered get only the really answered
-	 * @return ilExteStatSourceAnswer[] indexed by question_id
+	 * @param boolean $a_only_answered get only the really answered, otherwise for all assigned questions
+	 * @return ilExteStatSourceAnswer[]
 	 */
-	public function getAnswersForParticipant($a_active_id, $a_only_answered = false)
+	public function getAnswersForParticipant($a_active_id, $a_only_answered = false) : array
 	{
-		$answers = array();
+		$answers = [];
 		if (is_array($this->answers_by_active_id[$a_active_id]))
 		{
-			foreach ($this->answers_by_active_id[$a_active_id] as $pass => $pass_answers)
-			{
-				if (is_array($pass_answers))
-				{
-					foreach ($pass_answers as $question_id => $answer)
-					{
-						if (!$a_only_answered or ($answer and $answer->answered))
-						{
-							$answers[$question_id] = $answer;
-						}
-					}
-				}
-			}
+            if (!$a_only_answered) {
+                return $this->answers_by_active_id[$a_active_id];
+            }
+            else {
+                foreach ($this->answers_by_active_id[$a_active_id] as $question_id => $answer)
+                {
+                    if ($answer->answered)
+                    {
+                        $answers[$question_id] = $answer;
+                    }
+                }
+            }
 		}
 		return $answers;
 	}
