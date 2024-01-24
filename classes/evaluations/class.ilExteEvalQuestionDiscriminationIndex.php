@@ -19,7 +19,7 @@ class ilExteEvalQuestionDiscriminationIndex extends ilExteEvalQuestion
     /**
 	 * @var bool    evaluation provides data for a details screen
 	 */
-	protected $provides_details = false;
+	protected $provides_details = true;
 
 	/**
 	 * @var array   list of allowed test types, e.g. array(self::TEST_TYPE_FIXED)
@@ -138,4 +138,49 @@ class ilExteEvalQuestionDiscriminationIndex extends ilExteEvalQuestion
 		// return value with 'bad' or no alert
 		return $value;
 	}
+
+    /**
+     * @inheritdoc
+     */
+    public function calculateDetails($a_question_id)
+    {
+        $details = new ilExteStatDetails();
+        $details->columns = [
+            ilExteStatColumn::_create('active_id', $this->txt('active_id'), ilExteStatColumn::SORT_NUMBER),
+            ilExteStatColumn::_create('difference_question_points',$this->txt('difference_question_points'), ilExteStatColumn::SORT_NUMBER, $this->txt('difference_question_points_description')),
+            ilExteStatColumn::_create('difference_other_points',$this->txt('difference_other_points'), ilExteStatColumn::SORT_NUMBER, $this->txt('difference_other_points_description')),
+        ];
+
+        $active_ids = [];
+        $question_points = [];
+        $other_points = [];
+
+        $answers = $this->data->getAnswersForQuestion($a_question_id);
+        foreach ($answers as $answer) {
+            $participant = $this->data->getParticipant($answer->active_id);
+            $active_ids[] = $answer->active_id;
+            $question_points[$answer->active_id] = $answer->reached_points;
+            $other_points[$answer->active_id] = $participant->current_reached_points - $answer->reached_points;
+        }
+
+        $mean_question_points = $this->calcMean($question_points);
+        $mean_other_points = $this->calcMean($other_points);
+
+        foreach ($active_ids as $active_id) {
+            $details->rows[] = [
+                'active_id' => ilExteStatValue::_create($active_id, ilExteStatValue::TYPE_NUMBER, 0),
+                'difference_question_points' => ilExteStatValue::_create($question_points[$active_id] - $mean_question_points, ilExteStatValue::TYPE_NUMBER, 2),
+                'difference_other_points' => ilExteStatValue::_create($other_points[$active_id] - $mean_other_points, ilExteStatValue::TYPE_NUMBER, 2),
+            ];
+        }
+
+        return $details;
+    }
+
+    public function getOverviewChart($question_ids = [], $chart_lines = null)
+    {
+        return parent::getOverviewChart($question_ids,
+            [-100 => '-1', -75 => '-0.75', -50 => '-0.5', -25 => '-0.25', 0 => '0',  25 => '0.25', 50 => '0.5', 75 => '0.75', 100 => '1']
+        );
+    }
 }

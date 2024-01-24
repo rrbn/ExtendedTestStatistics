@@ -83,6 +83,11 @@ qst_discrimination_min_medium_description#:#Minimum value rated as 'mediocre'. 0
 qst_discrimination_min_good_title#:#Minimum 'good'
 qst_discrimination_min_good_description#:#Minimum value rated as 'good'. 0 to suppress the rating.
 qst_discrimination_random_test#:#The calculation of a discrimination index in a random test is uncertain.
+qst_discrimination_active_id#:#Participation ID
+qst_discrimination_difference_question_points#:#Deviation of question points from mean
+qst_discrimination_difference_question_points_description#:#Difference between the points achieved and the mean points achieved for this question (basis for variance)
+qst_discrimination_difference_other_points#:#Deviation of remaining points from the mean
+qst_discrimination_difference_other_points_description#:#Difference between the points achieved and the mean points achieved for the remaining allocated questions (basis for variance)
 show_test_evaluations#:#Show Test Evaluations
 show_question_evaluations#:#Show Question Evaluations
 evaluation_available_for_admins#:#Admins

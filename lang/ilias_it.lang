@@ -83,6 +83,11 @@ qst_discrimination_min_medium_description#:#Valore minimo classificato come "med
 qst_discrimination_min_good_title#:#Minimo "buono"
 qst_discrimination_min_good_description#:#Valore minimo classificato come "buono". 0 per sopprimere la valutazione.
 qst_discrimination_random_test#:#Il calcolo di un indice di discriminazione in un test casuale è incerto.
+qst_discrimination_active_id#:#ID di partecipazione
+qst_discrimination_difference_question_points#:#Deviazione dei punti della domanda dalla media
+qst_discrimination_difference_question_points_description#:#Differenza tra i punti ottenuti e la media dei punti ottenuti per questa domanda (base per la varianza)
+qst_discrimination_difference_other_points#:#Deviazione dei punti rimanenti dalla media
+qst_discrimination_difference_other_points_description#:#Differenza tra i punti ottenuti e la media dei punti ottenuti per le restanti domande assegnate (base per la varianza)
 show_test_evaluations#:#Mostra valutazioni dei test
 show_question_evaluations#:#Mostra valutazioni delle domande
 evaluation_available_for_admins#:#Admin

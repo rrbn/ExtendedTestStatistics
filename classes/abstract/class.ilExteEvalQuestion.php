@@ -127,11 +127,17 @@ abstract class ilExteEvalQuestion extends ilExteEvalBase
     }
 
     /**
-     * Generate a standard bar chart from the calulated values
+     * Generate a standard bar chart from the calculated values
+     * - All values will be multiplied by 100 and rounded to integer for display of the bars
+     * - Chart lines are an assoc array of display value => label
+     * - Default lines will be generated if not given as parameter
+     * - A mean of the values is asses as special line
+     *
      * @param bool $as_percent
+     * @param array|null $chart_lines
      * @return ilChart|ilChartGrid|ilChartPie|ilChartSpider
      */
-     public function getOverviewChart($question_ids = []) {
+     public function getOverviewChart($question_ids = [], $chart_lines = null) {
 
         $questions = $this->data->getAllQuestions();
 
@@ -174,7 +180,10 @@ abstract class ilExteEvalQuestion extends ilExteEvalBase
             ilExteStatColumn::_create('question_value',$this->txt('title_long'),ilExteStatColumn::SORT_NUMBER, '', true),
         );
 
-        if ($is_percent) {
+        if (is_array($chart_lines)) {
+            $details->chartLines = $chart_lines;
+        }
+        elseif ($is_percent) {
             $details->chartLines = [0 => '0',  2500 => '25%', 5000 => '50%', 7500 => '75%', 10000 => '100%'];
         }
         elseif ($max_value <= 1) {
