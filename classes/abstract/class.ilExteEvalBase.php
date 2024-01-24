@@ -401,4 +401,77 @@ abstract class ilExteEvalBase
 		$chart->setAutoResize(true);
         return $chart;
     }
+
+    /**
+     * Calculate the mean value of a set of values (min 1)
+     * @param float[] $values
+     * @return float
+     */
+    protected function calcMean($values) : ?float
+    {
+        if (count($values) < 1) {
+            return null;
+        }
+        $sum = 0;
+        foreach ($values as $value) {
+            $sum += $value;
+        }
+        return $sum / count($values);
+    }
+
+    /**
+     * Calculate the variance of a set of values (min 2)
+     * @param float[] $values
+     * @param bool $with_bessel use the bessel correction
+     * @return float
+     */
+    protected function calcVariance(array $values, bool $with_bessel)
+    {
+        if (count($values) < 2) {
+            return null;
+        }
+        $mean = $this->calcMean($values);
+        $sum = 0;
+        foreach ($values as $value) {
+            $sum += pow($value - $mean, 2);
+        }
+        if ($with_bessel) {
+            return $sum / (count($values) - 1);
+        }
+        else {
+            return $sum / (count($values));
+        }
+    }
+
+    /**
+     * Calculate the covariance of two sets of values (min 2)
+     * @param float[] $values1
+     * @param float[] $values2
+     * @param bool $with_bessel use the bessel correction
+     * @return float
+     * @see https://de.wikipedia.org/wiki/Stichprobenkovarianz
+     */
+    protected function calcCovariance(array $values1, array $values2, bool $with_bessel)
+    {
+        if (count($values1) < 2 || count($values1) != count($values2)) {
+            return null;
+        }
+        // ensure numeric keys for correct indexing
+        $v1 = array_values($values1);
+        $v2 = array_values($values2);
+
+        $mean1 = $this->calcMean($v1);
+        $mean2 = $this->calcMean($v2);
+
+        $sum = 0;
+        for ($i = 0; $i < count($values1); $i++) {
+            $sum += ($v1[$i] - $mean1) * ($v2[$i] - $mean2);
+        }
+        if ($with_bessel) {
+            return $sum / (count($v1) - 1);
+        }
+        else {
+            return $sum / (count($v1));
+        }
+    }
 }
