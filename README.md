@@ -90,6 +90,13 @@ https://github.com/ilifau/ExampleEvaluations
 Version History
 ===============
 
+Version 1.7.2 (2024-01-24)
+-------------------------
+- added diagrams for discrimination index, facility index, percentage of points, standard deviation
+- simplified the calculation of the discrimination index (produces same results)
+- removed option to create from getParticipant() getQuestion(), getAnswer() of ilExteStatSourceData
+- added return types to the functions of ilExteStatSourceData (preparation for ilias 8)
+
 Version 1.7.1 (2023-11-29)
 --------------------------
 - fixed saving of evaluation parameters (thx to jcopado)
