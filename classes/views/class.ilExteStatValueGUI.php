@@ -6,42 +6,31 @@
  */
 class ilExteStatValueGUI
 {
-	/**
-	 * @var ilExtendedTestStatisticsPlugin
-	 */
-	protected $plugin;
+	protected ilExtendedTestStatisticsPlugin $plugin;
+
+	/** @var bool	comments should be shown as tooltip  */
+	protected bool $show_comment = true;
 
 	/**
-	 * @var bool	comments should be shown as tooltip
+	 * Constructor.
 	 */
-	protected $show_comment = true;
-
-	/**
-	 * ilExteStatValueGUI constructor.
-	 * @param ilExtendedTestStatisticsPlugin	$a_plugin
-	 */
-	public function __construct($a_plugin)
+	public function __construct(ilExtendedTestStatisticsPlugin $a_plugin)
 	{
 		$this->plugin = $a_plugin;
-		$this->plugin->includeClass('models/class.ilExteStatValue.php');
-		require_once("Services/UIComponent/Tooltip/classes/class.ilTooltipGUI.php");
 	}
 
 	/**
 	 * Set whether comments should be shown
-	 * @param bool $a_show_comment
 	 */
-	public function setShowComment($a_show_comment)
+	public function setShowComment(bool $a_show_comment)
 	{
 		$this->show_comment = $a_show_comment;
 	}
 
 	/**
 	 * Get the rendered HTML for a value
-	 * @param ilExteStatValue $value
-	 * @return string
 	 */
-	public function getHTML(ilExteStatValue $value)
+	public function getHTML(ilExteStatValue $value): string
 	{
 		global $lng;
 
@@ -63,7 +52,7 @@ class ilExteStatValueGUI
 				break;
 
 			case ilExteStatValue::TYPE_TEXT:
-				$content =  $this->textDisplay($value->value);
+				$content =  $this->textDisplay((string) $value->value);
 				$align = 'left';
 				break;
 
@@ -143,14 +132,8 @@ class ilExteStatValueGUI
 
 	/**
 	 * Render the value content
-	 * @param ilTemplate	$template
-	 * @param string		$content
-	 * @param string		$class
-	 * @param string		$comment
-	 * @param bool			$uncertain
-	 *
 	 */
-	protected function renderContent($template, $content, $class,  $comment = "", $uncertain = false)
+	protected function renderContent(ilTemplate $template, string $content, string $class,  string $comment = "", bool $uncertain = false)
 	{
 		$id = rand(1000000,9999999);
 
@@ -171,12 +154,8 @@ class ilExteStatValueGUI
 
 	/**
 	 * Render an alert sign or comment
-	 * @param ilTemplate $template
-	 * @param string	$sign
-	 * @param string	$class
-	 * @param string 	$comment
 	 */
-	protected function renderSign($template, $sign, $class, $comment = "")
+	protected function renderSign(ilTemplate $template, string $sign, string $class, string $comment = "")
 	{
 		$id = rand(1000000,9999999);
 
@@ -200,7 +179,7 @@ class ilExteStatValueGUI
 	 * Get legend data
 	 * @return array	[ ['value' => ilExteStatValue, 'description' => string], ...]
 	 */
-	public function getLegendData()
+	public function getLegendData(): array
 	{
 		global $lng;
 
@@ -237,10 +216,8 @@ class ilExteStatValueGUI
 
 	/**
 	 * Prepare a string value to be displayed in HTML
-	 * @param $text
-	 * @return mixed|string
 	 */
-	protected function textDisplay($text)
+	protected function textDisplay(string $text): string
 	{
 		// these would be deleted by the template engine
 		$text = str_replace('{','&#123;', $text);
@@ -251,7 +228,7 @@ class ilExteStatValueGUI
 
 		if (strpos($text,'[tex]') !== false)
 		{
-			$text = ilUtil::insertLatexImages($text);
+			$text = ilMathJax::getInstance()->insertLatexImages($text);
 		}
 
 		return $text;

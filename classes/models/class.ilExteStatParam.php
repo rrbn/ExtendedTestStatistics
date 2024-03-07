@@ -15,30 +15,27 @@ class ilExteStatParam
 	const TYPE_STRING = 'string';
 
 	/**
-	 * @var string		name of the parameter (should be unique within an evaluation class)
+	 * Name of the parameter (should be unique within an evaluation class)
 	 */
-	public $name;
+	public string $name;
 
 	/**
-	 * @var string		type of the parameter
+	 * Type of the parameter
 	 */
-	public $type;
+	public string $type;
 
 	/**
-	 * @var mixed 		actual value
+     * actual value
+	 * @var mixed
 	 */
 	public $value;
 
 
     /**
      * Create a parameter
-     *
-     * @param string $a_name
-     * @param string $a_type
 	 * @param mixed $a_value
-     * @return ilExteStatParam
      */
-    public static function _create($a_name, $a_type = self::TYPE_INT, $a_value = 0)
+    public static function _create(string $a_name, string $a_type = self::TYPE_INT, $a_value = 0) : ilExteStatParam
     {
         $param = new self;
 		$param->name = $a_name;

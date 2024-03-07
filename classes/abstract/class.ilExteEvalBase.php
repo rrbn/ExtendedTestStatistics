@@ -18,55 +18,44 @@ abstract class ilExteEvalBase
 	const TEST_TYPE_UNKNOWN = 'UNKNOWN';
 
 	/**
-	 * @var bool    evaluation provides a single value for the overview level
+	 * evaluation provides a single value for the overview level
 	 */
-	protected $provides_value = false;
+	protected bool $provides_value = false;
 
 	/**
-	 * @var bool    evaluation provides data for a details screen
+	 * evaluation provides data for a details screen
 	 */
-	protected $provides_details = false;
+	protected bool $provides_details = false;
 
     /**
-     * @var bool    evaluation provides a chart
+     * evaluation provides a chart
      */
-	protected $provides_chart = false;
+	protected bool $provides_chart = false;
 
 	/**
-	 * @var bool    evaluation provides custom HTML
+	 * evaluation provides custom HTML
 	 */
-	protected $provides_HTML = false;
+	protected bool $provides_HTML = false;
 
 	/**
-	 * @var array 	list of allowed test types, e.g. array(self::TEST_TYPE_FIXED)
+	 * list of allowed test types, e.g. array(self::TEST_TYPE_FIXED)
 	 */
-	protected $allowed_test_types = array();
+	protected array $allowed_test_types = array();
 
 	/**
-	 * @var array    list of question types, e.g. array('assSingleChoice', 'assMultipleChoice', ...)
+	 * list of question types, e.g. array('assSingleChoice', 'assMultipleChoice', ...)
 	 */
-	protected $allowed_question_types = array();
+	protected array $allowed_question_types = array();
 
 	/**
-	 * @var string	specific prefix of language variables (lowercase class name is used as default)
+	 * specific prefix of language variables (lowercase class name is used as default)
 	 */
-	protected $lang_prefix = null;
+	protected ?string $lang_prefix = null;
 
 
-	/**
-	 * @var ilExtendedTestStatisticsPlugin    plugin object, used in txt() method
-	 */
-	protected $plugin;
-
-	/**
-	 * @var ilExtendedTestStatisticsCache	cache object
-	 */
-	protected $cache;
-
-	/**
-	 * @var ilExteStatSourceData        	source data for the calculations
-	 */
-	protected $data;
+	protected ilExtendedTestStatisticsPlugin $plugin; //used in txt() method
+	protected ilExtendedTestStatisticsCache $cache;
+	protected ilExteStatSourceData $data;
 
 	/**
 	 * @var ilExteStatParam[]				evaluation parameters (indexed by name)
@@ -74,21 +63,13 @@ abstract class ilExteEvalBase
 	protected $params = array();
 
 
-
 	/**
 	 * Constructor
-	 * @param ilExtendedTestStatisticsPlugin $a_plugin
-	 * @param ilExtendedTestStatisticsCache	$a_cache
 	 */
-	public function __construct($a_plugin, $a_cache)
+	public function __construct(ilExtendedTestStatisticsPlugin $a_plugin, ilExtendedTestStatisticsCache $a_cache)
 	{
 		$this->plugin = $a_plugin;
 		$this->cache = $a_cache;
-
-		$this->plugin->includeClass('models/class.ilExteStatParam.php');
-		$this->plugin->includeClass('models/class.ilExteStatValue.php');
-		$this->plugin->includeClass('models/class.ilExteStatColumn.php');
-		$this->plugin->includeClass('models/class.ilExteStatDetails.php');
 
 		$this->initParams();
 
@@ -134,10 +115,8 @@ abstract class ilExteEvalBase
 	 * Set the source data
 	 * This should be done before the evaluation is used on the PageGUI
 	 * It can be ignored when the evaluation is called from the ConfigGUI
-	 *
-	 * @param ilExteStatSourceData $a_data
 	 */
-	public function setData($a_data)
+	public function setData(ilExteStatSourceData $a_data)
 	{
 		$this->data = $a_data;
 	}
@@ -146,10 +125,8 @@ abstract class ilExteEvalBase
 	/**
 	 * Get the prefix for language variables of the evaluation
 	 * This prefix is used additionally to the prefix of the plugin
-	 *
-	 * @return string	prefix
 	 */
-	public function getLangPrefix()
+	public function getLangPrefix() : string
 	{
 		return isset($this->lang_prefix) ? $this->lang_prefix : strtolower(get_called_class());
 	}
@@ -157,27 +134,24 @@ abstract class ilExteEvalBase
 
 	/**
 	 * Get the title of the evaluation (to be used in lists or as headline)
-	 * @return string
 	 */
-	public function getTitle()
+	public function getTitle() : string
 	{
 		return $this->txt('title_long');
 	}
 
 	/**
 	 * Get a short title of the evaluation (to be used as a column header)
-	 * @return string
 	 */
-	public function getShortTitle()
+	public function getShortTitle() : string
 	{
 		return $this->txt('title_short');
 	}
 
 	/**
 	 * Get a description of the evaluation (shown as tooltip or info text)
-	 * @return string
 	 */
-	public function getDescription()
+	public function getDescription() :string
 	{
 		return $this->txt('description');
 	}
@@ -186,7 +160,7 @@ abstract class ilExteEvalBase
 	 * Get a list of available parameters
 	 *	@return ilExteStatParam[]
 	 */
-	public function getAvailableParams()
+	public function getAvailableParams() : array
 	{
 		return array();
 	}
@@ -195,7 +169,7 @@ abstract class ilExteEvalBase
 	 * Get the initialized params
 	 * @return ilExteStatParam[]		$name => ilExteStatParam
 	 */
-	public function getParams()
+	public function getParams() : array
 	{
 		return $this->params;
 	}
@@ -203,58 +177,57 @@ abstract class ilExteEvalBase
 
 	/**
 	 * Get the value of a single parameter
-	 * @param $a_name
 	 * @return mixed
 	 */
-	public function getParam($a_name)
+	public function getParam(string $a_name)
 	{
 		return $this->params[$a_name]->value;
 	}
 
 	/**
-	 * @return bool
+	 * Is the test type allowed?
 	 */
-	public function isTestTypeAllowed()
+	public function isTestTypeAllowed() : bool
 	{
 		return empty($this->allowed_test_types) || in_array($this->data->getTestType(), $this->allowed_test_types);
 	}
 
 	/**
-	 * @return bool
+	 * Is the question type allowed
 	 */
-	final public function isQuestionTypeAllowed($a_type)
+	final public function isQuestionTypeAllowed(string $a_type) :bool
 	{
 		return empty($this->allowed_question_types) || in_array($a_type, $this->allowed_question_types);
 	}
 
 	/**
-	 * @return bool	evaluation provides a single value
+	 * evaluation provides a single value
 	 */
-	public function providesValue()
+	public function providesValue() : bool
 	{
 		return $this->provides_value;
 	}
 
 	/**
-	 * @return bool	evaluation provides an array of details
+	 * evaluation provides an array of details
 	 */
-	public function providesDetails()
+	public function providesDetails() : bool
 	{
 		return $this->provides_details;
 	}
 
     /**
-     * @return bool evaluation provides a chart
+     * evaluation provides a chart
      */
-	public function providesChart()
+	public function providesChart() : bool
     {
         return $this->provides_chart;
     }
 
     /**
-     * @return bool evaluation provides custom HTML
+     * evaluation provides custom HTML
      */
-    public function providesHTML()
+    public function providesHTML(): bool
     {
     	return $this->provides_HTML;
     }
@@ -262,11 +235,8 @@ abstract class ilExteEvalBase
 	/**
 	 * Get a localized text
 	 * The language variable will be prefixed by self::_getLangPrefix()
-	 *
-	 * @param string $a_langvar language variable
-	 * @return string
 	 */
-	public function txt($a_langvar)
+	public function txt(string $a_langvar) : string
 	{
 		return $this->plugin->txt($this->getLangPrefix() . '_' . $a_langvar);
 	}
@@ -274,9 +244,8 @@ abstract class ilExteEvalBase
 
 	/**
 	 * Get a message saying that the evaluation is not available for the test type
-	 * @return	string
 	 */
-	public function getMessageNotAvailableForTestType()
+	public function getMessageNotAvailableForTestType() : string
 	{
 		switch ($this->data->getTestType())
 		{
@@ -296,22 +265,17 @@ abstract class ilExteEvalBase
 
 	/**
 	 * Get a message saying that the evaluation is not available for the question type
-	 * @return	string
 	 */
-	public function getMessageNotAvailableForQuestionType()
+	public function getMessageNotAvailableForQuestionType() : string
 	{
 		return $this->plugin->txt('not_for_question_type');
 	}
 
     /**
      * Generate a chart
-     * @param ilExteStatDetails $a_details
-     * @return ilChart
      */
-	protected function generateChart($a_details)
+	protected function generateChart(ilExteStatDetails $a_details) : ilChart
     {
-        include_once "Services/Chart/classes/class.ilChart.php";
-
         $id = rand(100000,999999);
         $datatype = null;
         switch ($a_details->chartType)
@@ -404,10 +368,8 @@ abstract class ilExteEvalBase
 
     /**
      * Calculate the mean value of a set of values (min 1)
-     * @param float[] $values
-     * @return float
      */
-    protected function calcMean($values) : ?float
+    protected function calcMean(array $values) : ?float
     {
         if (count($values) < 1) {
             return null;
@@ -421,11 +383,8 @@ abstract class ilExteEvalBase
 
     /**
      * Calculate the variance of a set of values (min 2)
-     * @param float[] $values
-     * @param bool $with_bessel use the bessel correction
-     * @return float
      */
-    protected function calcVariance(array $values, bool $with_bessel)
+    protected function calcVariance(array $values, bool $with_bessel) : ?float
     {
         if (count($values) < 2) {
             return null;
@@ -445,13 +404,9 @@ abstract class ilExteEvalBase
 
     /**
      * Calculate the covariance of two sets of values (min 2)
-     * @param float[] $values1
-     * @param float[] $values2
-     * @param bool $with_bessel use the bessel correction
-     * @return float
      * @see https://de.wikipedia.org/wiki/Stichprobenkovarianz
      */
-    protected function calcCovariance(array $values1, array $values2, bool $with_bessel)
+    protected function calcCovariance(array $values1, array $values2, bool $with_bessel) : ?float
     {
         if (count($values1) < 2 || count($values1) != count($values2)) {
             return null;

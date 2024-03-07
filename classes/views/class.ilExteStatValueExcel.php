@@ -23,32 +23,23 @@ class ilExteStatValueExcel
 	const COLOR_UNKNOWN = 'CCCCCC';
 	const COLOR_NONE = 'FFFFFF';
 
-	/**
-	 * @var ilExtendedTestStatisticsPlugin
-	 */
-	protected $plugin;
+	protected ilExtendedTestStatisticsPlugin $plugin;
+
+	/** @var bool	comments should be shown as tooltip */
+	protected bool $show_comment = true;
 
 	/**
-	 * @var bool	comments should be shown as tooltip
+	 * Constructor.
 	 */
-	protected $show_comment = true;
-
-	/**
-	 * ilExteStatValueGUI constructor.
-	 * @param ilExtendedTestStatisticsPlugin	$a_plugin
-	 */
-	public function __construct($a_plugin)
+	public function __construct(ilExtendedTestStatisticsPlugin $a_plugin)
 	{
 		$this->plugin = $a_plugin;
-		$this->plugin->includeClass('models/class.ilExteStatValue.php');
 	}
 
 	/**
 	 * Fill a cell with the value
-	 * @param Cell	$cell
-	 * @param ilExteStatValue $value
 	 */
-	public function writeInCell($cell, ilExteStatValue $value)
+	public function writeInCell(Cell $cell, ilExteStatValue $value)
 	{
 		$numberFormat = $cell->getStyle()->getNumberFormat();
 		$alignment = $cell->getStyle()->getAlignment();
@@ -139,20 +130,16 @@ class ilExteStatValueExcel
 
 	/**
 	 * Get the Excel comment for the value
-	 * @param ilExteStatValue $value
-	 * @return Comment
 	 */
-	public function getComment(ilExteStatValue $value)
+	public function getComment(ilExteStatValue $value): Comment
 	{
 		return self::_createComment((string) $value->comment);
 	}
 
 	/**
 	 * Create an excel comment from a text
-	 * @param $text
-	 * @return	Comment
 	 */
-	public static function _createComment($text)
+	public static function _createComment(string $text): Comment
 	{
 		$comment = new Comment();
 		$richText = new RichText();
@@ -169,7 +156,7 @@ class ilExteStatValueExcel
 	 * Get legend data
 	 * @return array	[ ['value' => ilExteStatValue, 'description' => string], ...]
 	 */
-	public function getLegendData()
+	public function getLegendData(): array
 	{
 		global $lng;
 
@@ -202,5 +189,4 @@ class ilExteStatValueExcel
 
 		return $data;
 	}
-
 }

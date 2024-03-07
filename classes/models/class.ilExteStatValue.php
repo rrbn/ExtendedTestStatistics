@@ -52,29 +52,23 @@ class ilExteStatValue
 
 	/**
 	 * Display precision to be used for TYPE_NUMERIC and TYPE_PERCENTAGE
-	 *
-	 * @var int
 	 */
-	public $precision = 2;
+	public int $precision = 2;
 
 	/**
 	 * Optional textual comment
 	 *
 	 * This may be shown as tooltip or additional info text
-	 * @var string
 	 */
-	public $comment = '';
+	public string $comment = '';
 
 
 	/**
 	 * Optional alert sign
-	 *
 	 * If $type is TYPE_ALERT, then only the sign will be shown
 	 * Otherwise the sign will be shown beneath the text
-	 *
-	 * @var string	alert sign constant
 	 */
-	public $alert = self::ALERT_NONE;
+	public string $alert = self::ALERT_NONE;
 
 
 	/**
@@ -82,23 +76,21 @@ class ilExteStatValue
 	 *
 	 * Can be set if the calculated value has an uncertainty, e.g. due to a small data set
 	 * This will be shown with a specific markup
-	 * @var bool
 	 */
-	public $uncertain = false;
+	public bool $uncertain = false;
 
 
     /**
      * Create a value by parameters
-     *
-     * @param mixed $a_value
-     * @param string $a_type
-     * @param int $a_precision
-	 * @param string $a_comment
-	 * @param string $a_alert
-	 * @param bool $a_uncertain
-     * @return ilExteStatValue
      */
-    public static function _create($a_value, $a_type = self::TYPE_TEXT, $a_precision = 2, $a_comment = '', $a_alert = self::ALERT_NONE, $a_uncertain = false)
+    public static function _create(
+        $a_value,
+        string $a_type = self::TYPE_TEXT,
+        int $a_precision = 2,
+        string $a_comment = '',
+        string $a_alert = self::ALERT_NONE,
+        bool $a_uncertain = false
+    ): ilExteStatValue
     {
         $value = new self;
         $value->value = $a_value;
@@ -115,7 +107,7 @@ class ilExteStatValue
 	 * Get a list of  demo values for testing purpose
 	 * @return ilExteStatValue[]
 	 */
-	public static function _getDemoValues()
+	public static function _getDemoValues(): array
 	{
 		return array(
 			self::_create('Hallo', self::TYPE_TEXT, 0, 'Text'),

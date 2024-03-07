@@ -7,34 +7,34 @@
 class ilExteEvalQuestionMultipleChoices extends ilExteEvalQuestion
 {
 	/**
-	 * @var bool	evaluation provides a single value for the overview level
+	 * evaluation provides a single value for the overview level
 	 */
-	protected $provides_value = false;
+	protected bool $provides_value = false;
 
 	/**
-	 * @var bool	evaluation provides data for a details screen
+	 * evaluation provides data for a details screen
 	 */
-	protected $provides_details = true;
+	protected bool $provides_details = true;
 
 	/**
-	 * @var bool    evaluation provides a chart
+	 * evaluation provides a chart
 	 */
-	protected $provides_chart = true;
+	protected bool $provides_chart = true;
 
 	/**
-	 * @var array   list of allowed test types, e.g. array(self::TEST_TYPE_FIXED)
+	 * list of allowed test types, e.g. array(self::TEST_TYPE_FIXED)
 	 */
-	protected $allowed_test_types = array();
+	protected array $allowed_test_types = array();
 
 	/**
-	 * @var array	list of question types, e.g. array('assSingleChoice', 'assMultipleChoice', ...)
+	 * list of question types, e.g. array('assSingleChoice', 'assMultipleChoice', ...)
 	 */
-	protected $allowed_question_types = array('assSingleChoice', 'assMultipleChoice');
+	protected array $allowed_question_types = array('assSingleChoice', 'assMultipleChoice');
 
 	/**
-	 * @var string	specific prefix of language variables (lowercase classname is default)
+	 * specific prefix of language variables (lowercase classname is default)
 	 */
-	protected $lang_prefix = 'qst_choices';
+	protected ?string $lang_prefix = 'qst_choices';
 
 
     /**
@@ -44,23 +44,17 @@ class ilExteEvalQuestionMultipleChoices extends ilExteEvalQuestion
      * This function will be called for many questions in sequence
      * - Please avoid instanciation of question objects
      * - Please try to cache question independent intermediate results
-     *
-     * @param integer $a_question_id
-     * @return ilExteStatValue
      */
-	public function calculateValue($a_question_id)
-	{
+    protected function calculateValue(int $a_question_id) : ilExteStatValue
+    {
         return new ilExteStatValue;
 	}
 
 
     /**
      * Calculate the details question (to be overwritten)
-     *
-     * @param integer $a_question_id
-     * @return ilExteStatDetails
      */
-	public function calculateDetails($a_question_id)
+    protected function calculateDetails(int $a_question_id) : ilExteStatDetails
 	{
         global $ilDB;
 

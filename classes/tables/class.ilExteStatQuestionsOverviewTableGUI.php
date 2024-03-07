@@ -6,22 +6,25 @@
  */
 class ilExteStatQuestionsOverviewTableGUI extends ilExteStatTableGUI
 {
-	/** @var array $basicValues 	question_id => ilExteStatValue[] */
-	protected $basicValues = array();
+    protected ilLanguage $lng;
+
+	/** @var array question_id => ilExteStatValue[] */
+	protected array $basicValues = [];
 
 	/** @var array names of the columns with basic values */
-	protected $basicColumns = array();
+	protected array $basicColumns = [];
     
     /** @var int[] question ids of the currently shown questions */
-    protected $shownQuestionIds = array();
+    protected array $shownQuestionIds = [];
 
     /**
 	 * Constructor
-	 * @param   ilExtendedTestStatisticsPageGUI $a_parent_obj
-     * @param   string                          $a_parent_cmd
 	 */
-	public function __construct($a_parent_obj, $a_parent_cmd)
+	public function __construct(ilExtendedTestStatisticsPageGUI $a_parent_obj, string $a_parent_cmd)
 	{
+        global $DIC;
+        $this->lng  = $DIC->language();
+
         $this->setId('ilExteStatQuestionsOverview');
         $this->setPrefix('ilExteStatQuestionsOverview');
 
@@ -53,28 +56,23 @@ class ilExteStatQuestionsOverviewTableGUI extends ilExteStatTableGUI
 		$this->setDefaultOrderField("title");
 		$this->setDefaultOrderDirection("asc");
 		$this->setDisableFilterHiding(true);
-		$this->enable('sort');
-		$this->enable('header');
-		$this->disable('select_all');
+		$this->setEnableHeader(true);
+		$this->setEnableAllCommand(false);
 		$this->initFilter();
 	}
 
 	/**
 	 * Initialize the filter controls
 	 */
-	public function initFilter()
+    public function initFilter(): void
 	{
-		global $lng;
-
-		include_once("./Services/Form/classes/class.ilTextInputGUI.php");
-		$ti = new ilTextInputGUI($lng->txt('id'), 'question_id');
-		$ti->setParent($this->parent_obj);
+		$ti = new ilTextInputGUI($this->lng->txt('id'), 'question_id');
+		$ti->setParentTable($this);
 		$ti->readFromSession();
 		$this->addFilterItem($ti);
 
-		include_once("./Services/Form/classes/class.ilTextInputGUI.php");
-		$ti = new ilTextInputGUI($lng->txt('title'), 'question_title');
-		$ti->setParent($this->parent_obj);
+		$ti = new ilTextInputGUI($this->lng->txt('title'), 'question_title');
+		$ti->setParentTable($this);
 		$ti->readFromSession();
 		$this->addFilterItem($ti);
 
@@ -82,9 +80,8 @@ class ilExteStatQuestionsOverviewTableGUI extends ilExteStatTableGUI
 		$options[""] = $this->plugin->txt("any_question_type");
 		$options = array_merge($options, $this->statObj->getSourceData()->getQuestionTypes());
 
-		include_once("./Services/Form/classes/class.ilSelectInputGUI.php");
-		$si = new ilSelectInputGUI($lng->txt('type'), "question_type");
-		$si->setParent($this->parent_obj);
+		$si = new ilSelectInputGUI($this->lng->txt('type'), "question_type");
+		$si->setParentTable($this);
 		$si->setOptions($options);
 		$si->readFromSession();
 		$this->addFilterItem($si);
@@ -93,35 +90,32 @@ class ilExteStatQuestionsOverviewTableGUI extends ilExteStatTableGUI
 
 	/**
      * Get the selectable columns with basic question data
-     * @return array
      */
-    public function getBasicSelectableColumns()
+    public function getBasicSelectableColumns(): array
     {
-		global $lng;
-
         $columns = array(
 			'order_position' => array(
-				'txt' => $lng->txt('position'),
+				'txt' => $this->lng->txt('position'),
 				'tooltip' => '',
 				'default' => true
 			),
 			'question_id' => array(
-				'txt' => $lng->txt('id'),
+				'txt' => $this->lng->txt('id'),
 				'tooltip' => '',
 				'default' => true
 			),
 			'question_title' => array(
-				'txt' => $lng->txt('title'),
+				'txt' => $this->lng->txt('title'),
 				'tooltip' => '',
 				'default' => true
 			),
             'question_type_label' => array(
-                'txt' => $lng->txt('type'),
+                'txt' => $this->lng->txt('type'),
                 'tooltip' => '',
                 'default' => false
             ),
 			'obligatory' => array(
-				'txt' => $lng->txt('obligatory'),
+				'txt' => $this->lng->txt('obligatory'),
 				'tooltip' => '',
 				'default' => true
 			),
@@ -165,7 +159,7 @@ class ilExteStatQuestionsOverviewTableGUI extends ilExteStatTableGUI
     /**
      * Get selectable columns
      */
-    public function getSelectableColumns()
+    public function getSelectableColumns(): array
     {
         // basic question values
        $columns = $this->getBasicSelectableColumns();
@@ -222,9 +216,9 @@ class ilExteStatQuestionsOverviewTableGUI extends ilExteStatTableGUI
 
     /**
 	 * Should this field be sorted numeric?
-	 * @return    boolean        numeric ordering; default is false
+	 * @return    bool        numeric ordering; default is false
 	 */
-	function numericOrdering($a_field)
+	function numericOrdering($a_field): bool
 	{
 		switch($a_field)
 		{
@@ -244,9 +238,8 @@ class ilExteStatQuestionsOverviewTableGUI extends ilExteStatTableGUI
 
 	/**
 	 * fill row
-	 * @param array $data
 	 */
-	public function fillRow($data)
+	protected function fillRow(array $data): void
 	{
 		$question_id = $data['question_id'];
         

@@ -7,31 +7,31 @@
 class ilExteEvalTestCIC extends ilExteEvalTest
 {
 	/**
-	 * @var bool    evaluation provides a single value for the overview level
+	 * evaluation provides a single value for the overview level
 	 */
-	protected $provides_value = true;
+	protected bool $provides_value = true;
 
 	/**
-	 * @var bool    evaluation provides data for a details screen
+	 * evaluation provides data for a details screen
 	 */
-	protected $provides_details = false;
+	protected bool $provides_details = false;
 
 	/**
-	 * @var array list of allowed test types, e.g. array(self::TEST_TYPE_FIXED)
+	 * list of allowed test types, e.g. array(self::TEST_TYPE_FIXED)
 	 */
-	protected $allowed_test_types = array(self::TEST_TYPE_FIXED);
+	protected array $allowed_test_types = array(self::TEST_TYPE_FIXED);
 
 	/**
-	 * @var array    list of question types, e.g. array('assSingleChoice', 'assMultipleChoice', ...)
+	 * list of question types, e.g. array('assSingleChoice', 'assMultipleChoice', ...)
 	 */
-	protected $allowed_question_types = array();
+	protected array $allowed_question_types = array();
 
 	/**
-	 * @var string	specific prefix of language variables (lowercase classname is default)
+	 * specific prefix of language variables (lowercase classname is default)
 	 */
-	protected $lang_prefix = 'tst_cic';
+	protected ?string $lang_prefix = 'tst_cic';
 
-	public function getAvailableParams()
+    public function getAvailableParams() : array
 	{
 		return array(
 			ilExteStatParam::_create('min_qst', ilExteStatParam::TYPE_INT, 2),
@@ -49,7 +49,7 @@ class ilExteEvalTestCIC extends ilExteEvalTest
 	 *
 	 * @return ilExteStatValue
 	 */
-	public function calculateValue()
+    protected function calculateValue() : ilExteStatValue
 	{
 		$value = new ilExteStatValue;
         $value->type = ilExteStatValue::TYPE_NUMBER;

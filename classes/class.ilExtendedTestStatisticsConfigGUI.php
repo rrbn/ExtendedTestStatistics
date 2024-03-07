@@ -1,8 +1,6 @@
 <?php
 // Copyright (c) 2017 Institut fuer Lern-Innovation, Friedrich-Alexander-Universitaet Erlangen-Nuernberg, GPLv3, see LICENSE
 
-include_once("./Services/Component/classes/class.ilPluginConfigGUI.php");
-
 /**
  * Extended Test statistics configuration user interface class
  *
@@ -11,27 +9,41 @@ include_once("./Services/Component/classes/class.ilPluginConfigGUI.php");
  */
 class ilExtendedTestStatisticsConfigGUI extends ilPluginConfigGUI
 {
-	/** @var ilExtendedTestStatisticsPlugin $plugin */
-	protected $plugin;
+    protected ilCtrlInterface $ctrl;
+    protected ilLanguage $lng;
+    protected ilTabsGUI $tabs;
+    protected ilGlobalTemplateInterface $tpl;
 
-	/** @var ilExtendedTestStatisticsConfig $config */
-	protected $config;
+    /** @var ilExtendedTestStatisticsPlugin $plugin */
+	protected ilPlugin $plugin;
+	protected ilExtendedTestStatisticsConfig $config;
+	protected ilExtendedTestStatisticsCache $cache;
 
-	/** @var  ilExtendedTestStatisticsCache */
-	protected $cache;
+    /**
+     * Constructor.
+     */
+    public function __construct()
+    {
+        global $DIC;
 
-	/**
+        $this->ctrl = $DIC->ctrl();
+        $this->lng = $DIC->language();
+        $this->tabs = $DIC->tabs();
+        $this->tpl = $DIC->ui()->mainTemplate();
+
+        $this->lng->loadLanguageModule('assessment');
+    }
+
+    
+    /**
 	 * Handles all commands, default is "configure"
 	 */
-	public function performCommand($cmd)
+    function performCommand(string $cmd): void
 	{
 		$this->plugin = $this->getPluginObject();
-
-		//Set config object
 		$this->config = $this->plugin->getConfig();
 
 		// Create a dummy cache
-		$this->plugin->includeClass('class.ilExtendedTestStatisticsCache.php');
 		$this->cache = new ilExtendedTestStatisticsCache(0,'');
 
 		switch ($cmd)
@@ -57,38 +69,30 @@ class ilExtendedTestStatisticsConfigGUI extends ilPluginConfigGUI
 	}
 
 	/**
-	 * Show configuration screen screen
-	 * @var	string	$a_mode	(test or question)
+	 * Show configuration screen 
+	 * @var	$a_mode	('test' or 'question')
 	 */
-	protected function configure($a_mode)
+	protected function configure(string $a_mode)
 	{
-		global $tpl;
 		$form = $this->initConfigurationForm($a_mode);
-		$tpl->setContent($form->getHTML());
+		$this->tpl->setContent($form->getHTML());
 	}
 
 
 	/**
 	 * Initialize the configuration form
-	 * @param	string $a_type	(test or question)
-	 * @return ilPropertyFormGUI form object
+	 * @param $a_type	('test' or 'question')
 	 */
-	protected function initConfigurationForm($a_type)
+	protected function initConfigurationForm(string $a_type): ilPropertyFormGUI
 	{
-		global $ilCtrl, $lng;
-
-		require_once("./Services/Form/classes/class.ilPropertyFormGUI.php");
 		$form = new ilPropertyFormGUI();
-		$form->setFormAction($ilCtrl->getFormAction($this));
+		$form->setFormAction($this->ctrl->getFormAction($this));
 
 		// Run throw all the test evaluations to check if there must be available for admins
 		// or users or not available in test of current platform
-		/**
-		 * @var ilExteEvalBase $class	(classname, not object)
-		 */
+		/** @var ilExteEvalBase $class	(classname, not object) */
 		foreach ($this->config->getEvaluationClasses($a_type) as $class => $availability)
 		{
-			/** @var ilExteEvalBase $evaluation */
 			$evaluation = new $class($this->plugin, $this->cache);
 			$prefix = $evaluation->getLangPrefix();
 
@@ -137,18 +141,16 @@ class ilExtendedTestStatisticsConfigGUI extends ilPluginConfigGUI
 		}
 
 		$form->setTitle($this->plugin->txt($a_type == 'test' ? 'test_evaluation_settings' : 'question_evaluation_settings'));
-		$form->addCommandButton($a_type == 'test' ? "saveTestSettings" : "saveQuestionSettings", $lng->txt("save"));
+		$form->addCommandButton($a_type == 'test' ? "saveTestSettings" : "saveQuestionSettings", $this->lng->txt("save"));
 		return $form;
 	}
 
 	/**
 	 * Save the settings
-	 * @param $a_type (test or question)
+	 * @param $a_type ('test' or 'question')
 	 */
-	protected function saveSettings($a_type)
+	protected function saveSettings(string $a_type)
 	{
-		global $tpl, $ilCtrl;
-
 		$form = $this->initConfigurationForm($a_type);
 		if ($form->checkInput())
 		{
@@ -164,32 +166,28 @@ class ilExtendedTestStatisticsConfigGUI extends ilPluginConfigGUI
 					foreach ($evaluation->getParams() as $name => $param)
 					{
 						$postvar = $class.'_'.$name;
-						$this->config->writeParameter($class, $name, $form->getInput($postvar));
+						$this->config->writeParameter($class, $name, (string) $form->getInput($postvar));
 					}
 				}
 			}
-			ilUtil::sendSuccess($this->plugin->txt($a_type == 'test' ? "test_settings_saved" : "question_settings_saved"), true);
-			$ilCtrl->redirect($this, $a_type == 'test' ? "showTestEvaluations" : "showQuestionEvaluations");
+			$this->tpl->setOnScreenMessage('success', $this->plugin->txt($a_type == 'test' ? "test_settings_saved" : "question_settings_saved"), true);
+			$this->ctrl->redirect($this, $a_type == 'test' ? "showTestEvaluations" : "showQuestionEvaluations");
 		}
 		else
 		{
 			$form->setValuesByPost();
-			$tpl->setContent($form->getHtml());
+			$this->tpl->setContent($form->getHtml());
 		}
 	}
 
 	/**
 	 * Init the Tabs
-	 * @param string $a_mode	active settings mode (test or question)
+	 * @param string $a_mode	active settings mode ('test' or 'question')
 	 */
-	protected function initTabs($a_mode = "")
+	protected function initTabs(string $a_mode = "")
 	{
-		global $ilCtrl, $ilTabs;
-
-		$ilTabs->addTab("show_test_evaluations", $this->plugin->txt('show_test_evaluations'), $ilCtrl->getLinkTarget($this, 'showTestEvaluations'));
-		$ilTabs->addTab("show_question_evaluations", $this->plugin->txt('show_question_evaluations'), $ilCtrl->getLinkTarget($this, 'showQuestionEvaluations'));
-		$ilTabs->setTabActive($a_mode == 'test' ? 'show_test_evaluations' : 'show_question_evaluations');
+		$this->tabs->addTab("show_test_evaluations", $this->plugin->txt('show_test_evaluations'), $this->ctrl->getLinkTarget($this, 'showTestEvaluations'));
+		$this->tabs->addTab("show_question_evaluations", $this->plugin->txt('show_question_evaluations'), $this->ctrl->getLinkTarget($this, 'showQuestionEvaluations'));
+		$this->tabs->activateTab($a_mode == 'test' ? 'show_test_evaluations' : 'show_question_evaluations');
 	}
 }
-
-?>

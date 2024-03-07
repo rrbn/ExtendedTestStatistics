@@ -5,8 +5,6 @@
  * Basic class for doing statistics
  *
  * @author Fred Neumann <fred.neumann@fau.de>
- * @version $Id$
- *
  */
 class ilExtendedTestStatistics
 {
@@ -16,62 +14,37 @@ class ilExtendedTestStatistics
 	const PROVIDES_VALUE = 'value';
 	const PROVIDES_DETAILS = 'details';
 
-	/**
-	 * @var ilExtendedTestStatisticsPlugin
-	 */
-	protected $plugin;
+    protected iltree $tree;
+    protected ilAccessHandler $access;
+
+	protected ilExtendedTestStatisticsPlugin $plugin;
+    protected ilExtendedTestStatisticsConfig $config;
+    protected ilObjTest $object;
+    protected ilExteStatSourceData $data;
+    protected ilExtendedTestStatisticsCache $cache;
+
+	/** @var ilExteEvalBase[]	indexed by class name */
+	protected array $evaluations;
+	protected string $pass_selection;
 
 	/**
-	 * @var	ilExtendedTestStatisticsConfig
+	 * Constructor.
 	 */
-	protected $config;
-
-	/*
-	 * @var ilObjTest
-	 */
-	protected $object;
-
-	/**
-	 * @var ilExteStatSourceData
-	 */
-	protected $data;
-
-	/**
-	 * @var ilExtendedTestStatisticsCache
-	 */
-	protected $cache;
-
-	/**
-	 * @var ilExteEvalBase[]	indexed by class name
-	 */
-	protected $evaluations;
-
-
-	/**
-	 * @var string
-	 */
-	protected $pass_selection;
-
-	/**
-	 * ilExtendedTestStatistics constructor.
-	 *
-	 * @param ilObjTest $a_test_obj
-	 * @param ilExtendedTestStatisticsPlugin $a_plugin
-	 */
-	public function __construct($a_test_obj, $a_plugin)
+	public function __construct(ilObjTest $a_test_obj, ilExtendedTestStatisticsPlugin $a_plugin)
 	{
+        global $DIC;
+
+        $this->tree = $DIC->repositoryTree();
+        $this->access = $DIC->access();
+
 		$this->plugin = $a_plugin;
 		$this->object = $a_test_obj;
-
-		//Set the config object
 		$this->config = $this->plugin->getConfig();
 
 		// Set which pass should be evaluated
-		$this->plugin->includeClass('models/class.ilExteStatSourceData.php');
 		$this->pass_selection = $this->plugin->getUserPreference('evaluated_pass', ilExteStatSourceData::PASS_SCORED);
 
 		// load the cache object
-		$this->plugin->includeClass('class.ilExtendedTestStatisticsCache.php');
 		$this->cache = new ilExtendedTestStatisticsCache($this->object->getTestId(), $this->pass_selection);
 	}
 
@@ -85,9 +58,8 @@ class ilExtendedTestStatistics
 
 	/**
 	 * Get the source data object
-	 * @return ilExteStatSourceData
 	 */
-	public function getSourceData()
+	public function getSourceData(): ilExteStatSourceData
 	{
 		if (!isset($this->data))
 		{
@@ -101,13 +73,13 @@ class ilExtendedTestStatistics
 	 * @param string $a_class  class name of the evaluation
 	 * @return ilExteEvalBase|ilExteEvalTest|ilExteEvalQuestion|null
 	 */
-	public function getEvaluation($a_class)
+	public function getEvaluation(string $a_class): ?ilExteEvalBase
 	{
 		if (!isset($this->evaluations))
 		{
 			$this->loadEvaluations();
 		}
-		return isset($this->evaluations[$a_class]) ? $this->evaluations[$a_class] : null;
+		return $this->evaluations[$a_class] ?? null;
 	}
 
 	/**
@@ -117,7 +89,7 @@ class ilExtendedTestStatistics
 	 * @param   string  $a_question_type	question type (for question evaluations) or empty for all
 	 * @return  ilExteEvalBase[]    indexed by class name
 	 */
-	public function getEvaluations($a_level = '', $a_provides = '', $a_question_type = '')
+	public function getEvaluations(string $a_level = '', string $a_provides = '', string $a_question_type = ''): array
 	{
 		if (!isset($this->evaluations))
 		{
@@ -157,11 +129,6 @@ class ilExtendedTestStatistics
 	 */
 	protected function loadSourceData()
 	{
-		// workaround for missing include in ilObjtest::getQuestionCount()
-		if ($this->object->isRandomTest())
-		{
-			require_once('Modules/Test/classes/class.ilTestRandomQuestionSetConfig.php');
-		}
 		$this->data = new ilExteStatSourceData($this->object, $this->plugin, $this->cache);
 		$this->data->load($this->pass_selection);
 	}
@@ -192,21 +159,16 @@ class ilExtendedTestStatistics
 
 	/**
 	 * Check if the current user is administrator of the test system
-	 * @return bool
 	 */
-	protected function isAdmin()
+	protected function isAdmin(): bool
 	{
-		global $tree, $rbacsystem;
-
-		foreach ($tree->getChilds(SYSTEM_FOLDER_ID) as $object)
+		foreach ($this->tree->getChilds(SYSTEM_FOLDER_ID) as $object)
 		{
 			if ($object["type"] == "assf")
 			{
-				return $rbacsystem->checkAccess("visible", $object["ref_id"]);
+				return $this->access->checkAccess("visible", '', (int) $object["ref_id"]);
 			}
 		}
 		return false;
 	}
 }
-
-?>

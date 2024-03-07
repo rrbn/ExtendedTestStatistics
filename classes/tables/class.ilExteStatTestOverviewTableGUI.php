@@ -26,11 +26,9 @@ class ilExteStatTestOverviewTableGUI extends ilExteStatTableGUI
 
 		$this->setRowTemplate("tpl.il_exte_stat_test_overview_row.html", $this->plugin->getDirectory());
 		$this->setFormAction($this->ctrl->getFormAction($a_parent_obj, $a_parent_cmd));
-		
-		$this->disable('sort');
-		$this->enable('header');
-		$this->disable('select_all');
 
+        $this->setEnableHeader(true);
+        $this->setEnableAllCommand(false);
 		$this->setEnableNumInfo(false);
 		$this->setExternalSegmentation(true);
 	}
@@ -42,7 +40,6 @@ class ilExteStatTestOverviewTableGUI extends ilExteStatTableGUI
     {
         $data = [];
 
-        /** @var ilExteStatValue[]  $values */
         $values = $this->statObj->getSourceData()->getBasicTestValues();
 		foreach ($this->statObj->getSourceData()->getBasicTestValuesList() as $def)
         {
@@ -92,12 +89,9 @@ class ilExteStatTestOverviewTableGUI extends ilExteStatTableGUI
 
 
 	/**
-	 * fill row 
-	 *
-	 * @access public
-	 * @param	array	$data
+	 * fill row
 	 */
-	protected function fillRow($data)
+    protected function fillRow(array $data): void
 	{
 		$title = ilExteStatValue::_create($data['title'],ilExteStatValue::TYPE_TEXT,0,$data['description']);
 		$value = isset($data['value']) ? $data['value'] : new ilExteStatValue();

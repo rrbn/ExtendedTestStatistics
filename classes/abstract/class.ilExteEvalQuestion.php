@@ -8,14 +8,14 @@ abstract class ilExteEvalQuestion extends ilExteEvalBase
 {
 
     /**
-     * @var bool    evaluation provides a chart of the values presented in the overview of questions
+     * evaluation provides a chart of the values presented in the overview of questions
      */
-    protected $provides_overview_chart = false;
+    protected bool $provides_overview_chart = false;
 
     /**
-     * @return bool evaluation provides a chart of the values presented in the overview of questions
+     * evaluation provides a chart of the values presented in the overview of questions
      */
-    public function providesOverviewChart()
+    public function providesOverviewChart() : bool
     {
         return $this->provides_overview_chart;
     }
@@ -27,22 +27,16 @@ abstract class ilExteEvalQuestion extends ilExteEvalBase
 	 * This function will be called for many questions in sequence
 	 * - Please avoid instanciation of question objects
 	 * - Please try to cache question independent intermediate results
-	 *
-	 * @param integer $a_question_id
-	 * @return ilExteStatValue
 	 */
-	protected function calculateValue($a_question_id)
+	protected function calculateValue(int $a_question_id) : ilExteStatValue
     {
         return new ilExteStatValue;
     }
 
 	/**
 	 * Calculate the details question (to be overwritten)
-     *
-	 * @param integer $a_question_id
-	 * @return ilExteStatDetails
 	 */
-	protected function calculateDetails($a_question_id)
+	protected function calculateDetails(int $a_question_id) : ilExteStatDetails
     {
        return new ilExteStatDetails();
     }
@@ -50,11 +44,9 @@ abstract class ilExteEvalQuestion extends ilExteEvalBase
 	/**
 	 * Get the calculated value
 	 * This checks if the test type matches before
-	 *
-	 * @param integer $a_question_id
-	 * @return ilExteStatValue
+
 	 */
-	final public function getValue($a_question_id)
+	final public function getValue(int $a_question_id) : ilExteStatValue
 	{
 		if (!$this->isTestTypeAllowed())
 		{
@@ -83,11 +75,8 @@ abstract class ilExteEvalQuestion extends ilExteEvalBase
 	/**
 	 * Get the calculated details
 	 * This checks if the test type matches before
-	 *
-	 * @param integer $a_question_id
-	 * @return ilExteStatDetails
 	 */
-	final public function getDetails($a_question_id)
+	final public function getDetails(int $a_question_id) : ilExteStatDetails
 	{
 		if (!$this->isTestTypeAllowed())
 		{
@@ -117,11 +106,8 @@ abstract class ilExteEvalQuestion extends ilExteEvalBase
 
     /**
      * Get the chart created by this evaluation
-     *
-     * @param integer $a_question_id
-     * @return ilChart
      */
-    final public function getChart($a_question_id)
+    final public function getChart(int $a_question_id) : ilChart
     {
         return $this->generateChart($this->getDetails($a_question_id));
     }
@@ -132,12 +118,9 @@ abstract class ilExteEvalQuestion extends ilExteEvalBase
      * - Chart lines are an assoc array of display value => label
      * - Default lines will be generated if not given as parameter
      * - A mean of the values is asses as special line
-     *
-     * @param bool $as_percent
-     * @param array|null $chart_lines
-     * @return ilChart|ilChartGrid|ilChartPie|ilChartSpider
      */
-     public function getOverviewChart($question_ids = [], $chart_lines = null) {
+     public function getOverviewChart(array $question_ids = [], ?array $chart_lines = null) : ilChart
+     {
 
         $questions = $this->data->getAllQuestions();
 
@@ -212,7 +195,7 @@ abstract class ilExteEvalQuestion extends ilExteEvalBase
             if (isset($questions[$question_id])) {
                 $question = $questions[$question_id];
 
-                $title = ilUtil::shortenText($question->question_title, 20, true);
+                $title = ilStr::shortenText($question->question_title, 20, true);
                 if ($this->data->getTestType() == ilExteEvalBase::TEST_TYPE_FIXED) {
                     $title .= ' (' . $question->order_position . ')';
                 }

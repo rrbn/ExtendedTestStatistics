@@ -12,63 +12,57 @@ class ilExteStatDetails
 
 	/**
 	 * Individual message for empty details
-	 * @var string
 	 */
-	protected $emptyMessage;
+	protected ?string $emptyMessage;
 
     /**
      * Table columns
      * @var ilExteStatColumn[]
      */
-    public $columns = array();
+    public array $columns = [];
 
     /**
      * Table rows
-     * @var array   rownum => colname => ilExteStatValue
+     * rownum => colname => ilExteStatValue
      */
-	public $rows = array();
+	public array $rows = [];
 
 
     /**
      * Type of the chart to be generated
-     * @var null
      */
-	public $chartType = null;
+	public ?string $chartType = null;
 
     /**
      * Index of the column to define the X axis
-     * @var int
      */
-    public $chartLabelsColumn = 0;
+    public int $chartLabelsColumn = 0;
 
     /**
      * Horizontal lines to be presented in a bar chart 
      * This also allow to set a maximum value for the diagram
      * Lines will be auto-generated, if null
-     * 
-     * @var array|null value => label
+     * value => label
      */
-    public $chartLines = null;
+    public ?array $chartLines = null;
 
     /**
      * Custom HTML for the evaluation
-     * @var string
      */
-    public $customHTML = '';
+    public string $customHTML = '';
     
 	/**
 	 * Get the message for empty details
-	 * @return string
 	 */
-	public function getEmptyMessage()
+	public function getEmptyMessage(): string
 	{
-		global $lng;
-
 		if (isset($this->emptyMessage))
 		{
 			return $this->emptyMessage;
 		}
-		return $lng->txt('no_items');
+
+        global $DIC;
+		return $DIC->language()->txt('no_items');
 	}
 
 	/**

@@ -7,41 +7,41 @@
 class ilExteEvalQuestionFacilityIndex extends ilExteEvalQuestion
 {
 	/**
-	 * @var bool    evaluation provides a single value for the overview level
+	 * evaluation provides a single value for the overview level
 	 */
-	protected $provides_value = true;
+	protected bool $provides_value = true;
 
     /**
-     * @var bool    evaluation provides a chart of the values presented in the overview of questions
+     * evaluation provides a chart of the values presented in the overview of questions
      */
-    protected $provides_overview_chart = true;
+    protected bool $provides_overview_chart = true;
 
 
     /**
-	 * @var bool    evaluation provides data for a details screen
+	 * evaluation provides data for a details screen
 	 */
-	protected $provides_details = false;
+	protected bool $provides_details = false;
 
 	/**
-	 * @var array   list of allowed test types, e.g. array(self::TEST_TYPE_FIXED)
+	 * list of allowed test types, e.g. array(self::TEST_TYPE_FIXED)
 	 */
-	protected $allowed_test_types = array();
+	protected array $allowed_test_types = array();
 
 	/**
-	 * @var array    list of question types, e.g. array('assSingleChoice', 'assMultipleChoice', ...)
+	 * list of question types, e.g. array('assSingleChoice', 'assMultipleChoice', ...)
 	 */
-	protected $allowed_question_types = array();
+	protected array $allowed_question_types = array();
 
 	/**
-	 * @var string	specific prefix of language variables (lowercase classname is default)
+	 * specific prefix of language variables (lowercase classname is default)
 	 */
-	protected $lang_prefix = 'qst_facility';
+	protected ?string $lang_prefix = 'qst_facility';
 
 	/**
 	 * Get the available parameters for this evaluation
-	 * @return ilExteStatParam
+	 * @return ilExteStatParam[]
 	 */
-	public function getAvailableParams()
+    public function getAvailableParams() : array
 	{
 		return array(
 			ilExteStatParam::_create('min_ans', ilExteStatParam::TYPE_INT, 2),
@@ -60,11 +60,8 @@ class ilExteEvalQuestionFacilityIndex extends ilExteEvalQuestion
 	 * This function will be called for many questions in sequence
 	 * - Please avoid instantiation of question objects
 	 * - Please try to cache question independent intermediate results
-	 *
-	 * @param integer $a_question_id
-	 * @return ilExteStatValue
 	 */
-	public function calculateValue($a_question_id)
+    protected function calculateValue(int $a_question_id) : ilExteStatValue
 	{
         // Get Data
 		$question_data = $this->data->getQuestion($a_question_id);

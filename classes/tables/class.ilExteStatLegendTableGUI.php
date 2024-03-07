@@ -20,10 +20,8 @@ class ilExteStatLegendTableGUI extends ilExteStatTableGUI
         $this->setRowTemplate("tpl.il_exte_stat_legend_row.html", $this->plugin->getDirectory());
         $this->setFormAction($this->ctrl->getFormAction($a_parent_obj, $a_parent_cmd));
 
-        $this->disable('sort');
-        $this->enable('header');
-        $this->disable('select_all');
-
+        $this->setEnableHeader(false);
+        $this->setEnableAllCommand(false);
         $this->setEnableNumInfo(false);
         $this->setExternalSegmentation(true);
         $this->setId('ilExteStatLegend');
@@ -40,9 +38,9 @@ class ilExteStatLegendTableGUI extends ilExteStatTableGUI
     /**
 	 * fill row 
 	 */
-	protected function fillRow($data)
+    protected function fillRow(array $a_set): void
 	{
-        $this->tpl->setVariable('VALUE', $this->valueGUI->getHTML($data['value']));
-        $this->tpl->setVariable('DESCRIPTION', $data['description']);
+        $this->tpl->setVariable('VALUE', $this->valueGUI->getHTML($a_set['value']));
+        $this->tpl->setVariable('DESCRIPTION', $a_set['description']);
 	}
 }

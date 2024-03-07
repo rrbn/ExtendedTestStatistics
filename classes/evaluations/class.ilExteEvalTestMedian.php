@@ -7,29 +7,29 @@
 class ilExteEvalTestMedian extends ilExteEvalTest
 {
 	/**
-	 * @var bool    evaluation provides a single value for the overview level
+	 * evaluation provides a single value for the overview level
 	 */
-	protected $provides_value = true;
+	protected bool $provides_value = true;
 
 	/**
-	 * @var bool    evaluation provides data for a details screen
+	 * evaluation provides data for a details screen
 	 */
-	protected $provides_details = false;
+	protected bool $provides_details = false;
 
 	/**
-	 * @var array list of allowed test types, e.g. array(self::TEST_TYPE_FIXED)
+	 * list of allowed test types, e.g. array(self::TEST_TYPE_FIXED)
 	 */
-	protected $allowed_test_types = array();
+	protected array $allowed_test_types = array();
 
 	/**
-	 * @var array    list of question types, e.g. array('assSingleChoice', 'assMultipleChoice', ...)
+	 * list of question types, e.g. array('assSingleChoice', 'assMultipleChoice', ...)
 	 */
-	protected $allowed_question_types = array();
+	protected array $allowed_question_types = array();
 
 	/**
-	 * @var string	specific prefix of language variables (lowercase classname is default)
+	 * specific prefix of language variables (lowercase classname is default)
 	 */
-	protected $lang_prefix = 'tst_median';
+	protected ?string $lang_prefix = 'tst_median';
 
 
 	/**
@@ -37,10 +37,8 @@ class ilExteEvalTestMedian extends ilExteEvalTest
 	 * It sorts the list of currently results and returns the middle value
 	 * if the number of attemps are odd, or return the average between the
 	 * two middle values if the list number of attemps are even.
-	 *
-	 * @return ilExteStatValue
 	 */
-	public function calculateValue()
+    protected function calculateValue() : ilExteStatValue
 	{
 		$value = new ilExteStatValue;
 

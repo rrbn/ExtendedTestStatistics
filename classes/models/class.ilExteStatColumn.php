@@ -17,51 +17,43 @@ class ilExteStatColumn
     /**
      * Unique name of the column in the table
      * (should be like a variable name)
-     * @var string
      */
-    public $name = '';
+    public string $name = '';
 
 
 	/**
 	 * Title to be shown in the header
-	 * @var string
 	 */
-	public $title = null;
+	public ?string $title = null;
 
 
     /**
      * Sorting type
-     *
-     * @var string
      */
-    public $sort = self::SORT_NONE;
+    public string $sort = self::SORT_NONE;
 
 
     /**
      * Comment for the title
-     * @var string
      */
-    public $comment = '';
+    public string $comment = '';
 
 
     /**
      * The columns should be used as chart data
-     * @var bool
      */
-    public $isChartData = false;
+    public bool $isChartData = false;
 
 
     /**
-     * Create a value by parameters
-     *
-     * @param string $a_name
-     * @param string $a_title
-     * @param string $a_sort
-     * @param string $a_comment
-	 * @param bool	$a_is_chart_data
-     * @return ilExteStatColumn
+     * Create a column by parameters
      */
-    public static function _create($a_name, $a_title = '', $a_sort = self::SORT_NONE, $a_comment = '', $a_is_chart_data = false)
+    public static function _create(
+        string $a_name,
+        string $a_title = '',
+        string $a_sort = self::SORT_NONE,
+        string $a_comment = '',
+        bool $a_is_chart_data = false) : ilExteStatColumn
     {
         $column = new self;
         $column->name = $a_name;

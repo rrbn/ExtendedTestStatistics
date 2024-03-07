@@ -9,39 +9,37 @@
 class ilExteStatSourceAnswer
 {
 	/**
-	 * @var integer		id of the answered question
+	 * id of the answered question
 	 */
-	public $question_id;
+	public int $question_id;
 
 	/**
-	 * @var integer 	id of the active participant
+	 * id of the active participant
 	 */
-	public $active_id;
+	public int $active_id;
 
 	/**
-	 * @var integer		number of the test pass in which the question was presented
+	 *number of the test pass in which the question was presented
 	 */
-	public $pass;
+	public int $pass;
 
 	/**
-	 * @var	integer		sequence number of the question in the pass
+	 * sequence number of the question in the pass
 	 */
-	public $sequence;
+	public int $sequence;
 
 	/**
-	 * @var bool		the question was answered by the participant
+	 * the question was answered by the participant
 	 */
-	public $answered = false;
-
+	public bool $answered = false;
 
 	/**
-	 * @var float	    actual points reached for the question
+	 * actual points reached for the question
 	 */
-	public $reached_points = 0;
-
+	public float $reached_points = 0;
 
 	/**
-	 * @var	bool	    score is set manually
+	 * score is set manually
 	 */
-	public $manual_scored = false;
+	public bool $manual_scored = false;
 }

@@ -7,29 +7,29 @@
 class ilExteEvalTestStandardDeviation extends ilExteEvalTest
 {
 	/**
-	 * @var bool    evaluation provides a single value for the overview level
+	 * evaluation provides a single value for the overview level
 	 */
-	protected $provides_value = true;
+	protected bool $provides_value = true;
 
 	/**
-	 * @var bool    evaluation provides data for a details screen
+	 * evaluation provides data for a details screen
 	 */
-	protected $provides_details = false;
+	protected bool $provides_details = false;
 
 	/**
-	 * @var array list of allowed test types, e.g. array(self::TEST_TYPE_FIXED)
+	 * list of allowed test types, e.g. array(self::TEST_TYPE_FIXED)
 	 */
-	protected $allowed_test_types = array();
+	protected array $allowed_test_types = array();
 
 	/**
-	 * @var array    list of question types, e.g. array('assSingleChoice', 'assMultipleChoice', ...)
+	 * list of question types, e.g. array('assSingleChoice', 'assMultipleChoice', ...)
 	 */
-	protected $allowed_question_types = array();
+	protected array $allowed_question_types = array();
 
 	/**
-	 * @var string	specific prefix of language variables (lowercase classname is default)
+	 * specific prefix of language variables (lowercase classname is default)
 	 */
-	protected $lang_prefix = 'tst_standarddeviation';
+	protected ?string $lang_prefix = 'tst_standarddeviation';
 
 
 	/**
@@ -37,10 +37,8 @@ class ilExteEvalTestStandardDeviation extends ilExteEvalTest
 	 * It sorts the list of currently results and returns the middle value
 	 * if the number of attempts are odd, or return the average between the
 	 * two middle values if the list number of attemps are even.
-	 *
-	 * @return ilExteStatValue
 	 */
-	public function calculateValue()
+    protected function calculateValue() : ilExteStatValue
 	{
 		$value = new ilExteStatValue;
 		$value->type = ilExteStatValue::TYPE_NUMBER;
@@ -81,12 +79,9 @@ class ilExteEvalTestStandardDeviation extends ilExteEvalTest
 	 * Calculate the sum of powers of the difference from values to their mean
 	 * (intermediate calculation for the standard deviation)
 	 *
-	 * @param array         $data   list of values
-	 * @param float         $mean   mean of values
-	 * @param integer       $power  power to use
 	 * @return float|int            calculated sum
 	 */
-	protected function sumOfPowersOfDifferenceToMean($data, $mean, $power = 2)
+	protected function sumOfPowersOfDifferenceToMean(array $data, float$mean, int $power = 2)
 	{
 		$sum_power_diff = 0.0;
 

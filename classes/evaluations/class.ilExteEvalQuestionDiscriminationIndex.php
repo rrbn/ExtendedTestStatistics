@@ -7,41 +7,41 @@
 class ilExteEvalQuestionDiscriminationIndex extends ilExteEvalQuestion
 {
 	/**
-	 * @var bool    evaluation provides a single value for the overview level
+	 * evaluation provides a single value for the overview level
 	 */
-	protected $provides_value = true;
+	protected bool $provides_value = true;
 
     /**
-     * @var bool    evaluation provides a chart of the values presented in the overview of questions
+     * evaluation provides a chart of the values presented in the overview of questions
      */
-    protected $provides_overview_chart = true;
+    protected bool $provides_overview_chart = true;
 
     /**
-	 * @var bool    evaluation provides data for a details screen
+	 * evaluation provides data for a details screen
 	 */
-	protected $provides_details = true;
+	protected bool $provides_details = true;
 
 	/**
-	 * @var array   list of allowed test types, e.g. array(self::TEST_TYPE_FIXED)
+	 * list of allowed test types, e.g. array(self::TEST_TYPE_FIXED)
 	 */
-	protected $allowed_test_types = array();
+	protected array $allowed_test_types = array();
 
 	/**
-	 * @var array    list of question types, e.g. array('assSingleChoice', 'assMultipleChoice', ...)
+	 * list of question types, e.g. array('assSingleChoice', 'assMultipleChoice', ...)
 	 */
-	protected $allowed_question_types = array();
+	protected array $allowed_question_types = array();
 
 	/**
-	 * @var string	specific prefix of language variables (lowercase classname is default)
+	 * specific prefix of language variables (lowercase classname is default)
 	 */
-	protected $lang_prefix = 'qst_discrimination';
+	protected ?string $lang_prefix = 'qst_discrimination';
 
 
 	/**
 	 * Get the available parameters for this evaluation
 	 * @return ilExteStatParam[]
 	 */
-	public function getAvailableParams()
+    public function getAvailableParams() : array
 	{
 		return array(
 			ilExteStatParam::_create('min_qst', ilExteStatParam::TYPE_INT, 0),
@@ -53,10 +53,8 @@ class ilExteEvalQuestionDiscriminationIndex extends ilExteEvalQuestion
 
 	/**
 	 * Calculate the discrimination index
-	 * @param integer $a_question_id
-	 * @return ilExteStatValue
 	 */
-	public function calculateValue($a_question_id)
+    protected function calculateValue(int $a_question_id) : ilExteStatValue
 	{
         $value = new ilExteStatValue;
         $value->type = ilExteStatValue::TYPE_NUMBER;
@@ -142,7 +140,7 @@ class ilExteEvalQuestionDiscriminationIndex extends ilExteEvalQuestion
     /**
      * @inheritdoc
      */
-    public function calculateDetails($a_question_id)
+    protected function calculateDetails(int $a_question_id) : ilExteStatDetails
     {
         $details = new ilExteStatDetails();
         $details->columns = [
@@ -177,7 +175,7 @@ class ilExteEvalQuestionDiscriminationIndex extends ilExteEvalQuestion
         return $details;
     }
 
-    public function getOverviewChart($question_ids = [], $chart_lines = null)
+    public function getOverviewChart(array $question_ids = [], ?array $chart_lines = null) : ilChart
     {
         return parent::getOverviewChart($question_ids,
             [-100 => '-1', -75 => '-0.75', -50 => '-0.5', -25 => '-0.25', 0 => '0',  25 => '0.25', 50 => '0.5', 75 => '0.75', 100 => '1']

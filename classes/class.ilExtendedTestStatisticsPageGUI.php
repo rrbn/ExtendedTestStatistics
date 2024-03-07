@@ -1,7 +1,9 @@
 <?php
 // Copyright (c) 2017 Institut fuer Lern-Innovation, Friedrich-Alexander-Universitaet Erlangen-Nuernberg, GPLv3, see LICENSE
 
-require_once ('Modules/Test/classes/class.ilObjTest.php');
+use ILIAS\UI\Factory;
+use ILIAS\UI\Renderer;
+use ILIAS\HTTP\Wrapper\RequestWrapper;
 
 /**
  * Extended Test Statistic Page GUI
@@ -13,31 +15,23 @@ require_once ('Modules/Test/classes/class.ilObjTest.php');
  */
 class ilExtendedTestStatisticsPageGUI
 {
-    /** @var ilCtrl $ctrl */
-	protected $ctrl;
-
-	/** @var ilGlobalTemplate $tpl */
-	protected $tpl;
-
-    /** @var ilLanguage */
-    protected $lng;
-
-    /** @var \ILIAS\UI\Factory */
-    protected $uiFactory;
-
-    /** @var \ILIAS\UI\Renderer */
-    protected $uiRenderer;
-
+	protected ilCtrl $ctrl;
+    protected ilAccessHandler $access;
+	protected ilGlobalTemplateInterface $tpl;
+    protected ilLanguage $lng;
+    protected ilToolbarGUI $toolbar;
+    protected Factory $uiFactory;
+    protected Renderer $uiRenderer;
     /** @var ilExtendedTestStatisticsPlugin $plugin */
-	protected $plugin;
+	protected ilPlugin $plugin;
+    protected RequestWrapper $query;
+    protected RequestWrapper $post;
+    protected ILIAS\Refinery\Factory $refinery;
 
-	/** @var ilObjTest $testObj */
-	protected $testObj;
+    protected ilObjTest $testObj;
+    protected ilExtendedTestStatistics$statObj;
 
-	/** @var ilExtendedTestStatistics $statObj */
-	protected $statObj;
-
-	/**
+    /**
 	 * ilExtendedTestStatisticsPageGUI constructor.
 	 */
 	public function __construct()
@@ -45,17 +39,23 @@ class ilExtendedTestStatisticsPageGUI
         global $DIC;
 
 		$this->ctrl = $DIC->ctrl();
+        $this->access = $DIC->access();
 		$this->tpl = $DIC->ui()->mainTemplate();
+        $this->toolbar = $DIC->toolbar();
         $this->lng = $DIC->language();
         $this->uiFactory = $DIC->ui()->factory();
         $this->uiRenderer = $DIC->ui()->renderer();
+        $this->query = $DIC->http()->wrapper()->query();
+        $this->post = $DIC->http()->wrapper()->post();
+        $this->refinery = $DIC->refinery();
 
 		$this->lng->loadLanguageModule('assessment');
 
-		$this->plugin = ilPlugin::getPluginObject(IL_COMP_SERVICE, 'UIComponent', 'uihk', 'ExtendedTestStatistics');
-		$this->plugin->includeClass('class.ilExtendedTestStatistics.php');
+        /** @var ilComponentFactory $factory */
+        $factory = $DIC["component.factory"];
+        $this->plugin = $factory->getPlugin('etstat');
 
-		$this->testObj = new ilObjTest($_GET['ref_id']);
+		$this->testObj = new ilObjTest($this->query->retrieve('ref_id', $this->refinery->kindlyTo()->int()));
 		$this->statObj = new ilExtendedTestStatistics($this->testObj, $this->plugin);
 	}
 
@@ -64,14 +64,10 @@ class ilExtendedTestStatisticsPageGUI
 	*/
 	public function executeCommand()
 	{
-		/** @var ilAccessHandler $ilAccess */
-		/** @var ilErrorHandling $ilErr */
-		global $ilAccess, $ilErr, $lng;
-
-		if (!$ilAccess->checkAccess('tst_statistics','',$this->testObj->getRefId()))
+		if (!$this->access->checkAccess('tst_statistics','',$this->testObj->getRefId()))
 		{
-            ilUtil::sendFailure($lng->txt("permission_denied"), true);
-            ilUtil::redirect("goto.php?target=tst_".$this->testObj->getRefId());
+            $this->tpl->setOnScreenMessage('failure', $this->lng->txt('permission_denied'), true);
+            $this->ctrl->redirectToURL(ilLink::_getLink($this->testObj->getRefId()));
 		}
 
 		$this->ctrl->saveParameter($this, 'ref_id');
@@ -104,35 +100,33 @@ class ilExtendedTestStatisticsPageGUI
 				break;
 
 			default:
-                ilUtil::sendFailure($lng->txt("permission_denied"), true);
-                ilUtil::redirect("goto.php?target=tst_".$this->testObj->getRefId());
+                $this->tpl->setOnScreenMessage('failure', $this->lng->txt('permission_denied'), true);
+                $this->ctrl->redirectToURL(ilLink::_getLink($this->testObj->getRefId()));
 				break;
 		}
 	}
 
 	/**
 	 * Get the plugin object
-	 * @return ilExtendedTestStatisticsPlugin|null
+	 * @return ilExtendedTestStatisticsPlugin
 	 */
-	public function getPlugin()
+	public function getPlugin(): ilPlugin
 	{
 		return $this->plugin;
 	}
 
     /**
      * Get the statistics object
-     * @return     ilExtendedTestStatistics|null
      */
-    public function getStatisticsObject()
+    public function getStatisticsObject(): ilExtendedTestStatistics
     {
         return $this->statObj;
     }
 
 	/**
 	 * Get the test object id (needed for table filter)
-	 * @return int
 	 */
-	public function getId()
+	public function getId() : int
 	{
 		return $this->testObj->getId();
 	}
@@ -142,31 +136,33 @@ class ilExtendedTestStatisticsPageGUI
 	 */
 	protected function prepareOutput()
 	{
-		/** @var ilLocatorGUI $ilLocator */
-		/** @var ilLanguage $lng */
-		global $ilLocator, $lng;
+//      hopefully not needed with new global screen
+//		/** @var ilLocatorGUI $ilLocator */
+//		/** @var ilLanguage $lng */
+//		global $ilLocator, $lng;
 
-		$this->ctrl->setParameterByClass('ilObjTestGUI', 'ref_id',  $this->testObj->getRefId());
-		$ilLocator->addRepositoryItems($this->testObj->getRefId());
-		$ilLocator->addItem($this->testObj->getTitle(),$this->ctrl->getLinkTargetByClass('ilObjTestGUI'));
+//		$this->ctrl->setParameterByClass('ilObjTestGUI', 'ref_id',  $this->testObj->getRefId());
+//		$ilLocator->addRepositoryItems($this->testObj->getRefId());
+//		$ilLocator->addItem($this->testObj->getTitle(),$this->ctrl->getLinkTargetByClass('ilObjTestGUI'));
 
-		$this->tpl->loadStandardTemplate();
-		$this->tpl->setLocator();
+//		$this->tpl->loadStandardTemplate();
+//		$this->tpl->setLocator();
+        
 		$this->tpl->setTitle($this->testObj->getPresentationTitle());
 		$this->tpl->setDescription($this->testObj->getLongDescription());
-		$this->tpl->setTitleIcon(ilObject::_getIcon('', 'big', 'tst'), $lng->txt('obj_tst'));
+		$this->tpl->setTitleIcon(ilObject::_getIcon('', 'big', 'tst'), $this->lng->txt('obj_tst'));
 		$this->tpl->addCss($this->plugin->getStyleSheetLocation('exte_stat.css'));
 
 		if ($this->statObj->getSourceData()->getTestType() == ilExteEvalBase::TEST_TYPE_DYNAMIC)
 		{
-			ilUtil::sendFailure($this->plugin->txt('not_for_dynamic_test'));
+            $this->tpl->setOnScreenMessage('failure', $this->plugin->txt('not_for_dynamic_test'));
 			$this->tpl->printToStdout();
 			return false;
 		}
 
         if ($this->testObj->getOfflineStatus() == 1) {
             $properties = array();
-            $properties[] = array('property' => $lng->txt('status'), 'value' => $lng->txt('offline'));
+            $properties[] = array('property' => $this->lng->txt('status'), 'value' => $this->lng->txt('offline'));
             $this->tpl->setAlertProperties($properties);
         }
 
@@ -181,7 +177,6 @@ class ilExtendedTestStatisticsPageGUI
 		$this->setOverviewToolbar(ilExtendedTestStatistics::LEVEL_TEST);
 
 		/** @var  ilExteStatTestOverviewTableGUI $tableGUI */
-		$this->plugin->includeClass('tables/class.ilExteStatTableGUI.php');
 		$tableGUI = ilExteStatTableGUI::_create('ilExteStatTestOverviewTableGUI', $this, 'showTestOverview');
 		$tableGUI->prepareData();
 
@@ -198,7 +193,7 @@ class ilExtendedTestStatisticsPageGUI
 		$this->setDetailsToolbar('showTestOverview');
         $this->ctrl->saveParameter($this, 'details');
 
-        $evaluation = $this->statObj->getEvaluation($_GET['details']);
+        $evaluation = $this->statObj->getEvaluation($this->query->retrieve('details', $this->refinery->kindlyTo()->string()));
 		$chartHTML = '';
         if ($evaluation->providesChart())
         {
@@ -213,7 +208,6 @@ class ilExtendedTestStatisticsPageGUI
         }
 
 		/** @var  ilExteStatDetailsTableGUI $tableGUI */
-		$this->plugin->includeClass('tables/class.ilExteStatTableGUI.php');
 		$tableGUI = ilExteStatTableGUI::_create('ilExteStatDetailsTableGUI', $this, 'showTestDetails');
 		$tableGUI->prepareData($evaluation->getDetails());
 		$tableGUI->setTitle($evaluation->getShortTitle());
@@ -229,13 +223,9 @@ class ilExtendedTestStatisticsPageGUI
      */
 	protected function showQuestionsOverview()
 	{
-        global $DIC;
-        $factors = $DIC->ui()->factory();
-
 		$this->setOverviewToolbar(ilExtendedTestStatistics::LEVEL_QUESTION);
 
 		/** @var  ilExteStatQuestionsOverviewTableGUI $tableGUI */
-		$this->plugin->includeClass('tables/class.ilExteStatTableGUI.php');
         $tableGUI = ilExteStatTableGUI::_create('ilExteStatQuestionsOverviewTableGUI', $this, 'showQuestionsOverview');
 
 		if ($this->ctrl->getCmd() == 'applyFilter')
@@ -295,12 +285,15 @@ class ilExtendedTestStatisticsPageGUI
 		$this->setDetailsToolbar('showQuestionsOverview');
         $this->ctrl->saveParameter($this, 'details');
         $this->ctrl->saveParameter($this, 'qid');
+        
+        $details = $this->query->retrieve('details', $this->refinery->kindlyTo()->string());
+        $qid = $this->query->retrieve('qid', $this->refinery->kindlyTo()->int());
 
-        $evaluation = $this->statObj->getEvaluation($_GET['details']);
+        $evaluation = $this->statObj->getEvaluation($details);
 
         //Extra STACK features
 		if (is_a($evaluation, 'ilExteEvalQuestionStack')){
-			$extra_content = $evaluation->getExtraInfo($_GET['qid']);
+			$extra_content = $evaluation->getExtraInfo($qid);
 		} else {
 			$extra_content = '';
 		}
@@ -308,15 +301,14 @@ class ilExtendedTestStatisticsPageGUI
         $chartHTML = '';
         if ($evaluation->providesChart())
         {
-            $chart = $evaluation->getChart($_GET['qid']);
+            $chart = $evaluation->getChart($qid);
             $chartHTML = $chart->getHTML();
         }
 
         /** @var  ilExteStatDetailsTableGUI $tableGUI */
-		$this->plugin->includeClass('tables/class.ilExteStatTableGUI.php');
 		$tableGUI = ilExteStatTableGUI::_create('ilExteStatDetailsTableGUI', $this, 'showQuestionDetails');
-		$tableGUI->prepareData($evaluation->getDetails($_GET['qid']));
-		$tableGUI->setTitle($this->statObj->getSourceData()->getQuestion($_GET['qid'])->question_title);
+		$tableGUI->prepareData($evaluation->getDetails($qid));
+		$tableGUI->setTitle($this->statObj->getSourceData()->getQuestion($qid)->question_title);
 		$tableGUI->setDescription($evaluation->getTitle());
 
 		$legendGUI = ilExteStatTableGUI::_create('ilExteStatLegendTableGUI', $this, 'showQuestionDetails');
@@ -330,14 +322,10 @@ class ilExtendedTestStatisticsPageGUI
 	 */
 	protected function setOverviewToolbar($level)
 	{
-		/** @var ilToolbarGUI $ilToolbar */
-		global $ilToolbar, $lng;
+		$this->toolbar->setFormName('etstat_toolbar');
+		$this->toolbar->setFormAction($this->ctrl->getFormAction($this));
 
-		$ilToolbar->setFormName('etstat_toolbar');
-		$ilToolbar->setFormAction($this->ctrl->getFormAction($this));
-
-		require_once 'Services/Form/classes/class.ilSelectInputGUI.php';
-		$export_type = new ilSelectInputGUI($lng->txt('type'), 'export_type');
+		$export_type = new ilSelectInputGUI($this->lng->txt('type'), 'export_type');
 		$options = array(
 			'excel_overview' => $this->plugin->txt('exp_type_excel_overviews'),
 			'excel_details' => $this->plugin->txt('exp_type_excel_details'),
@@ -346,19 +334,16 @@ class ilExtendedTestStatisticsPageGUI
 		);
 		$export_type->setOptions($options);
 		$export_type->setValue($this->plugin->getUserPreference('export_type', 'excel_overview'));
-		$ilToolbar->addInputItem($export_type, true);
+		$this->toolbar->addInputItem($export_type, true);
 
-		require_once 'Services/UIComponent/Button/classes/class.ilSubmitButton.php';
 		$button = ilSubmitButton::getInstance();
 		$button->setCommand('exportEvaluations');
 		$button->setCaption('export');
-		$button->getOmitPreventDoubleSubmission();
-		$ilToolbar->addButtonInstance($button);
+		$button->setOmitPreventDoubleSubmission(true);
+		$this->toolbar->addButtonInstance($button);
 
-		$ilToolbar->addSeparator();
+		$this->toolbar->addSeparator();
 
-		$this->plugin->includeClass('models/class.ilExteStatSourceData.php');
-		require_once 'Services/Form/classes/class.ilSelectInputGUI.php';
 		$pass_selection = new ilSelectInputGUI($this->plugin->txt('evaluated_pass'), 'evaluated_pass');
 		$options = array(
 			ilExteStatSourceData::PASS_SCORED => $this->plugin->txt('pass_scored'),
@@ -368,29 +353,25 @@ class ilExtendedTestStatisticsPageGUI
 		);
 		$pass_selection->setOptions($options);
 		$pass_selection->setValue($this->plugin->getUserPreference('evaluated_pass', ilExteStatSourceData::PASS_SCORED));
-		$ilToolbar->addInputItem($pass_selection, true);
+		$this->toolbar->addInputItem($pass_selection, true);
 
-		require_once 'Services/UIComponent/Button/classes/class.ilSubmitButton.php';
 		$button = ilSubmitButton::getInstance();
 		$button->setCommand('selectEvaluatedPass');
 		$button->setCaption('select');
-		$button->getOmitPreventDoubleSubmission();
-		$ilToolbar->addButtonInstance($button);
+        $button->setOmitPreventDoubleSubmission(true);
+		$this->toolbar->addButtonInstance($button);
 
-		$ilToolbar->addSeparator();
+		$this->toolbar->addSeparator();
 
 		$button = ilSubmitButton::getInstance();
 		$button->setCommand('flushCache');
 		$button->setCaption($this->plugin->txt('flush_cache'), false);
-		$button->getOmitPreventDoubleSubmission();
-		$ilToolbar->addButtonInstance($button);
-
-
-
-		require_once 'Services/Form/classes/class.ilHiddenInputGUI.php';
+        $button->setOmitPreventDoubleSubmission(true);
+		$this->toolbar->addButtonInstance($button);
+        
 		$levelField = new ilHiddenInputGUI('level');
 		$levelField->setValue($level);
-		$ilToolbar->addInputItem($levelField);
+		$this->toolbar->addInputItem($levelField);
 	}
 
 	/**
@@ -399,18 +380,14 @@ class ilExtendedTestStatisticsPageGUI
 	 */
 	protected function setDetailsToolbar($backCmd)
 	{
-		/** @var ilToolbarGUI $ilToolbar */
-		global $ilToolbar, $lng;
+		$this->toolbar->setFormName('etstat_toolbar');
+		$this->toolbar->setFormAction($this->ctrl->getFormAction($this));
 
-		$ilToolbar->setFormName('etstat_toolbar');
-		$ilToolbar->setFormAction($this->ctrl->getFormAction($this));
-
-		require_once 'Services/UIComponent/Button/classes/class.ilSubmitButton.php';
 		$button = ilSubmitButton::getInstance();
 		$button->setCommand($backCmd);
 		$button->setCaption('back');
-		$button->getOmitPreventDoubleSubmission();
-		$ilToolbar->addButtonInstance($button);
+		$button->setOmitPreventDoubleSubmission(true);
+		$this->toolbar->addButtonInstance($button);
 	}
 
 	/**
@@ -418,11 +395,11 @@ class ilExtendedTestStatisticsPageGUI
 	 */
 	protected function exportEvaluations()
 	{
-		$this->plugin->includeClass("export/class.ilExteStatExport.php");
+        $export_type = $this->post->retrieve('export_type', $this->refinery->kindlyTo()->string());
 
 		// set the parameters based on the selection
-		$this->plugin->setUserPreference('export_type', ilUtil::secureString($_POST['export_type']));
-		switch ($_POST['export_type'])
+		$this->plugin->setUserPreference('export_type', ilUtil::secureString($export_type));
+		switch ($export_type)
 		{
 			case 'csv_test':
 				$name = 'test_statistics';
@@ -459,7 +436,6 @@ class ilExtendedTestStatisticsPageGUI
 		}
 
 		// add a suffix for the pass selection
-		$this->plugin->includeClass('models/class.ilExteStatSourceData.php');
 		switch ($this->plugin->getUserPreference('evaluated_pass'))
 		{
 			case ilExteStatSourceData::PASS_LAST:
@@ -474,7 +450,6 @@ class ilExtendedTestStatisticsPageGUI
 		}
 
 		// write the export file
-		require_once('Modules/Test/classes/class.ilTestExportFilename.php');
 		$filename = new ilTestExportFilename($this->testObj);
 		$export = new ilExteStatExport($this->plugin, $this->statObj, $type, $level, $details);
 		$export->buildExportFile($filename->getPathname($suffix, $name));
@@ -484,11 +459,11 @@ class ilExtendedTestStatisticsPageGUI
 		$this->ctrl->setParameter($this, 'suffix', $suffix);
 		$this->ctrl->setParameter($this, 'time', $filename->getTimestamp());
 		$link = $this->ctrl->getLinkTarget($this, 'deliverExportFile');
-		ilUtil::sendSuccess(sprintf($this->plugin->txt('export_written'), $link), true);
+        $this->tpl->setOnScreenMessage('success', sprintf($this->plugin->txt('export_written'), $link), true);
 		$this->ctrl->clearParameters($this);
 
 		// show the screen from which the export was started
-		switch ($_POST['level'])
+		switch ($this->post->retrieve('level', $this->refinery->kindlyTo()->string()))
 		{
 			case ilExtendedTestStatistics::LEVEL_QUESTION:
 				$this->ctrl->redirect($this, 'showQuestionsOverview');
@@ -504,22 +479,21 @@ class ilExtendedTestStatisticsPageGUI
 	protected function deliverExportFile()
 	{
 		// sanitize parameters
-		$name = preg_replace("/[^a-z_]/", '', $_GET['name']);
-		$suffix = preg_replace("/[^a-z]/", '', $_GET['suffix']);
-		$time = preg_replace("/[^0-9]/", '', $_GET['time']);
+		$name = preg_replace("/[^a-z_]/", '', $this->query->retrieve('name', $this->refinery->kindlyTo()->string()));
+		$suffix = preg_replace("/[^a-z]/", '', $this->query->retrieve('suffix', $this->refinery->kindlyTo()->string()));
+		$time = preg_replace("/[^0-9]/", '', $this->query->retrieve('time', $this->refinery->kindlyTo()->string()));
 
-		require_once('Modules/Test/classes/class.ilTestExportFilename.php');
 		$filename = new ilTestExportFilename($this->testObj);
 		$path = $filename->getPathname($suffix, $name);
 		$path = str_replace($filename->getTimestamp(), $time, $path);
 
 		if (is_file($path))
 		{
-			ilUtil::deliverFile($path, basename($path));
+            \ilFileDelivery::deliverFileAttached($path, basename($path));
 		}
 		else
 		{
-			ilUtil::sendFailure($this->plugin->txt('export_not_found'), true);
+            $this->tpl->setOnScreenMessage('failure', $this->plugin->txt('export_not_found'), true);
 			$this->ctrl->redirect($this);
 		}
 	}
@@ -529,10 +503,11 @@ class ilExtendedTestStatisticsPageGUI
 	 */
 	protected function selectEvaluatedPass()
 	{
-		$this->plugin->setUserPreference('evaluated_pass', ilUtil::secureString($_POST['evaluated_pass']));
+        $evaluated_pass = $this->post->retrieve('evaluated_pass', $this->refinery->kindlyTo()->string());
+		$this->plugin->setUserPreference('evaluated_pass', ilUtil::secureString($evaluated_pass));
 
 		// show the screen from which the export was started
-		switch ($_POST['level'])
+		switch ($this->post->retrieve('level', $this->refinery->kindlyTo()->string()))
 		{
 			case ilExtendedTestStatistics::LEVEL_QUESTION:
 				$this->ctrl->redirect($this, 'showQuestionsOverview');
@@ -548,7 +523,8 @@ class ilExtendedTestStatisticsPageGUI
      */
     protected function selectQuestionsChart()
     {
-        $this->plugin->setUserPreference('questions_chart_class', ilUtil::secureString($_GET['chart']));
+        $chart = $this->query->retrieve('chart', $this->refinery->kindlyTo()->string());
+        $this->plugin->setUserPreference('questions_chart_class', ilUtil::secureString($chart));
         $this->ctrl->redirect($this, 'showQuestionsOverview');
     }
 
@@ -560,10 +536,10 @@ class ilExtendedTestStatisticsPageGUI
 	{
 		$this->statObj->flushCache();
 
-		ilUtil::sendSuccess($this->plugin->txt('cache_flushed'), true);
+		$this->tpl->setOnScreenMessage('success', $this->plugin->txt('cache_flushed'), true);
 
 		// show the screen from which the export was started
-		switch ($_POST['level'])
+		switch ($this->post->retrieve('level', $this->refinery->kindlyTo()->string()))
 		{
 			case ilExtendedTestStatistics::LEVEL_QUESTION:
 				$this->ctrl->redirect($this, 'showQuestionsOverview');

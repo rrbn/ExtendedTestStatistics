@@ -8,20 +8,16 @@ abstract class ilExteEvalTest extends ilExteEvalBase
 {
 	/**
 	 * Calculate and get the single value for a test (to be overwritten)
-	 *
-	 * @return ilExteStatValue
 	 */
-	protected function calculateValue()
+	protected function calculateValue() : ilExteStatValue
 	{
 		return new ilExteStatValue;
 	}
 
 	/**
 	 * Calculate the details for a test (to be overwritten)
-	 *
-	 * @return ilExteStatDetails
 	 */
-	protected function calculateDetails()
+	protected function calculateDetails() : ilExteStatDetails
 	{
 		return new ilExteStatDetails();
 	}
@@ -29,10 +25,8 @@ abstract class ilExteEvalTest extends ilExteEvalBase
 	/**
 	 * Get the calculated value
 	 * This checks if the test type matches before
-	 *
-	 * @return ilExteStatValue
 	 */
-	final public function getValue()
+	final public function getValue() : ilExteStatValue
 	{
 		if (!$this->isTestTypeAllowed())
 		{
@@ -57,10 +51,8 @@ abstract class ilExteEvalTest extends ilExteEvalBase
 	/**
 	 * Get the calculated details
 	 * This checks if the test type matches before
-	 *
-	 * @return ilExteStatDetails
 	 */
-	final public function getDetails()
+	final public function getDetails() : ilExteStatDetails
 	{
 		if (!$this->isTestTypeAllowed())
 		{
@@ -84,19 +76,16 @@ abstract class ilExteEvalTest extends ilExteEvalBase
 
     /**
      * Get the chart created by this evaluation
-     * @return ilChart
      */
-	final public function getChart()
+	final public function getChart() : ilChart
     {
         return $this->generateChart($this->getDetails());
     }
     
     /**
      * Get the custom HTML
-     * @param ilExteStatDetails $a_details
-     * @return string
      */
-    final public function getCustomHTML()
+    final public function getCustomHTML() : string
     {
     	$details = $this->getDetails();
     	return $details->customHTML;

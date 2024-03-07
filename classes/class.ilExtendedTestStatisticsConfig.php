@@ -15,25 +15,26 @@ class ilExtendedTestStatisticsConfig
 	const FOR_USER = 'user';
 	const FOR_NONE = 'none';
 
-	/**
-	 * @var array	$params		evaluation parameters: 	class => parameter => value
-	 */
-	protected $params;
+    protected ilDBInterface $db;
+    protected ilExtendedTestStatisticsPlugin $plugin;
+
+	/** @var array $params evaluation parameters: 	class => parameter => value */
+	protected array $params;
 
 	/**
-	 * ilExtendedTestStatisticsConfig constructor.
-	 * @param ilPlugin|string $a_plugin_object
+	 * Constructor.
 	 */
-	public function __construct($a_plugin_object = "")
+	public function __construct(ilExtendedTestStatisticsPlugin $a_plugin_object)
 	{
+        global $DIC;
+        $this->db = $DIC->database();
 		$this->plugin = $a_plugin_object;
 	}
 
 	/**
 	 * Get the availability options that can be chosen
-	 * @return array
 	 */
-	public function getAvailabilityOptions()
+	public function getAvailabilityOptions() : array
 	{
 		return array(
 			self::FOR_ADMIN => $this->plugin->txt("evaluation_available_for_admins"),
@@ -45,13 +46,11 @@ class ilExtendedTestStatisticsConfig
 	 * Read the availability settings from the database
 	 * @return array	classname => availability
 	 */
-	protected function readAvailabilities()
+	protected function readAvailabilities() : array
 	{
-		global $ilDB;
-
-		$result = $ilDB->query("SELECT * FROM etstat_settings");
+		$result = $this->db->query("SELECT * FROM etstat_settings");
 		$availabilities = array();
-		while ($row = $ilDB->fetchAssoc($result))
+		while ($row = $this->db->fetchAssoc($result))
 		{
 			$availabilities[$row["evaluation_name"]] = $row["value"];
 		}
@@ -63,11 +62,9 @@ class ilExtendedTestStatisticsConfig
 	 * @param string $evaluation_name	classname of the evaluation
 	 * @param string $value				availability (admin, user, none)
 	 */
-	public function writeAvailability($evaluation_name, $value)
+	public function writeAvailability(string $evaluation_name, string $value)
 	{
-		global $ilDB;
-
-		$ilDB->replace('etstat_settings',
+		$this->db->replace('etstat_settings',
 			array('evaluation_name' => array('text', $evaluation_name)),
 			array('value' => array("text", $value))
 		);
@@ -75,19 +72,15 @@ class ilExtendedTestStatisticsConfig
 
 	/**
 	 * Get the available evaluation classes
-	 * @param string $a_type	evaluation type (test or question)
-	 * @return array			classname => availability (admin, user or none)
+	 * @param string $a_type	evaluation type ('test' or 'question' or '' for both)
+	 * @return array			classname => availability ('admin', 'user' or 'none')
 	 */
-	public function getEvaluationClasses($a_type = "")
+	public function getEvaluationClasses(string $a_type = "") : array
 	{
-		$this->plugin->includeClass("abstract/class.ilExteEvalBase.php");
-		$this->plugin->includeClass("abstract/class.ilExteEvalQuestion.php");
-		$this->plugin->includeClass("abstract/class.ilExteEvalTest.php");
-
-		$return_classes = array(
-			'question' => array(),
-			'test' => array()
-		);
+		$return_classes = [
+			'question' => [],
+			'test' => []
+        ];
 
 		// read the availability settings of evaluations from the database
 		$availabilities = $this->readAvailabilities();
@@ -137,7 +130,7 @@ class ilExtendedTestStatisticsConfig
 	 * @param	string		$pattern	file pattern (relative to installation directory)
 	 * @return string[]		class names
 	 */
-	protected function getIncludedClasses($pattern)
+	protected function getIncludedClasses(string $pattern): array
 	{
 		$class_names = array();
 		$class_files = glob($pattern);
@@ -160,16 +153,14 @@ class ilExtendedTestStatisticsConfig
 	 * @param string	$evaluation_name		class name of the evaluation
 	 * @return array							parameter_name => value
 	 */
-	public function getEvaluationParameters($evaluation_name)
+	public function getEvaluationParameters(string $evaluation_name): array
 	{
-		global $ilDB;
-
 		if (!isset($this->params))
 		{
 			$this->params = array();
 			$query = "SELECT * FROM etstat_params";
-			$res = $ilDB->query($query);
-			while($row = $ilDB->fetchAssoc($res))
+			$res = $this->db->query($query);
+			while($row = $this->db->fetchAssoc($res))
 			{
 				$this->params[$row['evaluation_name']][$row['parameter_name']] = $row['value'];
 			}
@@ -182,15 +173,16 @@ class ilExtendedTestStatisticsConfig
 	 * Write a parameter value
 	 * @param string	$evaluation_name
 	 * @param string	$parameter_name
-	 * @param mixed		$value
+	 * @param string	$value
 	 */
-	public function writeParameter($evaluation_name, $parameter_name, $value)
+	public function writeParameter(string $evaluation_name, string $parameter_name, $value)
 	{
-		global $ilDB;
-		$ilDB->replace('etstat_params',
-			array('evaluation_name' => array('text', $evaluation_name),
-				'parameter_name'=> array('text', $parameter_name)),
-			array('value' => array('text', (string) $value))
+		$this->db->replace('etstat_params',
+			[   'evaluation_name' => array('text', $evaluation_name),
+				'parameter_name'=> array('text', $parameter_name)
+            ],
+			[   'value' => array('text', (string) $value)
+            ]
 		);
 	}
 }

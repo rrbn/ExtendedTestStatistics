@@ -6,18 +6,13 @@
  */
 class ilExteStatDetailsTableGUI extends ilExteStatTableGUI
 {
-    /**
-     * @var ilExteStatDetails
-     */
-    protected $details;
+    protected ilExteStatDetails $details;
 
 
     /**
      * ilExteStatDetailsTableGUI constructor.
-     * @param object    $a_parent_obj
-     * @param string    $a_parent_cmd
      */
-	public function __construct($a_parent_obj, $a_parent_cmd)
+	public function __construct(?object $a_parent_obj, string $a_parent_cmd)
 	{
         parent::__construct($a_parent_obj, $a_parent_cmd);
 
@@ -25,14 +20,13 @@ class ilExteStatDetailsTableGUI extends ilExteStatTableGUI
         $this->setRowTemplate("tpl.il_exte_stat_details_row.html", $this->plugin->getDirectory());
         $this->setFormAction($this->ctrl->getFormAction($a_parent_obj, $a_parent_cmd));
 
-        $this->enable('header');
-        $this->disable('select_all');
+        $this->setEnableHeader(true);
+        $this->setEnableAllCommand(false);
     }
 
 
     /**
      * Prepare the data to be shown
-     * @param ilExteStatDetails $a_details
      */
     public function prepareData(ilExteStatDetails $a_details)
     {
@@ -80,9 +74,8 @@ class ilExteStatDetailsTableGUI extends ilExteStatTableGUI
 
     /**
      * Should this field be sorted numeric?
-     * @return    boolean        numeric ordering; default is false
      */
-    function numericOrdering($a_field)
+    public function numericOrdering(string $a_field): bool
     {
         foreach ($this->details->columns as $column)
         {
@@ -98,13 +91,14 @@ class ilExteStatDetailsTableGUI extends ilExteStatTableGUI
                 }
             }
         }
+        return false;
     }
 
 
     /**
 	 * fill row 
 	 */
-	protected function fillRow($data)
+    protected function fillRow(array $a_set): void
 	{
         foreach ($this->details->columns as $column)
         {

@@ -11,62 +11,62 @@
 class ilExteStatSourceQuestion
 {
 	/**
-	 @var integer 	question id
+	 * question id
 	 */
-	public $question_id;
+	public int $question_id;
 
 	/**
-	 * @var integer	id of the original question
+	 * id of the original question
 	 */
-	public $original_id;
+	public int $original_id;
 
 	/**
-	 * @var string 		type tag of the question, e.g. 'assSingleChoice'
+	 * type tag of the question, e.g. 'assSingleChoice'
 	 */
-	public $question_type;
+	public string $question_type;
 
     /**
-     * @var  string     label of the question type, e.g. 'Single Choice Question'
+     * label of the question type, e.g. 'Single Choice Question'
      */
-    public $question_type_label;
+    public string $question_type_label;
 
     /**
-	 * @var integer 	question title
+	 * question title
 	 */
-	public $question_title;
+	public int $question_title;
 
 	/**
-	 * @var float	maximum points that can be reached in the question
+	 * maximum points that can be reached in the question
 	 */
-	public $maximum_points;
+	public float $maximum_points;
 
 	/**
-	 * @var	integer	order position of the question in a fixed test
+	 * order position of the question in a fixed test
 	 */
-	public $order_position;
+	public int $order_position;
 
 	/**
-	 * @var bool obligatory status of the question in a fixed test
+	 * obligatory status of the question in a fixed test
 	 */
-	public $obligatory = false;
+	public bool $obligatory = false;
 
 	/**
-	 * @var	float	average of points reached by the participants that got this question assigned
+	 * average of points reached by the participants that got this question assigned
 	 */
-	public $average_points = 0;
+	public float $average_points = 0;
 
 	/**
-	 * @var	float 	average percentage reached by the participants that got this question assigned
+	 * average percentage reached by the participants that got this question assigned
 	 */
-	public $average_percentage = 0;
+	public float $average_percentage = 0;
 
 	/**
-	 * @var integer	number of users who answered the question
+	 * number of users who answered the question
 	 */
-	public $answers_count = 0;
+	public int $answers_count = 0;
 
     /**
-     * @var integer	number of users who got this question assigned
+     * number of users who got this question assigned
      */
-    public $assigned_count = 0;
+    public int $assigned_count = 0;
 }

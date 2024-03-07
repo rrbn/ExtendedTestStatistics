@@ -7,32 +7,32 @@
 class ilExteStatSourceParticipant
 {
 	/**
-	 * @var integer		the participant id
+	 * the participant id
 	 */
-	public $active_id;
+	public int  $active_id;
 
 	/**
-	 * @var integer		index of the last pass
+	 * index of the last pass
 	 */
-	public $last_pass;
+	public int $last_pass;
 
 	/**
-	 * @var integer		index of the best pass
+	 * index of the best pass
 	 */
-	public $best_pass;
+	public int $best_pass;
 
 	/**
-	 * @var integer		index of the first pass
+	 * index of the first pass
 	 */
-	public $first_pass;
+	public int $first_pass;
 	
 	/**
-	 * @var integer		index of the scored pass
+	 * index of the scored pass
 	 */
-	public $scored_pass;
+	public int $scored_pass;
 
 	/**
-	 * @var float		points reached by the participant in the currently selected pass
+	 * points reached by the participant in the currently selected pass
 	 */
-	public $current_reached_points;
+	public float $current_reached_points;
 }

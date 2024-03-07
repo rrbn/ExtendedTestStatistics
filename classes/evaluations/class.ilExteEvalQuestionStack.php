@@ -6,36 +6,48 @@
  */
 class ilExteEvalQuestionStack extends ilExteEvalQuestion
 {
-	/**
-	 * @var bool    evaluation provides a single value for the overview level
-	 */
-	protected $provides_value = false;
+    protected ilDBInterface $db;
 
 	/**
-	 * @var bool    evaluation provides data for a details screen
+	 * evaluation provides a single value for the overview level
 	 */
-	protected $provides_details = true;
+	protected bool $provides_value = false;
 
 	/**
-	 * @var bool    evaluation provides a chart
+	 * evaluation provides data for a details screen
 	 */
-	protected $provides_chart = true;
+	protected bool $provides_details = true;
 
 	/**
-	 * @var array   list of allowed test types, e.g. array(self::TEST_TYPE_FIXED)
+	 * evaluation provides a chart
 	 */
-	protected $allowed_test_types = array();
+	protected bool $provides_chart = true;
 
 	/**
-	 * @var array    list of question types, e.g. array('assSingleChoice', 'assMultipleChoice', ...)
+	 * list of allowed test types, e.g. array(self::TEST_TYPE_FIXED)
 	 */
-	protected $allowed_question_types = array('assStackQuestion');
+	protected array $allowed_test_types = array();
 
 	/**
-	 * @var string    specific prefix of language variables (lowercase classname is default)
+	 * list of question types, e.g. array('assSingleChoice', 'assMultipleChoice', ...)
 	 */
-	protected $lang_prefix = 'qst_stack';
+	protected array $allowed_question_types = array('assStackQuestion');
 
+	/**
+	 * specific prefix of language variables (lowercase classname is default)
+	 */
+	protected ?string $lang_prefix = 'qst_stack';
+
+    /**
+     * Constructor
+     */
+    public function __construct(ilExtendedTestStatisticsPlugin $a_plugin, ilExtendedTestStatisticsCache $a_cache)
+    {
+        global $DIC;
+        $this->db = $DIC->database();
+
+        parent::__construct($a_plugin, $a_cache);
+    }
 
 	/**
 	 * Calculate the single value for a question (to be overwritten)
@@ -44,11 +56,8 @@ class ilExteEvalQuestionStack extends ilExteEvalQuestion
 	 * This function will be called for many questions in sequence
 	 * - Please avoid instanciation of question objects
 	 * - Please try to cache question independent intermediate results
-	 *
-	 * @param integer $a_question_id
-	 * @return ilExteStatValue
 	 */
-	public function calculateValue($a_question_id)
+    protected function calculateValue(int $a_question_id) : ilExteStatValue
 	{
 		return new ilExteStatValue;
 	}
@@ -56,13 +65,9 @@ class ilExteEvalQuestionStack extends ilExteEvalQuestion
 
 	/**
 	 * Calculate the details question (to be overwritten)
-	 *
-	 * @param integer $a_question_id
-	 * @return ilExteStatDetails
 	 */
-	public function calculateDetails($a_question_id)
+    protected function calculateDetails(int $a_question_id) : ilExteStatDetails
 	{
-		require_once('Modules/TestQuestionPool/classes/class.assQuestion.php');
 		/** @var assStackQuestion $question */
 		$question = assQuestion::_instantiateQuestion($a_question_id);
 		if (!is_object($question)) {
@@ -235,9 +240,6 @@ class ilExteEvalQuestionStack extends ilExteEvalQuestion
 
 	protected function getRawData($a_question_id)
 	{
-		global $ilDB;
-
-		require_once('Modules/TestQuestionPool/classes/class.assQuestion.php');
 		/** @var assStackQuestion $question */
 		$question = assQuestion::_instantiateQuestion($a_question_id);
 		if (!is_object($question)) {
@@ -247,12 +249,12 @@ class ilExteEvalQuestionStack extends ilExteEvalQuestion
 		$raw_data = array();
 		/** @var ilExteStatSourceAnswer $answer */
 		foreach ($this->data->getAnswersForQuestion($a_question_id, true) as $answer) {
-			$result = $ilDB->queryF(
+			$result = $this->db->queryF(
 				"SELECT * FROM tst_solutions WHERE active_fi = %s AND pass = %s AND question_fi = %s",
 				array("integer", "integer", "integer"),
 				array($answer->active_id, $answer->pass, $a_question_id)
 			);
-			while ($data = $ilDB->fetchAssoc($result)) {
+			while ($data = $this->db->fetchAssoc($result)) {
 				if ($data["points"] != NULL) {
 					$raw_data[$answer->active_id . "_" . $answer->pass][$data["value2"]] = $data["points"];
 				} else {
@@ -266,7 +268,6 @@ class ilExteEvalQuestionStack extends ilExteEvalQuestion
 
 	public function getExtraInfo($a_question_id)
 	{
-		require_once('Modules/TestQuestionPool/classes/class.assQuestion.php');
 		/** @var assStackQuestion $question */
 		$question = assQuestion::_instantiateQuestion($a_question_id);
 		if (!is_object($question)) {

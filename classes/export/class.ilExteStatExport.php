@@ -21,7 +21,7 @@ class ilExteStatExport
 	const TYPE_EXCEL = 'excel';
 	const TYPE_CSV = 'csv';
 
-	protected $headerStyle = array(
+	protected array $headerStyle = array(
 		'font' => array(
 			'bold' => true
 		),
@@ -31,7 +31,7 @@ class ilExteStatExport
 		)
 	);
 
-	protected $rowStyles = array(
+	protected array $rowStyles = array(
 		0 => array(
 			'fill' => array(
 				'type' => 'solid',
@@ -45,46 +45,32 @@ class ilExteStatExport
 	);
 
 
-	/**
-	 * @var ilExtendedTestStatisticsPlugin
-	 */
-	protected $plugin;
+	protected ilExtendedTestStatisticsPlugin $plugin;
+	protected ilExtendedTestStatistics$statObj;
+    protected ilExteStatValueExcel $valView;
 
-	/**
-	 * @var ilExtendedTestStatistics
-	 */
-	protected $statObj;
+	/**  Writer Type ('Excel2007' or 'CSV') */
+	protected string $type;
 
+	/** Evaluation Level ('test' or 'questions') */
+	protected string $level;
 
-	/** @var  string Writer Type ('Excel2007' or 'CSV') */
-	protected $type;
+	protected bool $details = false;
 
 
 
-	/** @var string Evaluation Level ('test' or 'questions') */
-	protected $level;
-
-	/**
-	 * @var bool
-	 */
-	protected $details = false;
-
-
-	/**
-	 * @var ilExteStatValueExcel
-	 */
-	protected $valView;
 
 
 	/**
 	 * Constructor.
-	 * @param ilExtendedTestStatisticsPlugin	$plugin
-	 * @param ilExtendedTestStatistics			$statObj
-	 * @param string							$type
-	 * @param string							$level
-	 * @param bool								$details
 	 */
-	public function __construct($plugin, $statObj, $type = self::TYPE_EXCEL, $level = '', $details = false)
+	public function __construct(
+        ilExtendedTestStatisticsPlugin $plugin,
+        ilExtendedTestStatistics $statObj,
+        string $type = self::TYPE_EXCEL,
+        string $level = '',
+        bool $details = false
+    )
 	{
 		$this->statObj = $statObj;
 		$this->plugin  = $plugin;
@@ -92,7 +78,6 @@ class ilExteStatExport
 		$this->level = $level;
 		$this->details = $details;
 
-		$this->plugin->includeClass('views/class.ilExteStatValueExcel.php');
 		$this->valView = new ilExteStatValueExcel($this->plugin);
 	}
 
@@ -101,7 +86,7 @@ class ilExteStatExport
 	 * Build an Excel Export file
 	 * @param string	$path	full path of the file to create
 	 */
-	public function buildExportFile($path)
+	public function buildExportFile(string $path)
 	{
         $excelObj = new Spreadsheet();
         //$excelObj->removeSheetByIndex(0);
@@ -165,7 +150,7 @@ class ilExteStatExport
 		$excelObj->setActiveSheetIndex(0);
 
 		// Save the file
-		ilUtil::makeDirParents(dirname($path));
+		ilFileUtils::makeDirParents(dirname($path));
 		switch ($this->type)
 		{
 			case self::TYPE_EXCEL:
@@ -186,9 +171,8 @@ class ilExteStatExport
 
 	/**
 	 * Fill the legend sheet
-	 * @param Worksheet	$worksheet
 	 */
-	protected function fillLegend($worksheet)
+	protected function fillLegend(Worksheet $worksheet)
 	{
 		global $lng;
 
@@ -302,22 +286,20 @@ class ilExteStatExport
 
 	/**
 	 * Fill the test overview sheet
-	 * @param Worksheet	$worksheet
 	 */
-	protected function fillTestOverview($worksheet)
+	protected function fillTestOverview(Worksheet $worksheet)
 	{
 		$data = array();
 		/** @var ilExteStatValue[]  $values */
 		$values = $this->statObj->getSourceData()->getBasicTestValues();
 		foreach ($this->statObj->getSourceData()->getBasicTestValuesList() as $def)
 		{
-			array_push($data,
-				array(
-					'title' => $def['title'],
-					'description' => $def['description'],
-					'value' => $values[$def['id']],
-					'details' => null
-				));
+            $data[] = array(
+                'title' => $def['title'],
+                'description' => $def['description'],
+                'value' => $values[$def['id']],
+                'details' => null
+            );
 		}
 
 		/** @var  ilExteEvalTest $evaluation */
@@ -325,12 +307,11 @@ class ilExteStatExport
 			ilExtendedTestStatistics::LEVEL_TEST,
 			ilExtendedTestStatistics::PROVIDES_VALUE) as $class => $evaluation)
 		{
-			array_push($data,
-				array(
-					'title' => $evaluation->getTitle(),
-					'description' => $evaluation->getDescription(),
-					'value' => $evaluation->getValue()
-				));
+            $data[] = array(
+                'title' => $evaluation->getTitle(),
+                'description' => $evaluation->getDescription(),
+                'value' => $evaluation->getValue()
+            );
 		}
 
 		// Debug value formats
@@ -338,12 +319,11 @@ class ilExteStatExport
 		{
 			foreach (ilExteStatValue::_getDemoValues() as $value)
 			{
-				array_push($data,
-					array(
-						'title' => $value->comment,
-						'description' => '',
-						'value' => $value,
-					));
+                $data[] = array(
+                    'title' => $value->comment,
+                    'description' => '',
+                    'value' => $value,
+                );
 			}
 		}
 
@@ -359,7 +339,7 @@ class ilExteStatExport
 			$cell->getStyle()->applyFromArray($this->headerStyle);
 			if (!empty($row['description']))
 			{
-				$comments['A'.$rownum] = ilExteStatValueExcel::_createComment($row['description']);
+				$comments['A'.$rownum] = ilExteStatValueExcel::_createComment((string) ($row['description'] ?? ''));
 			}
 
 			/** @var ilExteStatValue $value */
@@ -380,9 +360,8 @@ class ilExteStatExport
 
 	/**
 	 * Fill the questions overview sheet
-	 * @param Worksheet	$worksheet
 	 */
-	protected function fillQuestionsOverview($worksheet)
+	protected function fillQuestionsOverview(Worksheet $worksheet)
 	{
 		$header = $this->statObj->getSourceData()->getBasicQuestionValuesList();
 
@@ -416,7 +395,7 @@ class ilExteStatExport
 			$cell->getStyle()->applyFromArray($this->headerStyle);
 			if (!empty($def['description']))
 			{
-				$comments[$coordinate] = ilExteStatValueExcel::_createComment($def['description']);
+				$comments[$coordinate] = ilExteStatValueExcel::_createComment((string) $def['description']);
 			}
 			$col++;
 		}
@@ -464,10 +443,8 @@ class ilExteStatExport
 
 	/**
 	 * Add a sheet with details for the test
-	 * @param Spreadsheet	$excelObj
-	 * @param ilExteEvalTest $evaluation
 	 */
-	protected function addTestDetailsSheet($excelObj, $evaluation)
+	protected function addTestDetailsSheet(Spreadsheet $excelObj, ilExteEvalTest $evaluation)
 	{
 		$worksheet = $excelObj->createSheet();
 		$worksheet->setTitle($evaluation->getShortTitle());
@@ -492,7 +469,7 @@ class ilExteStatExport
 			$cell->getStyle()->applyFromArray($this->headerStyle);
 			if (!empty($column->comment))
 			{
-				$comments[$coordinate] = ilExteStatValueExcel::_createComment($column->comment);
+				$comments[$coordinate] = ilExteStatValueExcel::_createComment((string) $column->comment);
 			}
 			$col++;
 		}
@@ -525,10 +502,8 @@ class ilExteStatExport
 
 	/**
 	 * Add a sheet with details for the test
-	 * @param Spreadsheet	$excelObj
-	 * @param ilExteEvalQuestion $evaluation
 	 */
-	protected function addQuestionsDetailsSheet($excelObj, $evaluation)
+	protected function addQuestionsDetailsSheet(Spreadsheet $excelObj, ilExteEvalQuestion $evaluation)
 	{
 		global $lng;
 
@@ -607,7 +582,7 @@ class ilExteStatExport
 			$cell->getStyle()->applyFromArray($this->headerStyle);
 			if (!empty($column->comment))
 			{
-				$comments[$coordinate] = ilExteStatValueExcel::_createComment($column->comment);
+				$comments[$coordinate] = ilExteStatValueExcel::_createComment((string) $column->comment);
 			}
 		}
 
@@ -618,9 +593,9 @@ class ilExteStatExport
 
 
 	/**
-	 * @param worksheet	$worksheet
+	 * Adjust the column sizes
 	 */
-	protected function adjustSizes($worksheet, $range = null)
+	protected function adjustSizes(worksheet $worksheet, ?array $range = null)
 	{
 		$range = isset($range) ? $range : range('A', $worksheet->getHighestColumn());
 		foreach ($range as $columnID)
