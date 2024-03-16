@@ -45,6 +45,7 @@ class ilExteStatExport
 	);
 
 
+    protected ilLanguage $lng;
 	protected ilExtendedTestStatisticsPlugin $plugin;
 	protected ilExtendedTestStatistics$statObj;
     protected ilExteStatValueExcel $valView;
@@ -72,6 +73,9 @@ class ilExteStatExport
         bool $details = false
     )
 	{
+        global $DIC;
+
+        $this->lng = $DIC->language();
 		$this->statObj = $statObj;
 		$this->plugin  = $plugin;
 		$this->type = $type;
@@ -174,15 +178,13 @@ class ilExteStatExport
 	 */
 	protected function fillLegend(Worksheet $worksheet)
 	{
-		global $lng;
-
 		$comments = array();
 
 		$row = 1;
 
 		// title
 		$cell = $worksheet->getCell('A'.$row);
-		$cell->setValue($lng->txt('title'));
+		$cell->setValue($this->lng->txt('title'));
 		$cell->getStyle()->applyFromArray($this->headerStyle);
 		$cell = $worksheet->getCell('B'.$row);
 		$cell->setValue($this->statObj->getSourceData()->getTestTitle());
@@ -192,23 +194,23 @@ class ilExteStatExport
 		switch ($this->statObj->getSourceData()->getTestType())
 		{
 			case ilExteEvalBase::TEST_TYPE_FIXED:
-				$type = $lng->txt('tst_question_set_type_fixed');
-				$desc = $lng->txt('tst_question_set_type_fixed_desc');
+				$type = $this->lng->txt('tst_question_set_type_fixed');
+				$desc = $this->lng->txt('tst_question_set_type_fixed_desc');
 				break;
 			case ilExteEvalBase::TEST_TYPE_RANDOM:
-				$type = $lng->txt('tst_question_set_type_random');
-				$desc = $lng->txt('tst_question_set_type_random_desc');
+				$type = $this->lng->txt('tst_question_set_type_random');
+				$desc = $this->lng->txt('tst_question_set_type_random_desc');
 				break;
 			case ilExteEvalBase::TEST_TYPE_DYNAMIC:
-				$type = $lng->txt('tst_question_set_type_dynamic');
-				$desc = $lng->txt('tst_question_set_type_dynamic_desc');
+				$type = $this->lng->txt('tst_question_set_type_dynamic');
+				$desc = $this->lng->txt('tst_question_set_type_dynamic_desc');
 				break;
 			default:
 				$type = '';
 				$desc = '';
 		}
 		$cell = $worksheet->getCell('A'.$row);
-		$cell->setValue($lng->txt('type'));
+		$cell->setValue($this->lng->txt('type'));
 		$cell->getStyle()->applyFromArray($this->headerStyle);
 		$cell = $worksheet->getCell('B'.$row);
 		$cell->setValue($type);
@@ -242,7 +244,7 @@ class ilExteStatExport
 
 		// export date
 		$cell = $worksheet->getCell('A'.$row);
-		$cell->setValue($lng->txt('export'));
+		$cell->setValue($this->lng->txt('export'));
 		$cell->getStyle()->applyFromArray($this->headerStyle);
 		$cell = $worksheet->getCell('B'.$row);
 
@@ -258,7 +260,7 @@ class ilExteStatExport
 		$cell->setValueExplicit($this->plugin->txt('legend_symbol_format'), DataType::TYPE_STRING);
 		$cell->getStyle()->applyFromArray($this->headerStyle);
 		$cell = $worksheet->getCell('B'.$row);
-		$cell->setValueExplicit($lng->txt('description'), DataType::TYPE_STRING);
+		$cell->setValueExplicit($this->lng->txt('description'), DataType::TYPE_STRING);
 		$cell->getStyle()->applyFromArray($this->headerStyle);
 		$row++;
 
@@ -279,7 +281,7 @@ class ilExteStatExport
 			$row++;
 		}
 
-		$worksheet->setTitle($lng->txt('legend'));
+		$worksheet->setTitle($this->lng->txt('legend'));
 		$worksheet->setComments($comments);
 		$this->adjustSizes($worksheet);
 	}
@@ -505,8 +507,6 @@ class ilExteStatExport
 	 */
 	protected function addQuestionsDetailsSheet(Spreadsheet $excelObj, ilExteEvalQuestion $evaluation)
 	{
-		global $lng;
-
 		$worksheet = $excelObj->createSheet();
 		$worksheet->setTitle($evaluation->getShortTitle());
 
@@ -519,8 +519,8 @@ class ilExteStatExport
 		$columns = array();
 		$mapping = array();
 		$comments = array();
-		$columns['_question_id'] = ilExteStatColumn::_create('_question_id', $lng->txt('question_id'));
-		$columns['_question_title'] = ilExteStatColumn::_create('_question_title', $lng->txt('question_title'));
+		$columns['_question_id'] = ilExteStatColumn::_create('_question_id', $this->lng->txt('question_id'));
+		$columns['_question_title'] = ilExteStatColumn::_create('_question_title', $this->lng->txt('question_title'));
 		$mapping['_question_id'] = 'A';
 		$mapping['_question_title'] = 'B';
 

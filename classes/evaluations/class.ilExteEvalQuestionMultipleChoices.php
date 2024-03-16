@@ -36,13 +36,25 @@ class ilExteEvalQuestionMultipleChoices extends ilExteEvalQuestion
 	 */
 	protected ?string $lang_prefix = 'qst_choices';
 
+    protected ilDBInterface $db;
+
+    /**
+     * Constructor
+     */
+    public function __construct(ilExtendedTestStatisticsPlugin $a_plugin, ilExtendedTestStatisticsCache $a_cache)
+    {
+        global $DIC;
+
+        $this->db = $DIC->database();
+        parent::__construct($a_plugin, $a_cache);
+    }
 
     /**
      * Calculate the single value for a question (to be overwritten)
      *
      * Note:
      * This function will be called for many questions in sequence
-     * - Please avoid instanciation of question objects
+     * - Please avoid instantiation of question objects
      * - Please try to cache question independent intermediate results
      */
     protected function calculateValue(int $a_question_id) : ilExteStatValue
@@ -56,9 +68,6 @@ class ilExteEvalQuestionMultipleChoices extends ilExteEvalQuestion
      */
     protected function calculateDetails(int $a_question_id) : ilExteStatDetails
 	{
-        global $ilDB;
-
-        require_once('Modules/TestQuestionPool/classes/class.assQuestion.php');
         /** @var assMultipleChoice $question */
         $question = assQuestion::_instantiateQuestion($a_question_id);
 		if (!is_object($question))
@@ -89,13 +98,13 @@ class ilExteEvalQuestionMultipleChoices extends ilExteEvalQuestion
         /** @var ilExteStatSourceAnswer $answer */
         foreach ($this->data->getAnswersForQuestion($a_question_id, true) as $answer)
         {
-            $result = $ilDB->queryF(
+            $result = $this->db->queryF(
                 "SELECT * FROM tst_solutions WHERE active_fi = %s AND pass = %s AND question_fi = %s",
                 array("integer", "integer", "integer"),
                 array($answer->active_id, $answer->pass, $a_question_id)
             );
 
-            while ($data = $ilDB->fetchAssoc($result))
+            while ($data = $this->db->fetchAssoc($result))
             {
                 if (isset($data["value1"]) && isset($options[$data["value1"]]))
                 {

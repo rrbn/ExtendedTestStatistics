@@ -50,7 +50,20 @@ class ilExteStatDetails
      * Custom HTML for the evaluation
      */
     public string $customHTML = '';
-    
+
+
+    protected ilLanguage $lng;
+
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        global $DIC;
+        $this->lng = $DIC->language();
+    }
+
 	/**
 	 * Get the message for empty details
 	 */
@@ -61,8 +74,7 @@ class ilExteStatDetails
 			return $this->emptyMessage;
 		}
 
-        global $DIC;
-		return $DIC->language()->txt('no_items');
+		return $this->lng->txt('no_items');
 	}
 
 	/**

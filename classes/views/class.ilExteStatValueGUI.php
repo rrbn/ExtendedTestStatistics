@@ -6,6 +6,7 @@
  */
 class ilExteStatValueGUI
 {
+    protected ilLanguage $lng;
 	protected ilExtendedTestStatisticsPlugin $plugin;
 
 	/** @var bool	comments should be shown as tooltip  */
@@ -16,6 +17,9 @@ class ilExteStatValueGUI
 	 */
 	public function __construct(ilExtendedTestStatisticsPlugin $a_plugin)
 	{
+        global $DIC;
+
+        $this->lng = $DIC->language();
 		$this->plugin = $a_plugin;
 	}
 
@@ -32,8 +36,6 @@ class ilExteStatValueGUI
 	 */
 	public function getHTML(ilExteStatValue $value): string
 	{
-		global $lng;
-
 		$template = $this->plugin->getTemplate('tpl.il_exte_stat_value.html');
 
 		// value
@@ -86,7 +88,7 @@ class ilExteStatValueGUI
 				break;
 
 			case ilExteStatValue::TYPE_BOOLEAN:
-				$content = ($value->value ? $lng->txt('yes') : $lng->txt('no'));
+				$content = ($value->value ? $this->lng->txt('yes') : $this->lng->txt('no'));
 				$align = 'left';
 				break;
 
@@ -181,8 +183,6 @@ class ilExteStatValueGUI
 	 */
 	public function getLegendData(): array
 	{
-		global $lng;
-
 		$data = array (
 			array(
 				'value' => ilExteStatValue::_create('', ilExteStatValue::TYPE_TEXT, 0, '', ilExteStatValue::ALERT_GOOD),
@@ -201,11 +201,11 @@ class ilExteStatValueGUI
 				'description' => $this->plugin->txt('legend_alert_unknown')
 			),
 			array(
-				'value' => ilExteStatValue::_create($lng->txt('value'), ilExteStatValue::TYPE_TEXT, 0, $lng->txt('comment'), ilExteStatValue::ALERT_NONE, true),
+				'value' => ilExteStatValue::_create($this->lng->txt('value'), ilExteStatValue::TYPE_TEXT, 0, $this->lng->txt('comment'), ilExteStatValue::ALERT_NONE, true),
 				'description' => $this->plugin->txt('legend_uncertain')
 			),
 			array(
-				'value' => ilExteStatValue::_create($lng->txt('value'), ilExteStatValue::TYPE_TEXT, 0, $lng->txt('comment')),
+				'value' => ilExteStatValue::_create($this->lng->txt('value'), ilExteStatValue::TYPE_TEXT, 0, $this->lng->txt('comment')),
 				'description' => $this->plugin->txt('legend_comment')
 			)
 		);

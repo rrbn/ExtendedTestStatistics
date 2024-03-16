@@ -1,8 +1,6 @@
 <?php
 // Copyright (c) 2017 Institut fuer Lern-Innovation, Friedrich-Alexander-Universitaet Erlangen-Nuernberg, GPLv3, see LICENSE
 
-include_once('./Services/Table/classes/class.ilTable2GUI.php');
-
 abstract class ilExteStatTableGUI extends ilTable2GUI
 {
 	protected ?object $parent_obj;

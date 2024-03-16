@@ -21,7 +21,8 @@ class ilExteStatSourceData
 	const PASS_FIRST = 'first';
 	const PASS_SCORED = 'scored';
 
-
+    protected ilDBInterface $db;
+    protected ilLanguage $lng;
 	protected ilExtendedTestStatisticsPlugin $plugin;
 	protected ilObjTest $object;
 	protected ilExtendedTestStatisticsCache $cache;
@@ -87,6 +88,10 @@ class ilExteStatSourceData
 	 */
 	public function __construct(ilObjTest $a_test_obj, ilExtendedTestStatisticsPlugin $a_plugin, ilExtendedTestStatisticsCache $a_cache)
 	{
+        global $DIC;
+
+        $this->db  = $DIC->database();
+        $this->lng = $DIC->language();
 		$this->object = $a_test_obj;
 		$this->plugin = $a_plugin;
 		$this->cache = $a_cache;
@@ -325,9 +330,6 @@ class ilExteStatSourceData
 	 */
 	protected function readQuestionTypes()
 	{
-		global $ilDB;
-
-		require_once('Modules/TestQuestionPool/classes/class.ilObjQuestionPool.php');
 		$type_translations = ilObjQuestionPool::getQuestionTypeTranslations();
 		$this->question_types = array();
 
@@ -336,10 +338,10 @@ class ilExteStatSourceData
 			$query = "
                 SELECT q.question_id, t.type_tag FROM qpl_questions q
                 INNER JOIN qpl_qst_type t ON t.question_type_id = q.question_type_fi
-                WHERE " . $ilDB->in('q.question_id', array_keys($this->questions), false, 'integer');
+                WHERE " . $this->db->in('q.question_id', array_keys($this->questions), false, 'integer');
 
-            $result = $ilDB->query($query);
-            while ($row = $ilDB->fetchAssoc($result))
+            $result = $this->db->query($query);
+            while ($row = $this->db->fetchAssoc($result))
             {
 				$this->question_types[$row['type_tag']] = $type_translations[$row['type_tag']];
 
@@ -354,14 +356,12 @@ class ilExteStatSourceData
 	 */
 	protected function readFixedTestQuestionData()
 	{
-		global $ilDB;
-
 		$query = "SELECT question_fi, sequence, obligatory FROM tst_test_question WHERE test_fi = "
-			. $ilDB->quote($this->object->getTestId())
+			. $this->db->quote($this->object->getTestId())
 			. " ORDER BY sequence";
-		$result = $ilDB->query($query);
+		$result = $this->db->query($query);
 
-		while ($row = $ilDB->fetchAssoc($result))
+		while ($row = $this->db->fetchAssoc($result))
 		{
             if (empty($question = $this->getQuestion($row['question_fi']))) {
                 $question = $this->createQuestion($row['question_fi']); // reference
@@ -477,8 +477,6 @@ class ilExteStatSourceData
 	 */
 	public function getBasicTestValuesList() : array
 	{
-		global $lng;
-
 		$list = array(
 		);
 
@@ -487,17 +485,17 @@ class ilExteStatSourceData
 			$list = array_merge($list, array(
 				array(
 					'id' => 'tst_eval_total_persons',
-					'title' => $lng->txt('tst_eval_total_persons'),
+					'title' => $this->lng->txt('tst_eval_total_persons'),
 					'description' => '',
 				),
 				array(
 					'id' => 'tst_eval_total_finished',
-					'title' => $lng->txt('tst_eval_total_finished'),
+					'title' => $this->lng->txt('tst_eval_total_finished'),
 					'description' => '',
 				),
 				array(
 					'id' => 'tst_eval_total_passed',
-					'title' => $lng->txt('tst_eval_total_passed'),
+					'title' => $this->lng->txt('tst_eval_total_passed'),
 					'description' => '',
 				),
 				array(
@@ -507,17 +505,17 @@ class ilExteStatSourceData
 				),
 				array(
 					'id' => 'tst_eval_total_passed_average_points',
-					'title' => $lng->txt('tst_eval_total_passed_average_points'),
+					'title' => $this->lng->txt('tst_eval_total_passed_average_points'),
 					'description' => '',
 				),
 				array(
 					'id' => 'tst_eval_total_finished_average_time',
-					'title' => $lng->txt('tst_eval_total_finished_average_time'),
+					'title' => $this->lng->txt('tst_eval_total_finished_average_time'),
 					'description' => '',
 				),
 				array(
 					'id' => 'tst_eval_total_passed_average_time',
-					'title' => $lng->txt('tst_eval_total_passed_average_time'),
+					'title' => $this->lng->txt('tst_eval_total_passed_average_time'),
 					'description' => '',
 				)
 			));
@@ -577,21 +575,19 @@ class ilExteStatSourceData
 	 */
     public function getBasicQuestionValuesList() : array
     {
-		global $lng;
-
 		return array(
 			'order_position' => array(
-				'title' => $lng->txt('position'),
+				'title' => $this->lng->txt('position'),
 				'description' => '',
 				'test_types' => array(ilExteEvalBase::TEST_TYPE_FIXED)
 			),
 			'question_id' => array(
-				'title' => $lng->txt('question_id'),
+				'title' => $this->lng->txt('question_id'),
 				'description' => '',
 				'test_types' => array()
 			),
 			'question_title' => array(
-				'title' => $lng->txt('question_title'),
+				'title' => $this->lng->txt('question_title'),
 				'description' => '',
 				'test_types' => array()
 			),
@@ -601,7 +597,7 @@ class ilExteStatSourceData
 				'test_types' => array()
 			),
 			'obligatory' => array(
-				'title' => $lng->txt('obligatory'),
+				'title' => $this->lng->txt('obligatory'),
 				'description' => '',
 				'test_types' => array(ilExteEvalBase::TEST_TYPE_FIXED)
 			),

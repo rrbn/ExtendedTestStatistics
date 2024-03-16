@@ -276,7 +276,6 @@ class ilExteStatQuestionsOverviewTableGUI extends ilExteStatTableGUI
         if (!empty($details))
         {
             // show action menu
-            include_once './Services/UIComponent/AdvancedSelectionList/classes/class.ilAdvancedSelectionListGUI.php';
             $list = new ilAdvancedSelectionListGUI();
             $list->setSelectionHeaderClass('small');
             $list->setItemLinkClass('small');

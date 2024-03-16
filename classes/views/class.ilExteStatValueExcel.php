@@ -23,9 +23,10 @@ class ilExteStatValueExcel
 	const COLOR_UNKNOWN = 'CCCCCC';
 	const COLOR_NONE = 'FFFFFF';
 
+    protected ilLanguage $lng;
 	protected ilExtendedTestStatisticsPlugin $plugin;
 
-	/** @var bool	comments should be shown as tooltip */
+	/** comments should be shown as tooltip */
 	protected bool $show_comment = true;
 
 	/**
@@ -33,6 +34,9 @@ class ilExteStatValueExcel
 	 */
 	public function __construct(ilExtendedTestStatisticsPlugin $a_plugin)
 	{
+        global $DIC;
+
+        $this->lng = $DIC->language();
 		$this->plugin = $a_plugin;
 	}
 
@@ -158,8 +162,6 @@ class ilExteStatValueExcel
 	 */
 	public function getLegendData(): array
 	{
-		global $lng;
-
 		$data = array (
 			array(
 				'value' => ilExteStatValue::_create('', ilExteStatValue::TYPE_ALERT, 0, '', ilExteStatValue::ALERT_GOOD),
@@ -178,11 +180,11 @@ class ilExteStatValueExcel
 				'description' => $this->plugin->txt('legend_alert_unknown')
 			),
 			array(
-				'value' => ilExteStatValue::_create($lng->txt('value'), ilExteStatValue::TYPE_TEXT, 0, '', ilExteStatValue::ALERT_NONE, true),
+				'value' => ilExteStatValue::_create($this->lng->txt('value'), ilExteStatValue::TYPE_TEXT, 0, '', ilExteStatValue::ALERT_NONE, true),
 				'description' => $this->plugin->txt('legend_uncertain')
 			),
 			array(
-				'value' => ilExteStatValue::_create($lng->txt('value'), ilExteStatValue::TYPE_TEXT, 0, $lng->txt('comment')),
+				'value' => ilExteStatValue::_create($this->lng->txt('value'), ilExteStatValue::TYPE_TEXT, 0, $this->lng->txt('comment')),
 				'description' => $this->plugin->txt('legend_comment')
 			)
 		);
