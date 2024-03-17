@@ -423,14 +423,17 @@ class ilExteStatExport
 			/** @var  ilExteEvalQuestion $evaluation */
 			foreach ($evaluations as $class => $evaluation)
 			{
-				$coordinate = $mapping[$class].(string) $row;
-				$cell = $worksheet->getCell($coordinate);
-				$value =  $evaluation->getValue($question_id);
-				$this->valView->writeInCell($cell, $value);
-				if (!empty($value->comment))
-				{
-					$comments[$coordinate] = $this->valView->getComment($value);
-				}
+                if (isset($mapping[$class]))
+                {
+                    $coordinate = $mapping[$class].(string) $row;
+                    $cell = $worksheet->getCell($coordinate);
+                    $value =  $evaluation->getValue($question_id);
+                    $this->valView->writeInCell($cell, $value);
+                    if (!empty($value->comment))
+                    {
+                        $comments[$coordinate] = $this->valView->getComment($value);
+                    }
+                }
 			}
 
 			$row++;
@@ -557,14 +560,16 @@ class ilExteStatExport
 
 					foreach ($rowValues as $name => $value)
 					{
-						$coordinate = $mapping[$name].$row;
-						$cell = $worksheet->getCell($coordinate);
-						//$cell->getStyle()->applyFromArray($this->rowStyles[$row % 2]);
-						$this->valView->writeInCell($cell, $value);
-						if (!empty($value->comment))
-						{
-							$comments[$coordinate] = $this->valView->getComment($value);
-						}
+                        if (isset($mapping[$name])) {
+                            $coordinate = $mapping[$name].$row;
+                            $cell = $worksheet->getCell($coordinate);
+                            //$cell->getStyle()->applyFromArray($this->rowStyles[$row % 2]);
+                            $this->valView->writeInCell($cell, $value);
+                            if (!empty($value->comment))
+                            {
+                                $comments[$coordinate] = $this->valView->getComment($value);
+                            }
+                        }
 					}
 					$row++;
 				}

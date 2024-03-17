@@ -87,32 +87,24 @@ class ilExteEvalTestCIC extends ilExteEvalTest
 		$sumofmarkvariance = 0;
 		foreach ($this->data->getAllQuestions() as $question_id => $question)
         {
-			$full_answers = $this->data->getAnswersForQuestion($question_id);
-			$data["sum"][$question_id] = 0.0;
-			foreach ($full_answers as $answer)
-            {
-				$data["data"][$question_id][$answer->active_id] = $answer->reached_points;
-				$data["sum"][$question_id] += $answer->reached_points;
+            $sum = 0.0;
+			foreach ($this->data->getAnswersForQuestion($question_id) as $answer) {
+                $sum += $answer->reached_points;
 			}
-			$question_average = $data["sum"][$question_id] / $number_of_users;
-			$data["mean"][$question_id] = $question_average;
+			$question_average = $sum / $number_of_users;
 
-			$full_answers_2 = $this->data->getAnswersForQuestion($question_id);
-			foreach ($full_answers_2 as $answer_2)
-            {
-				$mark_difference = $answer_2->reached_points - $question_average;
-				$data["calc_markvariancesum"] += pow($mark_difference, 2);
+            $calc_markvariancesum = 0;
+            foreach ($this->data->getAnswersForQuestion($question_id) as $answer) {
+				$mark_difference = $answer->reached_points - $question_average;
+                $calc_markvariancesum += pow($mark_difference, 2);
 			}
-
-			$data["markvariancesum"][$question_id] = $data["calc_markvariancesum"] / ($number_of_users - 1);
-			$sumofmarkvariance += $data["markvariancesum"][$question_id];
-			$data["calc_markvariancesum"] = 0;
+			$sumofmarkvariance += $calc_markvariancesum / ($number_of_users - 1);
 		}
 
 		//PART2
 		$full_participants = $this->data->getAllParticipants();
 		$basic_test_values = $this->data->getBasicTestValues();
-		$mean = $basic_test_values['tst_eval_mean_of_reached_points'];
+		$mean = $basic_test_values['tst_eval_mean_of_reached_points'] ?? 0;
 
 		$sum_of_mean = 0;
 

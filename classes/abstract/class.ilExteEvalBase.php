@@ -181,7 +181,7 @@ abstract class ilExteEvalBase
 	 */
 	public function getParam(string $a_name)
 	{
-		return $this->params[$a_name]->value;
+		return isset($this->params[$a_name]) ? $this->params[$a_name]->value : null;
 	}
 
 	/**
@@ -299,12 +299,12 @@ abstract class ilExteEvalBase
         }
 
         $labels = array();
-		if (isset($a_details->chartLabelsColumn))
+		if (isset($a_details->chartLabelsColumn) && isset($a_details->columns[$a_details->chartLabelsColumn]))
 		{
 			$colname = $a_details->columns[$a_details->chartLabelsColumn]->name;
 			foreach ($a_details->rows as $rownum => $row)
 			{
-				$labels[$rownum] = ilUtil::secureString($row[$colname]->value, true);
+				$labels[$rownum] = ilUtil::secureString(isset($row[$colname]) ? $row[$colname]->value : '', true);
 			}
 
 			if ($chart instanceof ilChartGrid)
@@ -345,7 +345,7 @@ abstract class ilExteEvalBase
 							}
 							elseif ($data instanceof ilChartDataPie)
 							{
-								$data->addPoint($value->value, isset($labels[$rownum]) ? $labels[$rownum] : $rownum);
+								$data->addPoint($value->value, $labels[$rownum] ?? $rownum);
 							}
 							elseif ($data instanceof ilChartDataSpider)
 							{
@@ -408,6 +408,7 @@ abstract class ilExteEvalBase
      */
     protected function calcCovariance(array $values1, array $values2, bool $with_bessel) : ?float
     {
+        // ensure correct array sizes
         if (count($values1) < 2 || count($values1) != count($values2)) {
             return null;
         }

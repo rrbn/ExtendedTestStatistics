@@ -92,12 +92,12 @@ class ilExteEvalQuestionStack extends ilExteEvalQuestion
 
 		foreach ($data as $key => $option) {
 			$details->rows[] = array(
-				'prt' => ilExteStatValue::_create($option["prt"] . "-" . $option["node"], ilExteStatValue::TYPE_TEXT, 0),
-				'model_response' => ilExteStatValue::_create($option["answernote"], ilExteStatValue::TYPE_TEXT, 0),
-				'feedback_errors' => ilExteStatValue::_create($option["feedback"], ilExteStatValue::TYPE_TEXT, 0),
-				'partial' => ilExteStatValue::_create((string)$option["partial"], ilExteStatValue::TYPE_TEXT, 0),
-				'count' => ilExteStatValue::_create((string)$option["count"], ilExteStatValue::TYPE_NUMBER, 0),
-				'frequency' => ilExteStatValue::_create((string)$option["frequency"], ilExteStatValue::TYPE_NUMBER, 2),
+				'prt' => ilExteStatValue::_create($option["prt"] . "-" .($option["node"] ?? ''), ilExteStatValue::TYPE_TEXT, 0),
+				'model_response' => ilExteStatValue::_create($option["answernote"] ?? '', ilExteStatValue::TYPE_TEXT, 0),
+				'feedback_errors' => ilExteStatValue::_create($option["feedback"] ?? '', ilExteStatValue::TYPE_TEXT, 0),
+				'partial' => ilExteStatValue::_create((string) ($option["partial"] ?? ''), ilExteStatValue::TYPE_TEXT, 0),
+				'count' => ilExteStatValue::_create((string) ($option["count"] ?? ''), ilExteStatValue::TYPE_NUMBER, 0),
+				'frequency' => ilExteStatValue::_create((string) ($option["frequency"] ?? ''), ilExteStatValue::TYPE_NUMBER, 2),
 			);
 		}
 
@@ -112,9 +112,9 @@ class ilExteEvalQuestionStack extends ilExteEvalQuestion
 			foreach ($prt_obj->getPRTNodes() as $node_name => $node) {
 				$node_name = (string)$node_name;
 				//FALSE
-				$data[$prt_name . "-" . $node_name . "-F"] = array("prt" => $prt_name, "node" => $node_name, "answernote" => $prt_name . "-" . $node_name . "-F", "feedback" => "", "count" => 0, "frequency" => 0, "partial" => $points_structure[$prt_name][$node_name]["false_mode"] . $points_structure[$prt_name][$node_name]["false_value"]);
+				$data[$prt_name . "-" . $node_name . "-F"] = array("prt" => $prt_name, "node" => $node_name, "answernote" => $prt_name . "-" . $node_name . "-F", "feedback" => "", "count" => 0, "frequency" => 0, "partial" => ($points_structure[$prt_name][$node_name]["false_mode"] ?? '') . ($points_structure[$prt_name][$node_name]["false_value"] ?? ''));
 				//TRUE
-				$data[$prt_name . "-" . $node_name . "-T"] = array("prt" => $prt_name, "node" => $node_name, "answernote" => $prt_name . "-" . $node_name . "-T", "feedback" => "", "count" => 0, "frequency" => 0, "partial" => $points_structure[$prt_name][$node_name]["true_mode"] . $points_structure[$prt_name][$node_name]["true_value"]);
+				$data[$prt_name . "-" . $node_name . "-T"] = array("prt" => $prt_name, "node" => $node_name, "answernote" => $prt_name . "-" . $node_name . "-T", "feedback" => "", "count" => 0, "frequency" => 0, "partial" => ($points_structure[$prt_name][$node_name]["true_mode"] ?? '') . ($points_structure[$prt_name][$node_name]["true_value"] ?? ''));
 				//NO ANSWER
 				$data[$prt_name . "-" . $node_name . "-NoAnswer"] = array("prt" => $prt_name, "node" => $node_name, "answernote" => $this->txt("no_answer"), "feedback" => "", "count" => 0, "frequency" => 0, "partial" => "");
 			}
@@ -127,51 +127,58 @@ class ilExteEvalQuestionStack extends ilExteEvalQuestion
 					$answer_note = $this->processAnswerNote($attempt["xqcas_prt_" . $prt_name . "_answernote"]);
 
 					foreach ($prt_obj->getPRTNodes() as $node_name => $node) {
-						$node_name = (string)$node_name;
+						$node_name = (string) $node_name;
+                        $key_f = $prt_name . "-" . $node_name . "-F";
+                        $key_t = $prt_name . "-" . $node_name . "-T";
+                        $key_n = $prt_name . "-" . $node_name . "-NoAnswer";
+
+                        $data[$key_f]["count"] = $data[$key_f]["count"] ?? 0;
+                        $data[$key_t]["count"] = $data[$key_t]["count"] ?? 0;
+                        $data[$key_n]["count"] = $data[$key_n]["count"] ?? 0;
 
 						//FALSE
-						if ($prt_name . "-" . $node_name . "-F" == $answer_note or (stripos($answer_note, "-" . $node_name . "-F") !== FALSE)) {
-							$data[$prt_name . "-" . $node_name . "-F"]["count"]++;
+						if ($key_f == $answer_note or (stripos($answer_note, "-" . $node_name . "-F") !== FALSE)) {
+							$data[$key_f]["count"]++;
 							if (stripos($answer_note, "-" . $node_name . "-F")) {
-								if ($data[$prt_name . "-" . $node_name . "-F"]["feedback"] == "") {
-									$data[$prt_name . "-" . $node_name . "-F"]["feedback"] .= $answer_note;
+								if (empty($data[$key_f]["feedback"])) {
+									$data[$key_f]["feedback"] = $answer_note;
 								} else {
-									$data[$prt_name . "-" . $node_name . "-F"]["feedback"] .= " / " . $answer_note;
+									$data[$key_f]["feedback"] .= " / " . $answer_note;
 								}
 							}
 							//RECALCULATE frequency
-							$total = (float)$data[$prt_name . "-" . $node_name . "-F"]["count"] + $data[$prt_name . "-" . $node_name . "-T"]["count"] + $data[$prt_name . "-" . $node_name . "-NoAnswer"]["count"];
-							$data[$prt_name . "-" . $node_name . "-F"]["frequency"] = ((float)$data[$prt_name . "-" . $node_name . "-F"]["count"] * 100) / $total;
-							$data[$prt_name . "-" . $node_name . "-T"]["frequency"] = ((float)$data[$prt_name . "-" . $node_name . "-T"]["count"] * 100) / $total;
-							$data[$prt_name . "-" . $node_name . "-NoAnswer"]["frequency"] = ((float)$data[$prt_name . "-" . $node_name . "-NoAnswer"]["count"] * 100) / $total;
+							$total = (float) $data[$key_f]["count"] + $data[$key_t]["count"] + $data[$key_n]["count"];
+							$data[$key_f]["frequency"] = ((float)$data[$key_f]["count"] * 100) / $total;
+							$data[$key_t]["frequency"] = ((float)$data[$key_t]["count"] * 100) / $total;
+							$data[$key_n]["frequency"] = ((float)$data[$key_n]["count"] * 100) / $total;
 							continue;
 
 						}
 						//TRUE
-						if ($prt_name . "-" . $node_name . "-T" == $answer_note or (stripos($answer_note, "-" . $node_name . "-T") !== FALSE)) {
-							$data[$prt_name . "-" . $node_name . "-T"]["count"]++;
+						if ($key_t == $answer_note or (stripos($answer_note, "-" . $node_name . "-T") !== FALSE)) {
+							$data[$key_t]["count"]++;
 							if (stripos($answer_note, "-" . $node_name . "-T")) {
-								if ($data[$prt_name . "-" . $node_name . "-T"]["feedback"] == "") {
-									$data[$prt_name . "-" . $node_name . "-T"]["feedback"] .= $answer_note;
+								if (empty($data[$key_t]["feedback"])) {
+									$data[$key_t]["feedback"] = $answer_note;
 								} else {
-									$data[$prt_name . "-" . $node_name . "-T"]["feedback"] .= " / " . $answer_note;
+									$data[$key_t]["feedback"] .= " / " . $answer_note;
 								}
 							}
 							//RECALCULATE frequency
-							$total = (float)$data[$prt_name . "-" . $node_name . "-F"]["count"] + $data[$prt_name . "-" . $node_name . "-T"]["count"] + $data[$prt_name . "-" . $node_name . "-NoAnswer"]["count"];
-							$data[$prt_name . "-" . $node_name . "-F"]["frequency"] = ((float)$data[$prt_name . "-" . $node_name . "-F"]["count"] * 100) / $total;
-							$data[$prt_name . "-" . $node_name . "-T"]["frequency"] = ((float)$data[$prt_name . "-" . $node_name . "-T"]["count"] * 100) / $total;
-							$data[$prt_name . "-" . $node_name . "-NoAnswer"]["frequency"] = ((float)$data[$prt_name . "-" . $node_name . "-NoAnswer"]["count"] * 100) / $total;
+							$total = (float)$data[$key_f]["count"] + $data[$key_t]["count"] + $data[$key_n]["count"];
+							$data[$key_f]["frequency"] = ((float)$data[$key_f]["count"] * 100) / $total;
+							$data[$key_t]["frequency"] = ((float)$data[$key_t]["count"] * 100) / $total;
+							$data[$key_n]["frequency"] = ((float)$data[$key_n]["count"] * 100) / $total;
 							continue;
 						}
 						//NO ANSWER
-						$data[$prt_name . "-" . $node_name . "-NoAnswer"]["count"]++;
-						//$data[$prt_name . "-" . $node_name . "-NoAnswer"]["feedback"] .= $answer_note;
+						$data[$key_n]["count"]++;
+						//$data[$key_n]["feedback"] .= $answer_note;
 						//RECALCULATE frequency
-						$total = (float)$data[$prt_name . "-" . $node_name . "-F"]["count"] + $data[$prt_name . "-" . $node_name . "-T"]["count"] + $data[$prt_name . "-" . $node_name . "-NoAnswer"]["count"];
-						$data[$prt_name . "-" . $node_name . "-F"]["frequency"] = ((float)$data[$prt_name . "-" . $node_name . "-F"]["count"] * 100) / $total;
-						$data[$prt_name . "-" . $node_name . "-T"]["frequency"] = ((float)$data[$prt_name . "-" . $node_name . "-T"]["count"] * 100) / $total;
-						$data[$prt_name . "-" . $node_name . "-NoAnswer"]["frequency"] = ((float)$data[$prt_name . "-" . $node_name . "-NoAnswer"]["count"] * 100) / $total;
+						$total = (float)$data[$key_f]["count"] + $data[$key_t]["count"] + $data[$key_n]["count"];
+						$data[$key_f]["frequency"] = ((float)$data[$key_f]["count"] * 100) / $total;
+						$data[$key_t]["frequency"] = ((float)$data[$key_t]["count"] * 100) / $total;
+						$data[$key_n]["frequency"] = ((float)$data[$key_n]["count"] * 100) / $total;
 					}
 
 					//COUNT PRT
@@ -255,10 +262,11 @@ class ilExteEvalQuestionStack extends ilExteEvalQuestion
 				array($answer->active_id, $answer->pass, $a_question_id)
 			);
 			while ($data = $this->db->fetchAssoc($result)) {
-				if ($data["points"] != NULL) {
+				if (isset($data["value2"]) && isset($data["points"])) {
 					$raw_data[$answer->active_id . "_" . $answer->pass][$data["value2"]] = $data["points"];
-				} else {
-					$raw_data[$answer->active_id . "_" . $answer->pass][$data["value1"]] = $data["value2"];
+				}
+                elseif (isset($data["value1"])) {
+					$raw_data[$answer->active_id . "_" . $answer->pass][$data["value1"]] = $data["value2"] ?? null;
 				}
 			}
 		}
@@ -305,13 +313,13 @@ class ilExteEvalQuestionStack extends ilExteEvalQuestion
 		$view_data = array();
 		foreach ($data as $prt_name => $prt) {
 			$view_data[$prt_name] = array('count' => $prt['count'], 'answer_notes' => array());
-			foreach ($prt['value'] as $attempt => $answer_note) {
+			foreach (($prt['value'] ?? []) as $attempt => $answer_note) {
 				if (!key_exists($answer_note, $view_data[$prt_name]['answer_notes'])) {
 					$view_data[$prt_name]['answer_notes'][$answer_note]['value'] = 1;
-					$view_data[$prt_name]['answer_notes'][$answer_note]['percentage'] = (float)$view_data[$prt_name]['answer_notes'][$answer_note]['value'] / $prt['count'];
+					$view_data[$prt_name]['answer_notes'][$answer_note]['percentage'] = (float)($view_data[$prt_name]['answer_notes'][$answer_note]['value'] ?? 0) / $prt['count'];
 				} else {
 					$view_data[$prt_name]['answer_notes'][$answer_note]['value']++;
-					$view_data[$prt_name]['answer_notes'][$answer_note]['percentage'] = ($view_data[$prt_name]['answer_notes'][$answer_note]['value'] / $prt['count']);
+					$view_data[$prt_name]['answer_notes'][$answer_note]['percentage'] = ($view_data[$prt_name]['answer_notes'][$answer_note]['value'] ?? 0) / $prt['count'];
 				}
 			}
 		}
@@ -360,13 +368,13 @@ class ilExteEvalQuestionStack extends ilExteEvalQuestion
 				foreach ($question->getPotentialResponsesTrees() as $prt_name => $p_value) {
 					$answer_note = 'xqcas_prt_' . $prt_name . '_answernote';
 					if (key_exists($answer_note, $value)) {
-						$data[$variant][$activeid_pass][$prt_name] = $value[$answer_note];
+						$data[$variant][$activeid_pass][$prt_name] = ($value[$answer_note] ?? null);
 					}
 					foreach ($question->getInputs() as $input_name => $i_value) {
 						$user_answer = 'xqcas_prt_' . $prt_name . '_value_' . $input_name;
 						if (key_exists($user_answer, $value)) {
-							$data[$variant][$activeid_pass][$input_name] = $value[$user_answer];
-							$data2[$input_name][$activeid_pass] = $value[$user_answer];
+							$data[$variant][$activeid_pass][$input_name] = ($value[$user_answer] ?? null);
+							$data2[$input_name][$activeid_pass] = ($value[$user_answer] ?? null);
 						}
 					}
 				}
@@ -481,7 +489,7 @@ class ilExteEvalQuestionStack extends ilExteEvalQuestion
 			arsort($total);
 
 			foreach ($total as $user_answer => $count){
-				$text .= $count . ' (' . round(($count / sizeof($data[$input_name])) * 100, 2) . '%); ' . $user_answer . '</br>';
+				$text .= $count . ' (' . round(($count / sizeof($data[$input_name] ?? [])) * 100, 2) . '%); ' . $user_answer . '</br>';
 			}
 		}
 

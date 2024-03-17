@@ -166,7 +166,7 @@ class ilExtendedTestStatisticsConfig
 			}
 		}
 
-		return (array) $this->params[$evaluation_name];
+		return (array) ($this->params[$evaluation_name] ?? []);
 	}
 
 	/**

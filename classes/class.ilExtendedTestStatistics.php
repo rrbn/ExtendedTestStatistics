@@ -164,9 +164,9 @@ class ilExtendedTestStatistics
 	{
 		foreach ($this->tree->getChilds(SYSTEM_FOLDER_ID) as $object)
 		{
-			if ($object["type"] == "assf")
+			if (($object["type"] ?? '') == "assf")
 			{
-				return $this->access->checkAccess("visible", '', (int) $object["ref_id"]);
+				return $this->access->checkAccess("visible", '', (int) ($object["ref_id"] ?? 0));
 			}
 		}
 		return false;

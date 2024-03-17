@@ -200,7 +200,7 @@ abstract class ilExteEvalQuestion extends ilExteEvalBase
                     $title .= ' (' . $question->order_position . ')';
                 }
 
-                $value =  $values[$question_id];
+                $value =  $values[$question_id]; // filled above
                 $value->value = round($value->value * 100);
 
                 $details->rows[] = array(

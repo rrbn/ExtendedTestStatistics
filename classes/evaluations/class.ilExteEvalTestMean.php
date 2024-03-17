@@ -40,6 +40,7 @@ class ilExteEvalTestMean extends ilExteEvalTest
     protected function calculateValue() : ilExteStatValue
 	{
 		$basic_test_values = $this->data->getBasicTestValues();
-		return $basic_test_values['tst_eval_mean_of_reached_points'];
+		return $basic_test_values['tst_eval_mean_of_reached_points']
+            ?? ilExteStatValue::_create(null,ilExteStatValue::TYPE_NUMBER, 2, '', ilExteStatValue::ALERT_UNKNOWN);
 	}
 }

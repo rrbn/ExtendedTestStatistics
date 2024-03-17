@@ -41,41 +41,37 @@ class ilExteEvalTestMedian extends ilExteEvalTest
     protected function calculateValue() : ilExteStatValue
 	{
 		$value = new ilExteStatValue;
+        $value->type = ilExteStatValue::TYPE_NUMBER;
+        $value->precision = 2;
 
 		$basic_test_values = $this->data->getBasicTestValues();
 
-		//Total attemps evaluated
+		//Total attempts evaluated
 		$total_attempts = $basic_test_values["tst_eval_total_persons"]->value;
 
 		//Sort the list of results
 		$data = $this->data->getAllParticipants();
 		usort($data, array("ilExteEvalTestMedian", "cmp"));
 
-		if ($total_attempts % 2 === 0)
-		{
-			//Attemps are even, take two middle values
+        if ($total_attempts == 0)
+        {
+            $value->value = 0;
+        }
+		elseif ($total_attempts % 2 === 0) {
+			//Attempts are even, take two middle values
 			$major = $data[$total_attempts / 2];
 			$minor = $data[$total_attempts / 2 - 1];
 
 			//Returns the average
-			$median = ((float)$minor->current_reached_points + (float)$major->current_reached_points) / 2;
-
-			$value->type = ilExteStatValue::TYPE_NUMBER;
-			$value->value = $median;
-			$value->precision = 2;
-
-			return $value;
-		} else
-		{
-			//Attemps are odd, returns the middle value
-			$median = (int)floor($total_attempts / 2);
-
-			$value->type = ilExteStatValue::TYPE_NUMBER;
-			$value->value = $data[$median]->current_reached_points;
-			$value->precision = 2;
-
-			return $value;
+            $value->value = ($minor->current_reached_points + $major->current_reached_points) / 2;
 		}
+        else {
+			//Attempts are odd, returns the middle value
+			$median = (int) floor($total_attempts / 2);
+			$value->value = $data[$median]->current_reached_points;
+		}
+
+        return $value;
 	}
 
 	/** Compare function for sorting an array of Participants in a test by current reached points.

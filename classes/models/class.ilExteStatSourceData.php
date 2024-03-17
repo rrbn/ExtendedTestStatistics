@@ -343,10 +343,10 @@ class ilExteStatSourceData
             $result = $this->db->query($query);
             while ($row = $this->db->fetchAssoc($result))
             {
-				$this->question_types[$row['type_tag']] = $type_translations[$row['type_tag']];
+				$this->question_types[$row['type_tag']] = $type_translations[$row['type_tag']] ?? '';
 
                 $this->questions[$row['question_id']]->question_type = $row['type_tag'];
-                $this->questions[$row['question_id']]->question_type_label = $type_translations[$row['type_tag']];
+                $this->questions[$row['question_id']]->question_type_label = $type_translations[$row['type_tag']] ?? '';
             }
 		}
 	}
