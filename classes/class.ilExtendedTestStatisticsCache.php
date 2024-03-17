@@ -65,7 +65,7 @@ class ilExtendedTestStatisticsCache
 	 * Read a cached content
 	 * The content key is dependent from the consumer class
 	 */
-	public function read(string $a_consumer_class, string $a_content_key): string
+	public function read(string $a_consumer_class, string $a_content_key): ?string
 	{
 		$this->validate();
 
@@ -84,7 +84,7 @@ class ilExtendedTestStatisticsCache
 			}
 		}
 
-		return $this->content[$a_consumer_class][$a_content_key];
+		return $this->content[$a_consumer_class][$a_content_key] ?? null;
 	}
 
 

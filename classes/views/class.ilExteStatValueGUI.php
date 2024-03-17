@@ -135,7 +135,7 @@ class ilExteStatValueGUI
 	/**
 	 * Render the value content
 	 */
-	protected function renderContent(ilTemplate $template, string $content, string $class,  string $comment = "", bool $uncertain = false)
+	protected function renderContent(ilTemplate $template, string $content, string $class,  ?string $comment = null, bool $uncertain = false)
 	{
 		$id = rand(1000000,9999999);
 
@@ -157,7 +157,7 @@ class ilExteStatValueGUI
 	/**
 	 * Render an alert sign or comment
 	 */
-	protected function renderSign(ilTemplate $template, string $sign, string $class, string $comment = "")
+	protected function renderSign(ilTemplate $template, ?string $sign, string $class, ?string $comment = null)
 	{
 		$id = rand(1000000,9999999);
 

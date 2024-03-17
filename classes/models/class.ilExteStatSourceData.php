@@ -186,12 +186,12 @@ class ilExteStatSourceData
 		$this->reset();
 		try
 		{
-			$this->question_types = unserialize($this->cache->read(__CLASS__, 'question_types'));
-			$this->questions = unserialize($this->cache->read(__CLASS__, 'questions'));
-			$this->participants = unserialize($this->cache->read(__CLASS__, 'participants'));
-			$this->answers = unserialize($this->cache->read(__CLASS__, 'answers'));
-			$this->basic_test_values = unserialize($this->cache->read(__CLASS__, 'basic_test_values'));
-			$this->basic_question_values = unserialize($this->cache->read(__CLASS__, 'basic_question_values'));
+			$question_types = unserialize($this->cache->read(__CLASS__, 'question_types'));
+			$questions = unserialize($this->cache->read(__CLASS__, 'questions'));
+			$participants = unserialize($this->cache->read(__CLASS__, 'participants'));
+			$answers = unserialize($this->cache->read(__CLASS__, 'answers'));
+			$basic_test_values = unserialize($this->cache->read(__CLASS__, 'basic_test_values'));
+			$basic_question_values = unserialize($this->cache->read(__CLASS__, 'basic_question_values'));
 		}
 		catch (Exception $e)
 		{
@@ -199,11 +199,20 @@ class ilExteStatSourceData
 			return false;
 		}
 
-		if ($this->question_types === false || $this->questions === false || $this->participants === false || $this->answers === false)
+		if ($question_types === false || $questions === false || $participants === false || $answers === false
+            || $basic_test_values === false || $basic_question_values === false)
 		{
 			$this->reset();
 			return false;
 		}
+        else {
+            $this->question_types = $question_types;
+            $this->questions = $questions;
+            $this->participants = $participants;
+            $this->answers = $answers;
+            $this->basic_test_values = $basic_test_values;
+            $this->basic_question_values = $basic_question_values;
+        }
 
 		foreach ($this->answers as $answer)
 		{

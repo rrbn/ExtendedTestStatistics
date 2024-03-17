@@ -19,6 +19,7 @@ class ilExtendedTestStatisticsPageGUI
     protected ilAccessHandler $access;
 	protected ilGlobalTemplateInterface $tpl;
     protected ilLanguage $lng;
+    protected ilLocatorGUI $locator;
     protected ilToolbarGUI $toolbar;
     protected Factory $uiFactory;
     protected Renderer $uiRenderer;
@@ -42,6 +43,7 @@ class ilExtendedTestStatisticsPageGUI
         $this->access = $DIC->access();
 		$this->tpl = $DIC->ui()->mainTemplate();
         $this->toolbar = $DIC->toolbar();
+        $this->locator = $DIC['ilLocator'];
         $this->lng = $DIC->language();
         $this->uiFactory = $DIC->ui()->factory();
         $this->uiRenderer = $DIC->ui()->renderer();
@@ -136,21 +138,14 @@ class ilExtendedTestStatisticsPageGUI
 	 */
 	protected function prepareOutput()
 	{
-//      hopefully not needed with new global screen
-//		/** @var ilLocatorGUI $ilLocator */
-//		/** @var ilLanguage $lng */
-//		global $ilLocator, $lng;
+		$this->ctrl->setParameterByClass('ilObjTestGUI', 'ref_id',  $this->testObj->getRefId());
+		$this->locator->addRepositoryItems($this->testObj->getRefId());
+		$this->locator->addItem($this->testObj->getTitle(),$this->ctrl->getLinkTargetByClass('ilObjTestGUI'));
 
-//		$this->ctrl->setParameterByClass('ilObjTestGUI', 'ref_id',  $this->testObj->getRefId());
-//		$ilLocator->addRepositoryItems($this->testObj->getRefId());
-//		$ilLocator->addItem($this->testObj->getTitle(),$this->ctrl->getLinkTargetByClass('ilObjTestGUI'));
-
-//		$this->tpl->loadStandardTemplate();
-//		$this->tpl->setLocator();
-        
+        $this->tpl->setLocator();
 		$this->tpl->setTitle($this->testObj->getPresentationTitle());
 		$this->tpl->setDescription($this->testObj->getLongDescription());
-		$this->tpl->setTitleIcon(ilObject::_getIcon('', 'big', 'tst'), $this->lng->txt('obj_tst'));
+		$this->tpl->setTitleIcon(ilObject::_getIcon($this->testObj->getId(), 'big', 'tst'), $this->lng->txt('obj_tst'));
 		$this->tpl->addCss($this->plugin->getStyleSheetLocation('exte_stat.css'));
 
 		if ($this->statObj->getSourceData()->getTestType() == ilExteEvalBase::TEST_TYPE_DYNAMIC)

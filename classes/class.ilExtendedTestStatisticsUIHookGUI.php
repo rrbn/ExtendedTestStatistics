@@ -12,13 +12,6 @@ class ilExtendedTestStatisticsUIHookGUI extends ilUIHookPluginGUI
     protected ilTabsGUI $tabs;
     
     
-    public function __construct() {
-        global $DIC;
-        $this->ctrl = $DIC->ctrl();
-        $this->tabs = $DIC->tabs();
-    }
-    
-    
 	/**
 	 * Modify GUI objects, before they generate ouput
 	 *
@@ -37,7 +30,13 @@ class ilExtendedTestStatisticsUIHookGUI extends ilUIHookPluginGUI
 			// case 'tabs':
 			case 'sub_tabs':
 
-				if ($this->ctrl->getCmdClass() == 'iltestevaluationgui'
+                // must be done here because ctrl and tabs are not initialized for all calls
+                global $DIC;
+                $this->ctrl = $DIC->ctrl();
+                $this->tabs = $DIC->tabs();
+
+
+                if ($this->ctrl->getCmdClass() == 'iltestevaluationgui'
 					and in_array($this->ctrl->getCmd(), array('outEvaluation','eval_a','singleResults')))
 				{
                     $this->tabs->removeSubTab('tst_results_aggregated');

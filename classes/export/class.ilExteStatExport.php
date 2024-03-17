@@ -457,7 +457,7 @@ class ilExteStatExport
 		$details = $evaluation->getDetails();
 		if (empty($details->rows))
 		{
-			$worksheet->setCellValue('A1', $details->getEmptyMessage());
+			$worksheet->setCellValue('A1', $details->getEmptyMessage() ?? $this->lng->txt('no_items'));
 			return;
 		}
 

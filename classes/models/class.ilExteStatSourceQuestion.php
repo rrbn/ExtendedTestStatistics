@@ -18,7 +18,7 @@ class ilExteStatSourceQuestion
 	/**
 	 * id of the original question
 	 */
-	public int $original_id;
+	public ?int $original_id;
 
 	/**
 	 * type tag of the question, e.g. 'assSingleChoice'
@@ -33,7 +33,7 @@ class ilExteStatSourceQuestion
     /**
 	 * question title
 	 */
-	public int $question_title;
+	public string $question_title;
 
 	/**
 	 * maximum points that can be reached in the question

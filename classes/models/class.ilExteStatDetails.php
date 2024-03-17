@@ -13,7 +13,7 @@ class ilExteStatDetails
 	/**
 	 * Individual message for empty details
 	 */
-	protected ?string $emptyMessage;
+	protected ?string $emptyMessage = null;
 
     /**
      * Table columns
@@ -24,6 +24,7 @@ class ilExteStatDetails
     /**
      * Table rows
      * rownum => colname => ilExteStatValue
+     * @var ilExteStatValue[][]
      */
 	public array $rows = [];
 
@@ -52,29 +53,12 @@ class ilExteStatDetails
     public string $customHTML = '';
 
 
-    protected ilLanguage $lng;
-
-
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        global $DIC;
-        $this->lng = $DIC->language();
-    }
-
 	/**
 	 * Get the message for empty details
 	 */
-	public function getEmptyMessage(): string
+	public function getEmptyMessage(): ?string
 	{
-		if (isset($this->emptyMessage))
-		{
-			return $this->emptyMessage;
-		}
-
-		return $this->lng->txt('no_items');
+        return $this->emptyMessage;
 	}
 
 	/**

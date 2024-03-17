@@ -6,6 +6,8 @@
  *
  * @author Fred Neumann <fred.neumann@fau.de>
  * @author Jesus Copado <jesus.copado@fau.de>
+ *
+ * @ilCtrl_IsCalledBy ilExtendedTestStatisticsConfigGUI: ilObjComponentSettingsGUI
  */
 class ilExtendedTestStatisticsConfigGUI extends ilPluginConfigGUI
 {
