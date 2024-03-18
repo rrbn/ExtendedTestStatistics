@@ -102,9 +102,9 @@ class ilExteStatDetailsTableGUI extends ilExteStatTableGUI
 	{
         foreach ($this->details->columns as $column)
         {
-            if (isset($data[$column->name]))
+            if (isset($a_set[$column->name]))
             {
-                $content = $this->valueGUI->getHTML($data[$column->name]);
+                $content = $this->valueGUI->getHTML($a_set[$column->name]);
             }
             else
             {
