@@ -75,7 +75,7 @@ class ilExtendedTestStatisticLanguage extends ilPluginLanguage
     protected function getHookedLangFiles() : array
     {
         $langs = [];
-        $lang_files = glob('./Customizing/global/plugins/Modules/Test/Evaluations/*/lang/ilias_*.lang');
+        $lang_files = glob(__DIR__ . '/../addons/*/lang/ilias_*.lang');
         if (!empty($lang_files)) {
             foreach ($lang_files as $file) {
                 $langs[] = array(

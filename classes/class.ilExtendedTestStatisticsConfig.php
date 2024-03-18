@@ -88,7 +88,7 @@ class ilExtendedTestStatisticsConfig
 		// get evaluation classes (builtin and hooked evaluations)
 		$classes = array_merge(
 			$this->getIncludedClasses($this->plugin->getDirectory() .'/classes/evaluations/class.*.php'),
-			$this->getIncludedClasses('./Customizing/global/plugins/Modules/Test/Evaluations/*/classes/class.*.php')
+			$this->getIncludedClasses($this->plugin->getDirectory() . '/addons/*/classes/class.*.php')
 		);
 
 		foreach ($classes as $class)

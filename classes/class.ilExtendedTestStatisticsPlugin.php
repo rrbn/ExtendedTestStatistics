@@ -41,6 +41,11 @@ class ilExtendedTestStatisticsPlugin extends ilUserInterfaceHookPlugin
 		return "ExtendedTestStatistics";
 	}
 
+    public function refreshLanguages()
+    {
+        $this->getLanguageHandler()->updateLanguages();
+    }
+
 	public function getConfig(): ilExtendedTestStatisticsConfig
 	{
 		if (!isset($this->config)) {

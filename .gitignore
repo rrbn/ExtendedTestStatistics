@@ -4,6 +4,7 @@
 # add * to commit directories with .gitkeep
 .idea
 /nbproject
+addons/*
 
 # Don't ignore .gitkeep and .htaccess files
 # these are used to commit empty directories

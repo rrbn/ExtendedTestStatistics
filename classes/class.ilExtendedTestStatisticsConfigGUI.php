@@ -1,5 +1,6 @@
 <?php
 // Copyright (c) 2017 Institut fuer Lern-Innovation, Friedrich-Alexander-Universitaet Erlangen-Nuernberg, GPLv3, see LICENSE
+use ILIAS\UI\Factory;
 
 /**
  * Extended Test statistics configuration user interface class
@@ -14,7 +15,9 @@ class ilExtendedTestStatisticsConfigGUI extends ilPluginConfigGUI
     protected ilCtrlInterface $ctrl;
     protected ilLanguage $lng;
     protected ilTabsGUI $tabs;
+    protected ilToolbarGUI $toolbar;
     protected ilGlobalTemplateInterface $tpl;
+    protected Factory $factory;
 
     /** @var ilExtendedTestStatisticsPlugin $plugin */
 	protected ilPlugin $plugin;
@@ -31,7 +34,9 @@ class ilExtendedTestStatisticsConfigGUI extends ilPluginConfigGUI
         $this->ctrl = $DIC->ctrl();
         $this->lng = $DIC->language();
         $this->tabs = $DIC->tabs();
+        $this->toolbar = $DIC->toolbar();
         $this->tpl = $DIC->ui()->mainTemplate();
+        $this->factory = $DIC->ui()->factory();
 
         $this->lng->loadLanguageModule('assessment');
     }
@@ -67,6 +72,9 @@ class ilExtendedTestStatisticsConfigGUI extends ilPluginConfigGUI
 				$this->initTabs("question");
 				$this->saveSettings("question");
 				break;
+            case "refreshLanguages":
+                $this->refreshLanguages();
+                break;
 		}
 	}
 
@@ -76,9 +84,23 @@ class ilExtendedTestStatisticsConfigGUI extends ilPluginConfigGUI
 	 */
 	protected function configure(string $a_mode)
 	{
+        $this->toolbar->addComponent($this->factory->button()->standard(
+            $this->lng->txt('refresh_languages'),
+            $this->ctrl->getLinkTarget($this, 'refreshLanguages'))
+        );
+
 		$form = $this->initConfigurationForm($a_mode);
 		$this->tpl->setContent($form->getHTML());
 	}
+
+    /**
+     * Refresh the languages
+     */
+    protected function refreshLanguages()
+    {
+        $this->plugin->refreshLanguages();
+        $this->ctrl->redirect($this, 'configure');
+    }
 
 
 	/**
