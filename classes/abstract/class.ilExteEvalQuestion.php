@@ -195,7 +195,8 @@ abstract class ilExteEvalQuestion extends ilExteEvalBase
             if (isset($questions[$question_id])) {
                 $question = $questions[$question_id];
 
-                $title = ilStr::shortenText($question->question_title, 20, true);
+                $title = $question->question_title;
+                $title = ilStr::shortenText($question->question_title, 0, 20);
                 if ($this->data->getTestType() == ilExteEvalBase::TEST_TYPE_FIXED) {
                     $title .= ' (' . $question->order_position . ')';
                 }
