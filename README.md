@@ -84,7 +84,10 @@ Known Issues
 Extension
 ---------
 You may extend the plugin with your own evaluations. See the following add-on as an example:
-https://github.com/ilifau/ExampleEvaluations
+https://github.com/DatabayAG/ExampleEvaluations
+
+An extension for the STACK question type iss offered by Surlabs:
+https://github.com/surlabs/ExtendedTestStatistic-STACK
 
 Version History
 ---------------
