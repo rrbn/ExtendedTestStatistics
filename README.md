@@ -3,7 +3,8 @@ ILIAS Extended Test Statistics plugin
 
 Copyright (c) 2021 Institut fuer Lern-Innovation, Friedrich-Alexander-Universitaet Erlangen-Nuernberg, GPLv3, see LICENSE
 
-- Authors:   Fred Neumann <fred.neumann@ili.fau.de>, Jesus Copado <jesus.copado@ili.fau.de>
+**Further maintenance is provided by [Databay AG](https://www.databay.de).**
+
 - Forum: http://www.ilias.de/docu/goto_docu_frm_3474_4315.html
 - Bug Reports: http://www.ilias.de/mantis (Choose project "ILIAS plugins" and filter by category "ExtendedTestStatistics")
 
@@ -16,10 +17,9 @@ When you download the Plugin as ZIP file from GitHub, please rename the extracte
 
 1. Copy the ExtendedTestStatistics directory to your ILIAS installation at the followin path
 (create subdirectories, if neccessary): `Customizing/global/plugins/Services/UIComponent/UserInterfaceHook`
-2. Execute `composer du` in the ILIAS main directory
-2. Go to Administration > Plugins
-3. Choose action  "Install" for the ExtendedTestStatistics plugin
-4. Choose action  "Activate" for the ExtendedTestStatistics plugin
+2. Run `composer du` in the main directory of your ILIAS installation
+3. Go to Administration > Extending ILIAS > Plugins
+4. Install and activete the plugin
 
 Configuration
 -------------
@@ -90,4 +90,6 @@ Version History
 ---------------
 
 See [CHANGELOG](CHANGELOG.md)
+
+Plugin versions for different ILIAS releases are provided in separate branches of this repository.
 
