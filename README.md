@@ -3,7 +3,8 @@ ILIAS Extended Test Statistics plugin
 
 Copyright (c) 2021 Institut fuer Lern-Innovation, Friedrich-Alexander-Universitaet Erlangen-Nuernberg, GPLv3, see LICENSE
 
-- Authors:   Fred Neumann <fred.neumann@ili.fau.de>, Jesus Copado <jesus.copado@ili.fau.de>
+**Further maintenance is provided by [Databay AG](https://www.databay.de).**
+
 - Forum: http://www.ilias.de/docu/goto_docu_frm_3474_4315.html
 - Bug Reports: http://www.ilias.de/mantis (Choose project "ILIAS plugins" and filter by category "ExtendedTestStatistics")
 
@@ -18,9 +19,9 @@ When you download the Plugin as ZIP file from GitHub, please rename the extracte
 
 1. Copy the ExtendedTestStatistics directory to your ILIAS installation at the followin path
 (create subdirectories, if neccessary): Customizing/global/plugins/Services/UIComponent/UserInterfaceHook
-2. Go to Administration > Plugins
-3. Choose action  "Update" for the ExtendedTestStatistics plugin
-4. Choose action  "Activate" for the ExtendedTestStatistics plugin
+2. Run `composer du` in the main directory of your ILIAS installation
+3. Go to Administration > Extending ILIAS > Plugins
+4. Install and activate the plugin
 
 Configuration
 -------------
@@ -82,11 +83,6 @@ Known Issues
   page only for the questions that are shown. But the basic values from ILIAS are calculated for all, which takes time for large tests.
   This is now improved by caching.
 
-Extension
----------
-You may extend the plugin with your own evaluations. See the following add-on as an example:
-https://github.com/ilifau/ExampleEvaluations
-
 Version History
 ===============
 
@@ -101,61 +97,3 @@ Version 1.7.1 (2023-11-29)
 --------------------------
 - fixed saving of evaluation parameters (thx to jcopado)
 - added diagram for percentage of correct answers
-
-Version 1.6.1 (2022-01-11)
---------------------------
-- Removed the deprecated PHPExcel library (replaced by PhpSpreadsheet from ILIAS)
-
-Version 1.6.0 (2021-12-01)
---------------------------
-- Updated for ILIAS 7
-
-Version 1.5.1 (2021-07-12)
---------------------------
-- Variant-regardless Option is now sorted.
-- Solved a typo.
-
-
-Version 1.5.0 (2021-06-21)
---------------------------
-- Includes extra features for STACK Questions.
-
-Version 1.4.1 (2020-12-02)
---------------------------
-- Includes support for STACK Questions.
-
-Version 1.3.0 (2019-07-17)
---------------------------
-- Update for ILIAS 5.4
-
-
-Version 1.2.1 (2018-06-12)
---------------------------
-Thanks to Christoph Jobst!
-- Add selection of first evaluated pass
-- Allow strings in options
-- Allow custom HTML in evaluations
-
-Version 1.2.0 (2018-03-29)
---------------------------
-Beta version for ILIAS 5.3
-
-
-Version 1.1.1 (2017-09-12)
---------------------------
-- Permission "Statistics" is checked instead of "Write"
-
-- Caching of basic and calculated data
-- Diagram support
-- Bar diagrams for single/multiple choice options
-
-
-
-Version 1.0.0 (2017-03-20)
--------------
-- Support ILIAS 5.0 to ILIAS 5.2
-- Improved Excel export
-- Improved quality signs
-- Configuration parameters for evaluations
-- Selection of evaluated pass (scored, last, best)
-- Added 'uncertain' status for calculations in random tests
