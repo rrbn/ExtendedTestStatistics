@@ -69,7 +69,7 @@ class ilExteEvalQuestionMultipleChoices extends ilExteEvalQuestion
     protected function calculateDetails(int $a_question_id) : ilExteStatDetails
 	{
         /** @var assMultipleChoice $question */
-        $question = assQuestion::_instantiateQuestion($a_question_id);
+        $question = assQuestion::instantiateQuestion($a_question_id);
 		if (!is_object($question))
 		{
 			return new ilExteStatDetails();

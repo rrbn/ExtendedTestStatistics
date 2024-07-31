@@ -1,5 +1,8 @@
 # Change Log
 
+## Version 2.0 (2024-07-31)
+- Update for ILIAS 9
+
 ## Version 1.8.0 (2024-03-19)
 - Updated for ILIAS 8
 - Fixed PHP 8 issues

@@ -19,7 +19,7 @@ When you download the Plugin as ZIP file from GitHub, please rename the extracte
 (create subdirectories, if neccessary): `Customizing/global/plugins/Services/UIComponent/UserInterfaceHook`
 2. Run `composer du` in the main directory of your ILIAS installation
 3. Go to Administration > Extending ILIAS > Plugins
-4. Install and activete the plugin
+4. Install and activate the plugin
 
 Configuration
 -------------
