@@ -1,5 +1,8 @@
 # Change Log
 
+## Version 2.1 (2024-11-18)
+- fix PHP 8.2 errors with empty tests
+
 ## Version 2.0 (2024-07-31)
 - Update for ILIAS 9
 
