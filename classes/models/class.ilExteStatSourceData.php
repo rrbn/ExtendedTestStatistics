@@ -769,7 +769,7 @@ class ilExteStatSourceData
 	public function getAnswersForQuestion(int $a_question_id, bool $a_only_answered = false)  : array
 	{
 		$answers = [];
-		if (is_array($this->answers_by_question_id[$a_question_id]))
+		if (isset($this->answers_by_question_id[$a_question_id]) && is_array($this->answers_by_question_id[$a_question_id]))
 		{
             if (!$a_only_answered) {
                 return $this->answers_by_question_id[$a_question_id];
@@ -795,7 +795,7 @@ class ilExteStatSourceData
 	public function getAnswersForParticipant(int $a_active_id, bool $a_only_answered = false) : array
 	{
 		$answers = [];
-		if (is_array($this->answers_by_active_id[$a_active_id]))
+		if (isset($this->answers_by_active_id[$a_active_id]) && is_array($this->answers_by_active_id[$a_active_id]))
 		{
             if (!$a_only_answered) {
                 return $this->answers_by_active_id[$a_active_id];

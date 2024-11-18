@@ -192,7 +192,7 @@ abstract class ilExteEvalQuestion extends ilExteEvalBase
 
 
         foreach ($question_ids as $question_id) {
-            if (isset($questions[$question_id])) {
+            if (isset($questions[$question_id]) && isset($values[$question_id])) {
                 $question = $questions[$question_id];
 
                 $title = $question->question_title;
@@ -202,7 +202,9 @@ abstract class ilExteEvalQuestion extends ilExteEvalBase
                 }
 
                 $value =  $values[$question_id]; // filled above
-                $value->value = round($value->value * 100);
+                if (isset($value->value)) {
+                    $value->value = round($value->value * 100);
+                }
 
                 $details->rows[] = array(
                     'question_pos' => ilExteStatValue::_create($question->order_position, ilExteStatValue::TYPE_NUMBER, 0),
