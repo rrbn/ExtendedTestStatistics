@@ -40,6 +40,12 @@ class ilExteStatSourceData
 	 */
 	protected array $question_types = [];
 
+    /**
+     * List of marks defined in the test (ordered by descending minimum percentage)
+     * @var ilExteStatSourceMark[]
+     */
+    protected array $marks = [];
+
 	/**
      * List of question data
 	 * @var ilExteStatSourceQuestion[]  (indexed by question_id)
@@ -167,6 +173,7 @@ class ilExteStatSourceData
 	 */
 	protected function reset() : void
 	{
+        $this->marks = [];
 		$this->question_types = [];
 		$this->questions =  [];
 		$this->answers =  [];
@@ -186,6 +193,7 @@ class ilExteStatSourceData
 		$this->reset();
 		try
 		{
+            $marks = unserialize($this->cache->read(__CLASS__, 'marks'));
 			$question_types = unserialize($this->cache->read(__CLASS__, 'question_types'));
 			$questions = unserialize($this->cache->read(__CLASS__, 'questions'));
 			$participants = unserialize($this->cache->read(__CLASS__, 'participants'));
@@ -199,13 +207,14 @@ class ilExteStatSourceData
 			return false;
 		}
 
-		if ($question_types === false || $questions === false || $participants === false || $answers === false
+		if ($marks === false || $question_types === false || $questions === false || $participants === false || $answers === false
             || $basic_test_values === false || $basic_question_values === false)
 		{
 			$this->reset();
 			return false;
 		}
         else {
+            $this->marks = $marks;
             $this->question_types = $question_types;
             $this->questions = $questions;
             $this->participants = $participants;
@@ -229,6 +238,7 @@ class ilExteStatSourceData
 	 */
 	protected function writeToCache() : void
 	{
+        $this->cache->write(__CLASS__, 'marks', serialize($this->marks));
 		$this->cache->write(__CLASS__, 'question_types', serialize($this->question_types));
 		$this->cache->write(__CLASS__, 'questions', serialize($this->questions));
 		$this->cache->write(__CLASS__, 'participants', serialize($this->participants));
@@ -288,6 +298,7 @@ class ilExteStatSourceData
                 // these may differ between participants in a random test
 				$pass_questions = $userdata->getQuestions($pass->getPass());
 
+                $current_maximum_points = 0.0;
 				if (is_array($pass_questions))
 				{
 					foreach ($pass_questions as $pass_question)
@@ -302,6 +313,8 @@ class ilExteStatSourceData
                         // initiate the answers for all questions in this pass (even if not answered)
                         $answer = $this->createAnswer($pass_question['id'], $active_id, $pass->getPass());
 						$answer->sequence = $pass_question['sequence'];
+
+                        $current_maximum_points += (float) $pass_question['points'];
 					}
 				}
 
@@ -324,15 +337,53 @@ class ilExteStatSourceData
 					}
 				}
 
-				// sum of reached points for the selected pass
+				// sum of maximum and reached points for the selected pass
+                $participant->current_maximum_points = $current_maximum_points;
 				$participant->current_reached_points = $current_reached_points;
 			}
 		}
 
+        $this->readMarks();
 		$this->readQuestionTypes();
 		$this->calculateBasicTestValues();
 		$this->calculateBasicQuestionValues();
 	}
+
+    /**
+     * Read the marks from the test
+     * @see \ASS_MarkSchema::_getMatchingMark
+     */
+    protected function readMarks()
+    {
+        $result = $this->db->queryF(
+            "SELECT * FROM tst_mark WHERE test_fi = %s  ORDER BY minimum_level DESC",
+            ['integer'], [$this->object->getTestId()]
+        );
+
+        while ($row = $this->db->fetchAssoc($result)) {
+            $this->marks[] = new ilExteStatSourceMark(
+                (int) $row['mark_id'],
+                (float) $row['minimum_level'],
+                (bool) ($row['passed'] ?? false),
+                (string) ($row['short_name'] ?? ''),
+                (string) ($row['official_name'] ?? '')
+            );
+        }
+    }
+
+    /**
+     * Get the matching mark by percentage
+     * @see \ASS_MarkSchema::_getMatchingMark
+     */
+    public function getMarkByPercent(float $percentage): ?ilExteStatSourceMark
+    {
+        foreach ($this->marks as $mark) {
+            if ($percentage >= $mark->getMinPercent()) {
+                return $mark;
+            }
+        }
+        return null;
+    }
 
 	/**
 	 * Read the types of the relevant questions
@@ -729,8 +780,16 @@ class ilExteStatSourceData
         return null;
 	}
 
+    /**
+     * Get all marks defined in the test  (ordered by descending minimum percentage)
+     * @return ilExteStatSourceMark[]
+     */
+    public function getAllMarks(): array
+    {
+        return $this->marks;
+    }
 
-	/**
+    /**
 	 * Get all participants in the test (indexed by active_id)
 	 * @return ilExteStatSourceParticipant[]
 	 */

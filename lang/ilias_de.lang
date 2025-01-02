@@ -22,6 +22,21 @@ average_points_description#:#Mittlere erreichte Punktzahl aller Nutzer, die dies
 qst_percent_points_title_short#:#Prozent Punkte
 qst_percent_points_title_long#:#Mittlere Prozent der maximalen Punkte
 qst_percent_points_description#:#Mittlere Prozent der maximalen Punkte, die von Nutzern erreicht wurden, welche diese Frage zugeteilt bekamen
+tst_avg_mark_title_long#:#Durchschnittsnote und Notenverteilung
+tst_avg_mark_title_short#:#Durchschnittsnote
+tst_avg_mark_description#:#Die Durchschnittsnote entspricht der Notenstufe für den Mittelwert der erreichten Prozent der Teilnehmer.
+tst_avg_mark_details_title#:#Notenverteilung
+tst_avg_mark_details_description#:#Im Test definierte Notenstufen mit ihrer Anzahl und Prozent in den Testergebnissen der Teilnehmer
+tst_avg_mark_short_name#:#Kurzbezeichnung
+tst_avg_mark_official_name#:#Offizielle Bezeichnung
+tst_avg_mark_min_percent#:#Mindestprozentsatz
+tst_avg_mark_passed#:#Bestanden
+tst_avg_mark_participants_count#:#Anzahl Teilnehmer
+tst_avg_mark_participants_percent#:#Prozent Teilnehmer
+tst_avg_mark_undefined#:#Unbekannt
+tst_avg_mark_undefined_mark#:#Die Notenstufe ist nicht ermittelbar
+tst_avg_mark_chart_absolute#:#Notenverteilung (Absolute Anzahl)
+tst_avg_mark_chart_relative#:#Notenverteilung (Prozentuale Verteilung)
 tst_median_title_long#:#Median der erreichten Punkte
 tst_median_title_short#:#Median
 tst_median_description#:#Der Median wird für Daten genutzt, die eine „natürliche“ Reihenfolge bilden und mit Zahlenwerten versehen werden können. Die Mitte dieser geordneten Datenreihe ist der Median. Anders als der Mittelwert ist der Media unempfindlich gegenüber Extremwerten.
