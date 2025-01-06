@@ -6,6 +6,15 @@
  */
 abstract class ilExteEvalTest extends ilExteEvalBase
 {
+    /**
+     * Get the charts to be provided on the test overview page
+     * @return string[] titles indexed by keys of details
+     */
+    public function getOverviewCharts(): array
+    {
+        return [];
+    }
+
 	/**
 	 * Calculate and get the single value for a test (to be overwritten)
 	 */
@@ -48,7 +57,23 @@ abstract class ilExteEvalTest extends ilExteEvalBase
 
 	}
 
-	/**
+    /**
+     * Get a title for the details screen
+     */
+    public function getDetailsTitle(): string
+    {
+        return $this->getTitle();
+    }
+
+    /**
+     * Get a description for the details screen
+     */
+    public function getDetailsDescription(): string
+    {
+        return $this->getDescription();
+    }
+
+    /**
 	 * Get the calculated details
 	 * This checks if the test type matches before
 	 */
@@ -77,11 +102,11 @@ abstract class ilExteEvalTest extends ilExteEvalBase
     /**
      * Get the chart created by this evaluation
      */
-	final public function getChart() : ilChart
+	public function getChart(?string $key = null) : ilChart
     {
         return $this->generateChart($this->getDetails());
     }
-    
+
     /**
      * Get the custom HTML
      */

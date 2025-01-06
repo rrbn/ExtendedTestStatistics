@@ -337,7 +337,7 @@ abstract class ilExteEvalBase
                     /** @var ilExteStatValue $value */
                     foreach ($row as $colname => $value)
                     {
-                        if ($colname == $column->name)
+                        if ($colname == $column->name && ($value->type == ilExteStatValue::TYPE_NUMBER || $value->type == ilExteStatValue::TYPE_PERCENTAGE))
                         {
                         	if ($data instanceof ilChartDataBars)
 							{

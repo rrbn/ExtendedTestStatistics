@@ -452,7 +452,7 @@ class ilExteStatExport
 	protected function addTestDetailsSheet(Spreadsheet $excelObj, ilExteEvalTest $evaluation)
 	{
 		$worksheet = $excelObj->createSheet();
-		$worksheet->setTitle($evaluation->getShortTitle());
+		$worksheet->setTitle($evaluation->getDetailsTitle());
 
 		$details = $evaluation->getDetails();
 		if (empty($details->rows))

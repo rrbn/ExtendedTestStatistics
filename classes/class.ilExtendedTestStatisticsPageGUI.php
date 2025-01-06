@@ -90,6 +90,7 @@ class ilExtendedTestStatisticsPageGUI
 			case "deliverExportFile":
 			case "selectEvaluatedPass":
             case "selectQuestionsChart":
+            case "selectTestChart":
 			case "flushCache":
 				$this->$cmd();
 				break;
@@ -174,9 +175,41 @@ class ilExtendedTestStatisticsPageGUI
 		/** @var  ilExteStatTestOverviewTableGUI $tableGUI */
 		$tableGUI = ilExteStatTableGUI::_create('ilExteStatTestOverviewTableGUI', $this, 'showTestOverview');
 		$tableGUI->prepareData();
+        $tableHtml = $tableGUI->getHTML();
 
-		$legendGUI = ilExteStatTableGUI::_create('ilExteStatLegendTableGUI', $this, 'showTestOverview');
-		$this->tpl->setContent($tableGUI->getHTML() . $legendGUI->getHTML());
+        $chartHtml = '';
+        $chartActions = [];
+        $chartEvaluation = null;
+        $chartKey = null;
+        /** @var ilExteEvalTest $evaluation */
+        foreach ($this->statObj->getEvaluations(ilExtendedTestStatistics::LEVEL_TEST) As $evaluation) {
+            foreach ($evaluation->getOverviewCharts() as $key => $title) {
+                if (empty($chartEvaluation) || (get_class($evaluation) == $this->plugin->getUserPreference('test_chart_class') &&
+                    $key == $this->plugin->getUserPreference('test_chart_key')))
+                {
+                    $chartEvaluation = $evaluation;
+                    $chartKey = $key;
+                }
+                $this->ctrl->setParameter($this, 'chart_class', get_class($evaluation));
+                $this->ctrl->setParameter($this, 'chart_key', $key);
+                $chartActions[] = $this->uiFactory->button()->shy($title, $this->ctrl->getLinkTarget($this, 'selectTestChart'));
+            }
+        }
+        if (!empty($chartActions)) {
+            $chartHtml = $this->uiRenderer->render($this->uiFactory->dropdown()->standard($chartActions)->withLabel($this->plugin->txt('select_chart')));
+        }
+
+        /** @var ilExteEvalTest $chartEvaluation */
+        /** @var ilChart $chart */
+        if (!empty($chartEvaluation)) {
+            $chart = $chartEvaluation->getChart($chartKey);
+            $chartHtml .= $chart->getHTML();
+        }
+
+        $legendGUI = ilExteStatTableGUI::_create('ilExteStatLegendTableGUI', $this, 'showTestOverview');
+        $legendHtml = $legendGUI->getHTML();
+
+		$this->tpl->setContent($tableHtml . $chartHtml . $legendHtml);
 		$this->tpl->printToStdout();
 	}
 
@@ -205,8 +238,8 @@ class ilExtendedTestStatisticsPageGUI
 		/** @var  ilExteStatDetailsTableGUI $tableGUI */
 		$tableGUI = ilExteStatTableGUI::_create('ilExteStatDetailsTableGUI', $this, 'showTestDetails');
 		$tableGUI->prepareData($evaluation->getDetails());
-		$tableGUI->setTitle($evaluation->getShortTitle());
-		$tableGUI->setDescription($evaluation->getDescription());
+		$tableGUI->setTitle($evaluation->getDetailsTitle());
+		$tableGUI->setDescription($evaluation->getDetailsDescription());
 
 		$legendGUI = ilExteStatTableGUI::_create('ilExteStatLegendTableGUI', $this, 'showTestDetails');
 		$this->tpl->setContent($customHTML . $chartHTML . $tableGUI->getHTML() . $legendGUI->getHTML());
@@ -246,7 +279,7 @@ class ilExtendedTestStatisticsPageGUI
                 if (empty($chartEvaluation) || get_class($evaluation) == $this->plugin->getUserPreference('questions_chart_class')) {
                     $chartEvaluation = $evaluation;
                 }
-                $this->ctrl->setParameter($this, 'chart', get_class($evaluation));
+                $this->ctrl->setParameter($this, 'chart_class', get_class($evaluation));
                 $chartActions[] = $this->uiFactory->button()->shy($evaluation->getTitle(), $this->ctrl->getLinkTarget($this, 'selectQuestionsChart'));
             }
         }
@@ -303,8 +336,8 @@ class ilExtendedTestStatisticsPageGUI
         /** @var  ilExteStatDetailsTableGUI $tableGUI */
 		$tableGUI = ilExteStatTableGUI::_create('ilExteStatDetailsTableGUI', $this, 'showQuestionDetails');
 		$tableGUI->prepareData($evaluation->getDetails($qid));
-		$tableGUI->setTitle($this->statObj->getSourceData()->getQuestion($qid)->question_title);
-		$tableGUI->setDescription($evaluation->getTitle());
+		$tableGUI->setTitle($evaluation->getDetailsTitle($qid));
+		$tableGUI->setDescription($evaluation->getDetailsDescription($qid));
 
 		$legendGUI = ilExteStatTableGUI::_create('ilExteStatLegendTableGUI', $this, 'showQuestionDetails');
         $this->tpl->setContent($chartHTML . $tableGUI->getHTML() . $extra_content . $legendGUI->getHTML());
@@ -514,11 +547,24 @@ class ilExtendedTestStatisticsPageGUI
 	}
 
     /**
-     * Set the evaluated pass
+     * Select the chart to be shown on the test overview
+     */
+    protected function selectTestChart()
+    {
+        $chart = $this->query->retrieve('chart_class', $this->refinery->kindlyTo()->string());
+        $key = $this->query->retrieve('chart_key', $this->refinery->kindlyTo()->string());
+        $this->plugin->setUserPreference('test_chart_class', ilUtil::secureString($chart));
+        $this->plugin->setUserPreference('test_chart_key', ilUtil::secureString($key));
+        $this->ctrl->redirect($this, 'showTestOverview');
+    }
+
+
+    /**
+     * Select the chart to be shown on the questions overview
      */
     protected function selectQuestionsChart()
     {
-        $chart = $this->query->retrieve('chart', $this->refinery->kindlyTo()->string());
+        $chart = $this->query->retrieve('chart_class', $this->refinery->kindlyTo()->string());
         $this->plugin->setUserPreference('questions_chart_class', ilUtil::secureString($chart));
         $this->ctrl->redirect($this, 'showQuestionsOverview');
     }

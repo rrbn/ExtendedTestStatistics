@@ -41,7 +41,23 @@ abstract class ilExteEvalQuestion extends ilExteEvalBase
        return new ilExteStatDetails();
     }
 
-	/**
+    /**
+     * Get a title for the details screen
+     */
+    public function getDetailsTitle(int $a_question_id): string
+    {
+        return $this->data->getQuestion($a_question_id)->question_title;
+    }
+
+    /**
+     * Get a description for the details screen
+     */
+    public function getDetailsDescription(int $a_question_id): string
+    {
+        return $this->getTitle();
+    }
+
+    /**
 	 * Get the calculated value
 	 * This checks if the test type matches before
 
@@ -192,7 +208,7 @@ abstract class ilExteEvalQuestion extends ilExteEvalBase
 
 
         foreach ($question_ids as $question_id) {
-            if (isset($questions[$question_id])) {
+            if (isset($questions[$question_id]) && isset($values[$question_id])) {
                 $question = $questions[$question_id];
 
                 $title = $question->question_title;
@@ -202,7 +218,9 @@ abstract class ilExteEvalQuestion extends ilExteEvalBase
                 }
 
                 $value =  $values[$question_id]; // filled above
-                $value->value = round($value->value * 100);
+                if (isset($value->value)) {
+                    $value->value = round($value->value * 100);
+                }
 
                 $details->rows[] = array(
                     'question_pos' => ilExteStatValue::_create($question->order_position, ilExteStatValue::TYPE_NUMBER, 0),
