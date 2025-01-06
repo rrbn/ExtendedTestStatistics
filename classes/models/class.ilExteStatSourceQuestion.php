@@ -33,17 +33,17 @@ class ilExteStatSourceQuestion
     /**
 	 * question title
 	 */
-	public string $question_title;
+	public string $question_title = '';
 
 	/**
 	 * maximum points that can be reached in the question
 	 */
-	public float $maximum_points;
+	public float $maximum_points = 0;
 
 	/**
 	 * order position of the question in a fixed test
 	 */
-	public int $order_position;
+	public int $order_position = 0;
 
 	/**
 	 * obligatory status of the question in a fixed test

@@ -92,7 +92,7 @@ class ilExteEvalTestAverageMark extends ilExteEvalTest
             }
         }
 
-        return ilExteStatValue::_create($this->plugin->txt('undefined'), ilExteStatValue::TYPE_ALERT, 0, '', ilExteStatValue::ALERT_UNKNOWN);
+        return ilExteStatValue::_create($this->txt('undefined'), ilExteStatValue::TYPE_ALERT, 0, '', ilExteStatValue::ALERT_UNKNOWN);
     }
 
 
@@ -178,7 +178,7 @@ class ilExteEvalTestAverageMark extends ilExteEvalTest
             /** @var ilExteStatValue[] $row */
             $max = 0;
             foreach ($details->rows as $row) {
-                if ($row['participants_percent']->type == ilExteStatValue::TYPE_NUMBER) {
+                if ($row['participants_count']->type == ilExteStatValue::TYPE_NUMBER) {
                     $row['short_name']->value = $row['short_name']->value . ' (' . $row['participants_count']->value . ')';
                     if ($row['participants_count']->value > $max) {
                         $max = $row['participants_count']->value;

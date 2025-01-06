@@ -208,7 +208,7 @@ abstract class ilExteEvalQuestion extends ilExteEvalBase
 
 
         foreach ($question_ids as $question_id) {
-            if (isset($questions[$question_id])) {
+            if (isset($questions[$question_id]) && isset($values[$question_id])) {
                 $question = $questions[$question_id];
 
                 $title = $question->question_title;

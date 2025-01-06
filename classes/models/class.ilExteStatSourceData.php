@@ -256,7 +256,8 @@ class ilExteStatSourceData
 	{
 		$this->eval = $this->object->getUnfilteredEvaluationData();
 
-		// get the order and obligatory data of questions in a fixed test
+		// get the basic data of questions in a fixed test
+        // this is needed if test has no participants
         // other question data will be added later
 		if ($this->object->isFixedTest())
 		{
@@ -416,7 +417,10 @@ class ilExteStatSourceData
 	 */
 	protected function readFixedTestQuestionData()
 	{
-		$query = "SELECT question_fi, sequence, obligatory FROM tst_test_question WHERE test_fi = "
+		$query = "SELECT t.question_fi, t.sequence, t.obligatory, q.title, q.points
+            FROM tst_test_question t 
+            JOIN qpl_questions q ON t.question_fi = q.question_id
+            WHERE test_fi = "
 			. $this->db->quote($this->object->getTestId())
 			. " ORDER BY sequence";
 		$result = $this->db->query($query);
@@ -426,7 +430,9 @@ class ilExteStatSourceData
             if (empty($question = $this->getQuestion($row['question_fi']))) {
                 $question = $this->createQuestion($row['question_fi']); // reference
             }
-            $question->order_position = $row['sequence'];
+            $question->question_title = (string) $row['title'];
+            $question->maximum_points = (float) $row['points'];
+            $question->order_position = (int) $row['sequence'];
             $question->obligatory = (bool) $row['obligatory'];
 		}
 	}
