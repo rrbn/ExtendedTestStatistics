@@ -218,7 +218,9 @@ abstract class ilExteEvalQuestion extends ilExteEvalBase
                 }
 
                 $value =  $values[$question_id]; // filled above
-                $value->value = round($value->value * 100);
+                if (isset($value->value)) {
+                    $value->value = round($value->value * 100);
+                }
 
                 $details->rows[] = array(
                     'question_pos' => ilExteStatValue::_create($question->order_position, ilExteStatValue::TYPE_NUMBER, 0),

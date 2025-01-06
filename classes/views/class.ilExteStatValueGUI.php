@@ -44,65 +44,62 @@ class ilExteStatValueGUI
 		$sign = null;
 		$align = 'left';
 
-		// value
-		switch ($value->type)
-		{
-			case ilExteStatValue::TYPE_ALERT:
-				// alert is separately set
-				$content = '';
-				$align = 'left';
-				break;
+        // prevent casting null to 0 etc.
+        if (!isset($value->value)) {
+            $content = '';
 
-			case ilExteStatValue::TYPE_TEXT:
-				$content =  $this->textDisplay((string) $value->value);
-				$align = 'left';
-				break;
+        } else {
+            // value
+            switch ($value->type) {
+                case ilExteStatValue::TYPE_ALERT:
+                    // alert is separately set
+                    $content = '';
+                    $align = 'left';
+                    break;
 
-			case ilExteStatValue::TYPE_NUMBER:
-				$content = sprintf('%01.'.$value->precision.'f', round($value->value, $value->precision));
-				$align = 'right';
-				break;
+                case ilExteStatValue::TYPE_TEXT:
+                    $content = $this->textDisplay((string) $value->value);
+                    $align = 'left';
+                    break;
 
-			case ilExteStatValue::TYPE_DURATION:
-				$diff_seconds = $value->value;
-				$diff_hours    = floor($diff_seconds/3600);
-				$diff_seconds -= $diff_hours   * 3600;
-				$diff_minutes  = floor($diff_seconds/60);
-				$diff_seconds -= $diff_minutes * 60;
+                case ilExteStatValue::TYPE_NUMBER:
+                    $content = sprintf('%01.' . $value->precision . 'f', round($value->value, $value->precision));
+                    $align = 'right';
+                    break;
 
-				$content = sprintf("%02d:%02d:%02d", $diff_hours, $diff_minutes, $diff_seconds);
-				$align = 'right';
-				break;
+                case ilExteStatValue::TYPE_DURATION:
+                    $diff_seconds = $value->value;
+                    $diff_hours = floor($diff_seconds / 3600);
+                    $diff_seconds -= $diff_hours * 3600;
+                    $diff_minutes = floor($diff_seconds / 60);
+                    $diff_seconds -= $diff_minutes * 60;
 
-			case ilExteStatValue::TYPE_DATETIME:
-				if ($value->value instanceof ilDateTime)
-				{
-					$content = ilDatePresentation::formatDate($value->value);
-					$align = 'right';
-				}
-				break;
+                    $content = sprintf("%02d:%02d:%02d", $diff_hours, $diff_minutes, $diff_seconds);
+                    $align = 'right';
+                    break;
 
-			case ilExteStatValue::TYPE_PERCENTAGE:
-				$content = sprintf('%01.'.$value->precision.'f', round($value->value, $value->precision)). '%';
-				$align = 'right';
-				break;
+                case ilExteStatValue::TYPE_DATETIME:
+                    if ($value->value instanceof ilDateTime) {
+                        $content = ilDatePresentation::formatDate($value->value);
+                        $align = 'right';
+                    }
+                    break;
 
-			case ilExteStatValue::TYPE_BOOLEAN:
-				$content = ($value->value ? $this->lng->txt('yes') : $this->lng->txt('no'));
-				$align = 'left';
-				break;
+                case ilExteStatValue::TYPE_PERCENTAGE:
+                    $content = sprintf('%01.' . $value->precision . 'f', round($value->value, $value->precision)) . '%';
+                    $align = 'right';
+                    break;
 
-			default:
-				$content = '';
-				$align = 'left';
-		}
+                case ilExteStatValue::TYPE_BOOLEAN:
+                    $content = ($value->value ? $this->lng->txt('yes') : $this->lng->txt('no'));
+                    $align = 'left';
+                    break;
 
-
-		// revert casting null to 0 etc.
-		if (!isset($value->value))
-		{
-			$content = '';
-		}
+                default:
+                    $content = '';
+                    $align = 'left';
+            }
+        }
 
 		// comment and alert
 		if ($this->show_comment && !empty($value->comment))
@@ -166,7 +163,7 @@ class ilExteStatValueGUI
 			ilTooltipGUI::addTooltip($id, $comment);
 		}
 
-		if (!empty($sign))
+		if (in_array($sign, ['good', 'medium', 'bad', 'unknown']))
 		{
 			$template->touchBlock($sign);
 		}

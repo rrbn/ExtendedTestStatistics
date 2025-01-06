@@ -13,22 +13,22 @@ class ilExteStatSourceQuestion
 	/**
 	 * question id
 	 */
-	public int $question_id;
+	public int $question_id = 0;
 
 	/**
 	 * id of the original question
 	 */
-	public ?int $original_id;
+	public ?int $original_id = null;
 
 	/**
 	 * type tag of the question, e.g. 'assSingleChoice'
 	 */
-	public string $question_type;
+	public string $question_type = '';
 
     /**
      * label of the question type, e.g. 'Single Choice Question'
      */
-    public string $question_type_label;
+    public string $question_type_label = '';
 
     /**
 	 * question title
