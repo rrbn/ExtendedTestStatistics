@@ -1,5 +1,8 @@
 # Change Log
 
+## Version 2.2 (2025-01-07)
+- Add average grade and grade statistics for test
+- 
 ## Version 2.1 (2024-11-18)
 - fix PHP 8.2 errors with empty tests
 
