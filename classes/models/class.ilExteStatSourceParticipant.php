@@ -31,6 +31,11 @@ class ilExteStatSourceParticipant
 	 */
 	public int $scored_pass;
 
+    /**
+     * points that can be reached by the participant in the currently selected pass
+     */
+    public float $current_maximum_points;
+
 	/**
 	 * points reached by the participant in the currently selected pass
 	 */

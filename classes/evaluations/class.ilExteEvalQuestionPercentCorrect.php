@@ -59,7 +59,7 @@ class ilExteEvalQuestionPercentCorrect extends ilExteEvalQuestion
         
         if ($questionObj->assigned_count == 0) {
             return ilExteStatValue::_create(0, ilExteStatValue::TYPE_PERCENTAGE,
-                0, '', $this->txt('not_assigned'));
+                0, $this->txt('not_assigned'), ilExteStatValue::ALERT_UNKNOWN);
         }
         
         $correct_count = 0;

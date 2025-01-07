@@ -41,7 +41,23 @@ abstract class ilExteEvalQuestion extends ilExteEvalBase
        return new ilExteStatDetails();
     }
 
-	/**
+    /**
+     * Get a title for the details screen
+     */
+    public function getDetailsTitle(int $a_question_id): string
+    {
+        return $this->data->getQuestion($a_question_id)->question_title;
+    }
+
+    /**
+     * Get a description for the details screen
+     */
+    public function getDetailsDescription(int $a_question_id): string
+    {
+        return $this->getTitle();
+    }
+
+    /**
 	 * Get the calculated value
 	 * This checks if the test type matches before
 
