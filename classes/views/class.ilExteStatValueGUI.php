@@ -42,29 +42,24 @@ class ilExteStatValueGUI
 		$content = null;
 		$comment = null;
 		$sign = null;
-		$align = 'left';
+		$align = $value->align;
 
         // prevent casting null to 0 etc.
-        if (!isset($value->value)) {
+        if ($value->value === null) {
             $content = '';
-
         } else {
-            // value
             switch ($value->type) {
                 case ilExteStatValue::TYPE_ALERT:
                     // alert is separately set
                     $content = '';
-                    $align = 'left';
                     break;
 
                 case ilExteStatValue::TYPE_TEXT:
                     $content = $this->textDisplay((string) $value->value);
-                    $align = 'left';
                     break;
 
                 case ilExteStatValue::TYPE_NUMBER:
                     $content = sprintf('%01.' . $value->precision . 'f', round($value->value, $value->precision));
-                    $align = 'right';
                     break;
 
                 case ilExteStatValue::TYPE_DURATION:
@@ -75,29 +70,40 @@ class ilExteStatValueGUI
                     $diff_seconds -= $diff_minutes * 60;
 
                     $content = sprintf("%02d:%02d:%02d", $diff_hours, $diff_minutes, $diff_seconds);
-                    $align = 'right';
                     break;
 
                 case ilExteStatValue::TYPE_DATETIME:
                     if ($value->value instanceof ilDateTime) {
                         $content = ilDatePresentation::formatDate($value->value);
-                        $align = 'right';
                     }
                     break;
 
                 case ilExteStatValue::TYPE_PERCENTAGE:
                     $content = sprintf('%01.' . $value->precision . 'f', round($value->value, $value->precision)) . '%';
-                    $align = 'right';
                     break;
 
                 case ilExteStatValue::TYPE_BOOLEAN:
                     $content = ($value->value ? $this->lng->txt('yes') : $this->lng->txt('no'));
-                    $align = 'left';
                     break;
 
                 default:
                     $content = '';
-                    $align = 'left';
+            }
+        }
+
+        if ($align === null) {
+            switch ($value->type) {
+                case ilExteStatValue::TYPE_ALERT:
+                case ilExteStatValue::TYPE_NUMBER:
+                case ilExteStatValue::TYPE_DURATION:
+                case ilExteStatValue::TYPE_PERCENTAGE:
+                case ilExteStatValue::TYPE_BOOLEAN:
+                    $align = ilExteStatValue::ALIGN_RIGHT;
+                    break;
+
+                case ilExteStatValue::TYPE_TEXT:
+                default:
+                    $align = ilExteStatValue::ALIGN_LEFT;
             }
         }
 
@@ -115,11 +121,11 @@ class ilExteStatValueGUI
 		// render cell
 		switch ($align)
 		{
-			case 'right':
+            case ilExteStatValue::ALIGN_RIGHT:
 				$this->renderSign($template, $sign, 'ilExteStatSignRight', $comment);
 				$this->renderContent($template, $content, 'ilExteStatValueRight', $comment, $value->uncertain);
 				break;
-			case 'left':
+			case ilExteStatValue::ALIGN_LEFT:
 			default:
 				$this->renderContent($template, $content, 'ilExteStatValueLeft', $comment, $value->uncertain);
 				$this->renderSign($template, $sign, 'ilExteStatSignLeft', $comment);
