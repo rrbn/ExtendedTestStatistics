@@ -1,5 +1,8 @@
 # Change Log
 
+## Version 2.3 (2025-01-08)
+- Improve values display
+
 ## Version 2.2 (2025-01-07)
 - Add average grade and grade statistics for test
 - 
