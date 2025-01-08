@@ -26,6 +26,12 @@ class ilExteStatValue
 	const ALERT_MEDIUM = 'medium';		// yellow icon or background
 	const ALERT_BAD = 'bad';			// red icon or background
 
+    /**
+     * Defined alignment in tables
+     */
+    const ALIGN_LEFT = 'left';
+    const ALIGN_RIGHT = 'right';
+
 
 	/**
 	 * Type of the value
@@ -81,6 +87,13 @@ class ilExteStatValue
 
 
     /**
+     * Optional alignment
+     * If null, then the standard alignment of the type will be taken
+     */
+    public ?string $align = null;
+
+
+    /**
      * Create a value by parameters
      */
     public static function _create(
@@ -89,7 +102,8 @@ class ilExteStatValue
         int $a_precision = 2,
         string $a_comment = '',
         string $a_alert = self::ALERT_NONE,
-        bool $a_uncertain = false
+        bool $a_uncertain = false,
+        ?string $align = null
     ): ilExteStatValue
     {
         $value = new self;
@@ -99,6 +113,7 @@ class ilExteStatValue
         $value->comment = $a_comment;
         $value->alert = $a_alert;
 		$value->uncertain = $a_uncertain;
+        $value->align = $align;
 
         return $value;
     }

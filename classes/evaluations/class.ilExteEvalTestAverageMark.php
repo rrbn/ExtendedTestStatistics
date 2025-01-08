@@ -88,11 +88,11 @@ class ilExteEvalTestAverageMark extends ilExteEvalTest
         if ($count > 0) {
             $mark = $this->data->getMarkByPercent($sum / $count);
             if ($mark !== null) {
-                return ilExteStatValue::_create($mark->getShortName(), ilExteStatValue::TYPE_TEXT);
+                return ilExteStatValue::_create($mark->getShortName(), ilExteStatValue::TYPE_TEXT, 0, '', ilExteStatValue::ALERT_NONE, false, ilExteStatValue::ALIGN_RIGHT);
             }
         }
 
-        return ilExteStatValue::_create($this->txt('undefined'), ilExteStatValue::TYPE_ALERT, 0, '', ilExteStatValue::ALERT_UNKNOWN);
+        return ilExteStatValue::_create($this->txt('undefined'), ilExteStatValue::TYPE_ALERT, 0, '', ilExteStatValue::ALERT_UNKNOWN, false, ilExteStatValue::ALIGN_RIGHT);
     }
 
 
@@ -116,9 +116,8 @@ class ilExteEvalTestAverageMark extends ilExteEvalTest
             0 => ilExteStatColumn::_create( 'short_name', $this->txt('short_name'), ilExteStatColumn::SORT_TEXT),
             1 => ilExteStatColumn::_create('official_name',$this->txt('official_name'),ilExteStatColumn::SORT_TEXT),
             2 => ilExteStatColumn::_create('min_percent',$this->txt('min_percent'),ilExteStatColumn::SORT_NUMBER),
-            3 => ilExteStatColumn::_create('passed',$this->txt('passed'),ilExteStatColumn::SORT_NUMBER),
-            4 => ilExteStatColumn::_create('participants_count',$this->txt('participants_count'),ilExteStatColumn::SORT_NUMBER, '', $key == self::NUMBERS_ABSOLUTE),
-            5 => ilExteStatColumn::_create('participants_percent',$this->txt('participants_percent'),ilExteStatColumn::SORT_NUMBER, '', $key == self::NUMBERS_RELATIVE)
+            3 => ilExteStatColumn::_create('participants_count',$this->txt('participants_count'),ilExteStatColumn::SORT_NUMBER, '', $key == self::NUMBERS_ABSOLUTE),
+            4 => ilExteStatColumn::_create('participants_percent',$this->txt('participants_percent'),ilExteStatColumn::SORT_NUMBER, '', $key == self::NUMBERS_RELATIVE)
         );
 
         $total = 0;
@@ -146,8 +145,7 @@ class ilExteEvalTestAverageMark extends ilExteEvalTest
                 'short_name' => ilExteStatValue::_create($mark->getShortName(), ilExteStatValue::TYPE_TEXT),
                 'official_name' => ilExteStatValue::_create($mark->getOfficialName(), ilExteStatValue::TYPE_TEXT),
                 'min_percent' => ilExteStatValue::_create($mark->getMinPercent(), ilExteStatValue::TYPE_PERCENTAGE),
-                'passed' => ilExteStatValue::_create($mark->isPassed(), ilExteStatValue::TYPE_BOOLEAN),
-                'participants_count' => ilExteStatValue::_create($counts[$mark->getMarkId()], ilExteStatValue::TYPE_NUMBER),
+                'participants_count' => ilExteStatValue::_create($counts[$mark->getMarkId()], ilExteStatValue::TYPE_NUMBER, 0),
                 'participants_percent' => $total == 0 ? $unknown_value : ilExteStatValue::_create(100 * $counts[$mark->getMarkId()] / $total, ilExteStatValue::TYPE_PERCENTAGE)
             ];
         }
@@ -157,7 +155,7 @@ class ilExteEvalTestAverageMark extends ilExteEvalTest
                 'official_name' => ilExteStatValue::_create($this->txt('undefined_mark'), ilExteStatValue::TYPE_TEXT),
                 'min_percent' => $unknown_value,
                 'passed' => $unknown_value,
-                'participants_count' => ilExteStatValue::_create(0, ilExteStatValue::TYPE_NUMBER),
+                'participants_count' => ilExteStatValue::_create(0, ilExteStatValue::TYPE_NUMBER, 0),
                 'participants_percent' => $total == 0 ? $unknown_value : ilExteStatValue::_create(100 * $counts[0] / $total, ilExteStatValue::TYPE_PERCENTAGE)
             ];
         }
@@ -185,7 +183,7 @@ class ilExteEvalTestAverageMark extends ilExteEvalTest
                     }
                 }
             }
-            $details->columns[4]->isChartData = true;
+            $details->columns[3]->isChartData = true;
             $details->chartLines = $this->getIntegerTicks($max);
 
         } else {
@@ -198,7 +196,7 @@ class ilExteEvalTestAverageMark extends ilExteEvalTest
                 }
             }
 
-            $details->columns[5]->isChartData = true;
+            $details->columns[4]->isChartData = true;
             $details->chartLines = [0 => '0',  2500 => '25%', 5000 => '50%', 7500 => '75%', 10000 => '100%'];
         }
 
