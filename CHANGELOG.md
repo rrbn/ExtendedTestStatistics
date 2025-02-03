@@ -1,5 +1,8 @@
 # Change Log
 
+## Version 2.4 (2025-02-03)
+- Fix 043843: Identifier "ilUser" is not defined
+
 ## Version 2.3 (2025-01-08)
 - Improve values display
 
